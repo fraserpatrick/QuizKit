@@ -1,15 +1,19 @@
-import { Text, View } from "react-native";
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import * as React from 'react';
+import LoginScreen from './../screens/LoginScreen';
+
+const Stack = createNativeStackNavigator();
+
+function ScreenNav() {
+  return (
+    <Stack.Navigator>
+      <Stack.Screen name="Login" component={LoginScreen} />
+    </Stack.Navigator>
+  );
+}
 
 export default function Index() {
   return (
-    <View
-      style={{
-        flex: 1,
-        justifyContent: "center",
-        alignItems: "center",
-      }}
-    >
-      <Text>Edit app/index.tsx to edit this screen.</Text>
-    </View>
+      <ScreenNav/>
   );
 }
