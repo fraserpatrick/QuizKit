@@ -1,6 +1,6 @@
 import { useNavigation } from "@react-navigation/native";
 import { useState } from "react";
-import { Button, Dimensions, Image, Keyboard, KeyboardAvoidingView, Platform, ScrollView, StyleSheet, TextInput, TouchableWithoutFeedback, View } from "react-native";
+import { Button, Dimensions, Image, Keyboard, KeyboardAvoidingView, Platform, ScrollView, StyleSheet, Text, TextInput, TouchableWithoutFeedback, View } from "react-native";
 
 const { width } = Dimensions.get('window');
 
@@ -17,8 +17,12 @@ export default function LoginScreen() {
     const [newPassword2, setNewPassword2] = useState('');
 
     const handleLogin = () => {
+        if (!loginUsername || !loginPassword) {
+            alert('Please enter both username and password');
+            return;
+        }
         console.log('User: ' + loginUsername +' logging in');
-        
+        navigation.reset({ index: 0, routes: [{ name: 'Home' as never }], } as never);
     };
 
     const handleSignUp = () => {
@@ -33,6 +37,7 @@ export default function LoginScreen() {
             return;
         }
         console.log('User: ' + newUsername +' signing up');
+        navigation.reset({ index: 0, routes: [{ name: 'Home' as never }], } as never);
     };
 
     const switchForm = () => {
@@ -60,16 +65,16 @@ export default function LoginScreen() {
                                 <Image source={require('./../assets/images/icon.png')} style={styles.image} />
                             </View>
                             <View style={styles.inputContainer}>
+                                <Text style={styles.inputHeader}>Username:</Text>
                                 <TextInput
                                     style={styles.input}
-                                    placeholder="Username"
                                     value={loginUsername}
                                     onChangeText={setLoginUsername}
                                     returnKeyType="next"
                                 />
+                                <Text style={styles.inputHeader}>Password:</Text>
                                 <TextInput
                                     style={styles.input}
-                                    placeholder="Password"
                                     value={loginPassword}
                                     onChangeText={setLoginPassword}
                                     secureTextEntry
@@ -97,24 +102,24 @@ export default function LoginScreen() {
                                 <Image source={require('./../assets/images/icon.png')} style={styles.image} />
                             </View>
                             <View style={styles.inputContainer}>
+                                <Text style={styles.inputHeader}>Username:</Text>
                                 <TextInput
                                     style={styles.input}
-                                    placeholder="Username"
                                     value={newUsername}
                                     onChangeText={setNewUsername}
                                     returnKeyType="next"
                                 />
+                                <Text style={styles.inputHeader}>Password:</Text>
                                 <TextInput
                                     style={styles.input}
-                                    placeholder="Password)"
                                     value={newPassword1}
                                     onChangeText={setNewPassword1}
                                     secureTextEntry
                                     returnKeyType="done"
                                 />
+                                <Text style={styles.inputHeader}>Repeat password:</Text>
                                 <TextInput
                                     style={styles.input}
-                                    placeholder="Repeat Password"
                                     value={newPassword2}
                                     onChangeText={setNewPassword2}
                                     secureTextEntry
@@ -133,40 +138,42 @@ export default function LoginScreen() {
 
 const styles = StyleSheet.create({
     container: {
-    flex: 1,
-    backgroundColor: '#f5f5f5',
+        flex: 1,
+        backgroundColor: '#e7e7e7ff',
     },
     scrollContainer: {
-    flexGrow: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
+        flexGrow: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
     },
     innerContainer: {
-    width: '100%',
-    alignItems: 'center',
-    paddingBottom: 50, // Adjusted for better keyboard handling on Android
+        width: '100%',
+        alignItems: 'center',
+        paddingBottom: 50, // Adjusted for better keyboard handling on Android
     },
     imageContainer: {
-    alignItems: 'center',
-    marginBottom: 80, // Reduce margin to move inputs up
+        alignItems: 'center',
+        marginBottom: 80, // Reduce margin to move inputs up
     },
     image: {
-    width: width * 0.8,
-    height: (width * 0.8) * 0.5, // Adjust aspect ratio as needed
-    resizeMode: 'contain',
+        width: width * 0.8,
+        height: (width * 0.8) * 0.5, // Adjust aspect ratio as needed
+        resizeMode: 'contain',
     },
     inputContainer: {
-    width: '80%',
-    alignItems: 'center',
-    marginTop: -30, // Move inputs higher for Android
+        width: '80%',
+        marginTop: -30, // Move inputs higher for Android
     },
     input: {
-    width: '100%',
-    padding: 10,
-    marginBottom: 10,
-    borderWidth: 1,
-    borderColor: '#ccc',
-    borderRadius: 5,
-    backgroundColor: '#fff',
+        width: '100%',
+        padding: 10,
+        marginBottom: 10,
+        borderWidth: 1,
+        borderColor: '#000000ff',
+        borderRadius: 5,
+        backgroundColor: '#ffffffff',
     },
+    inputHeader: {
+        fontSize: 18,
+    }
 });
