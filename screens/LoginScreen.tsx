@@ -1,6 +1,7 @@
 import { useNavigation } from "@react-navigation/native";
 import { useState } from "react";
 import { Button, Dimensions, Image, Keyboard, KeyboardAvoidingView, Platform, ScrollView, StyleSheet, Text, TextInput, TouchableWithoutFeedback, View } from "react-native";
+import database from './../DatabaseController';
 
 const { width } = Dimensions.get('window');
 
@@ -16,28 +17,61 @@ export default function LoginScreen() {
     const [newPassword1, setNewPassword1] = useState('');
     const [newPassword2, setNewPassword2] = useState('');
 
-    const handleLogin = () => {
+    const handleLogin = async () => {
         if (!loginUsername || !loginPassword) {
             alert('Please enter both username and password');
             return;
         }
-        console.log('User: ' + loginUsername +' logging in');
-        navigation.reset({ index: 0, routes: [{ name: 'Home' as never }], } as never);
+
+        try {
+            const existingUser = await database.findUserByUsername(loginUsername);
+
+            if (!existingUser) {
+                alert('User not found. Please sign up first.');
+                setLoginPassword('');
+                return;
+            }
+
+            if (existingUser.password !== loginPassword) {
+                alert('Incorrect password. Please try again.');
+                setLoginPassword('');
+                return;
+            }
+            console.log('User logged in successfully:', existingUser.username);
+            navigation.reset({index: 0, routes: [{ name: 'Home' as never }],} as never);
+        } catch (error) {
+            console.error('Login error:', error);
+            alert('An error occurred while logging in. Please try again.');
+        }
     };
 
-    const handleSignUp = () => {
+    const handleSignUp = async () => {
         if (!newUsername || !newPassword1 || !newPassword2) {
             alert('Please fill in all fields');
             return;
         }
+
         if (newPassword1 !== newPassword2) {
             alert('Passwords do not match');
             setNewPassword1('');
             setNewPassword2('');
             return;
         }
-        console.log('User: ' + newUsername +' signing up');
-        navigation.reset({ index: 0, routes: [{ name: 'Home' as never }], } as never);
+
+        const existingUser = await database.findUserByUsername(newUsername);
+        if (existingUser) {
+            alert('That username is already taken!');
+            return;
+        }
+
+        try {
+            await database.insertUser(newUsername, newPassword1);
+            console.log('User: ' + newUsername + ' created successfully');
+            navigation.reset({index: 0, routes: [{ name: 'Home' as never }],} as never);
+        } catch (error) {
+            console.error('Failed to create user:', error);
+            alert('Error creating user. Try again.');
+        }
     };
 
     const switchForm = () => {
@@ -149,20 +183,20 @@ const styles = StyleSheet.create({
     innerContainer: {
         width: '100%',
         alignItems: 'center',
-        paddingBottom: 50, // Adjusted for better keyboard handling on Android
+        paddingBottom: 50,
     },
     imageContainer: {
         alignItems: 'center',
-        marginBottom: 80, // Reduce margin to move inputs up
+        marginBottom: 80,
     },
     image: {
         width: width * 0.8,
-        height: (width * 0.8) * 0.5, // Adjust aspect ratio as needed
+        height: (width * 0.8) * 0.5,
         resizeMode: 'contain',
     },
     inputContainer: {
         width: '80%',
-        marginTop: -30, // Move inputs higher for Android
+        marginTop: -30,
     },
     input: {
         width: '100%',
