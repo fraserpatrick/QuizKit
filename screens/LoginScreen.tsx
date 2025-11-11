@@ -21,7 +21,13 @@ export default function LoginScreen() {
     const [newSecurityQuestion, setNewSecurityQuestion] = useState('');
     const securityQuestions = [
         'What was your childhood nickname?',
-        'What is the name of your favorite childhood friend?'
+        'What is the name of your favorite childhood friend?',
+        'What was the name of your first pet?',
+        'What was the make and model of your first car?',
+        'In what city or town did your parents meet?',
+        'What street did you grow up on?',
+        'What was your favourite subject in school?',
+        'What was your favorite hobby as a child?'
     ];
     const [securityQuestion, setSecurityQuestion] = useState('');
     const [securityAnswer, setSecurityAnswer] = useState('');
