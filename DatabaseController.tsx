@@ -6,6 +6,8 @@ export interface User {
     id?: number;
     username: string;
     password: string;
+    securityQuestion: string;
+    securityAnswer: string;
 }
 
 class DatabaseController {
@@ -19,7 +21,9 @@ class DatabaseController {
                 CREATE TABLE IF NOT EXISTS user (
                     id INTEGER PRIMARY KEY AUTOINCREMENT,
                     username TEXT UNIQUE NOT NULL,
-                    password TEXT NOT NULL
+                    password TEXT NOT NULL,
+                    securityQuestion TEXT NOT NULL,
+                    securityAnswer TEXT NOT NULL
                 );
             `);
         } catch (error) {
@@ -48,9 +52,9 @@ class DatabaseController {
     }
 
 
-    public async insertUser(username: string, password: string): Promise<boolean> {
-        const sql = `INSERT INTO user (username, password) VALUES (?, ?)`;
-        return this.execute(sql, [username, password]);
+    public async insertUser(username: string, password: string, securityQuestion: string, securityAnswer: string): Promise<boolean> {
+        const sql = `INSERT INTO user (username, password, securityQuestion, securityAnswer) VALUES (?, ?, ?, ?)`;
+        return this.execute(sql, [username, password, securityQuestion, securityAnswer]);
     }
 
     public async getUsers(): Promise<User[]> {
@@ -65,6 +69,11 @@ class DatabaseController {
             return results[0];
         }
         return null;
+    }
+
+    public async resetUserPassword(username: string, password: string): Promise<boolean> {
+        const sql = `UPDATE user SET password = ? WHERE USERNAME = ?`;
+        return this.execute(sql, [password, username]);
     }
 
     public async databaseReset(): Promise<boolean>{

@@ -22,6 +22,7 @@ export default function HomeScreen() {
             await database.databaseReset();
             setUsers([]);
             alert('Database has been reset.');
+            console.log('Database reset successfully.');
         } catch (error) {
             console.error('Error resetting database:', error);
             alert('Failed to reset database.');
@@ -33,7 +34,7 @@ export default function HomeScreen() {
             console.log("No users found");
         } else {
             users.forEach((user) => {
-                console.log("Username: " + user.username + "  " + "Password: " + user.password);
+                console.log("Username: " + user.username + "  " + "Password: " + user.password + "  " + "Security Question: " + user.securityQuestion + "  " + "Security Answer: " + user.securityAnswer);
             });
         }
     };    

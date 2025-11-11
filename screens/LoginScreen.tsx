@@ -1,6 +1,7 @@
 import { useNavigation } from "@react-navigation/native";
 import { useState } from "react";
 import { Button, Dimensions, Image, Keyboard, KeyboardAvoidingView, Platform, ScrollView, StyleSheet, Text, TextInput, TouchableWithoutFeedback, View } from "react-native";
+import { SelectList } from 'react-native-dropdown-select-list';
 import database from './../DatabaseController';
 
 const { width } = Dimensions.get('window');
@@ -8,7 +9,7 @@ const { width } = Dimensions.get('window');
 export default function LoginScreen() {
     const navigation = useNavigation();
 
-    const [alreadyUser, setAlreadyUser] = useState(false);
+    const [form, setForm] = useState(0);
 
     const [loginUsername, setLoginUsername] = useState('');
     const [loginPassword, setLoginPassword] = useState('');
@@ -16,6 +17,16 @@ export default function LoginScreen() {
     const [newUsername, setNewUsername] = useState('');
     const [newPassword1, setNewPassword1] = useState('');
     const [newPassword2, setNewPassword2] = useState('');
+    const [newSecurityAnswer, setNewSecurityAnswer] = useState('');
+    const [newSecurityQuestion, setNewSecurityQuestion] = useState('');
+    const securityQuestions = [
+        'What was your childhood nickname?',
+        'What is the name of your favorite childhood friend?'
+    ];
+    const [securityQuestion, setSecurityQuestion] = useState('');
+    const [securityAnswer, setSecurityAnswer] = useState('');
+    const [securityAnswerAttempt, setSecurityAnswerAttempt] = useState('');
+    const [resetPasswordUsername, setResetPasswordUsername] = useState('');
 
     const handleLogin = async () => {
         if (!loginUsername || !loginPassword) {
@@ -65,7 +76,7 @@ export default function LoginScreen() {
         }
 
         try {
-            await database.insertUser(newUsername, newPassword1);
+            await database.insertUser(newUsername, newPassword1, newSecurityQuestion, newSecurityAnswer.toLowerCase());
             console.log('User: ' + newUsername + ' created successfully');
             navigation.reset({index: 0, routes: [{ name: 'Home' as never }],} as never);
         } catch (error) {
@@ -74,24 +85,60 @@ export default function LoginScreen() {
         }
     };
 
-    const switchForm = () => {
-        setAlreadyUser(!alreadyUser);
-        
+    const handleForgot = async () => {
+        try {
+            const results = await database.findUserByUsername(resetPasswordUsername);
+            if (!results) {
+                alert('User not found.');
+                return;
+            }
+            setSecurityQuestion(results.securityQuestion);
+            setSecurityAnswer(results.securityAnswer);
+            switchForm(3);
+        } catch (error) {
+            console.error('Error retrieving security question:', error);
+        }
+    };
+
+    const resetPassword = async () => {
+        if (securityAnswer !== securityAnswerAttempt.toLowerCase()) {
+            alert('Incorrect security answer');
+            setSecurityAnswerAttempt('');
+            return;
+        }
+        if (newPassword1 !== newPassword2) {
+            alert('Passwords do not match');
+            setNewPassword1('');
+            setNewPassword2('');
+            return;
+        }
+        try {
+            await database.resetUserPassword(resetPasswordUsername, newPassword1);
+            alert('Password has been reset successfully');
+            switchForm(0);
+        } catch (error) {
+            console.error('Error resetting password:', error);
+        }
+    };
+
+    const switchForm = async (form: number) => {
         setLoginUsername('');
         setLoginPassword('');
 
         setNewUsername('');
         setNewPassword1('');
         setNewPassword2('');
+
+        setForm(form);
     };
 
-    if (!alreadyUser){
+    if (form === 0) {
         return (
             <KeyboardAvoidingView
                 behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
                 keyboardVerticalOffset={Platform.OS === 'ios' ? 80 : 0}
                 style={styles.container}
-            >
+            > 
                 <ScrollView contentContainerStyle={styles.scrollContainer} keyboardShouldPersistTaps="handled">
                     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
                         <View style={styles.innerContainer}>
@@ -115,14 +162,15 @@ export default function LoginScreen() {
                                     returnKeyType="done"
                                 />
                                 <Button title="Login" onPress={handleLogin} />
-                                <Button title="Sign up" onPress={switchForm} />
+                                <Button title="Forgot password?" onPress={() => switchForm(2)} />
+                                <Button title="Don't have an account?" onPress={() => switchForm(1)} />
                             </View>
                         </View>
                     </TouchableWithoutFeedback>
                 </ScrollView>
             </KeyboardAvoidingView>
         );
-    }else {
+    } else if (form === 1) {
         return (
             <KeyboardAvoidingView
                 behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
@@ -149,7 +197,96 @@ export default function LoginScreen() {
                                     value={newPassword1}
                                     onChangeText={setNewPassword1}
                                     secureTextEntry
+                                    returnKeyType="next"
+                                />
+                                <Text style={styles.inputHeader}>Repeat password:</Text>
+                                <TextInput
+                                    style={styles.input}
+                                    value={newPassword2}
+                                    onChangeText={setNewPassword2}
+                                    secureTextEntry
+                                    returnKeyType="next"
+                                />
+                                <Text style={styles.inputHeader}>Security question:</Text>
+                                <SelectList
+                                    setSelected={setNewSecurityQuestion}
+                                    data={securityQuestions}
+                                    placeholder="Select a security question"
+                                    search={false}
+                                />
+                                <TextInput
+                                    style={styles.input}
+                                    value={newSecurityAnswer}
+                                    onChangeText={setNewSecurityAnswer}
+                                    secureTextEntry
                                     returnKeyType="done"
+                                />
+                                <Button title="Create account" onPress={handleSignUp} />
+                                <Button title="I already have an account" onPress={() => switchForm(0)} />
+                            </View>
+                        </View>
+                    </TouchableWithoutFeedback>
+                </ScrollView>
+            </KeyboardAvoidingView>
+        );
+    } else if (form === 2) {
+        return (
+            <KeyboardAvoidingView
+                    behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+                    keyboardVerticalOffset={Platform.OS === 'ios' ? 80 : 0}
+                    style={styles.container}
+            >
+                <ScrollView contentContainerStyle={styles.scrollContainer} keyboardShouldPersistTaps="handled">
+                    <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+                        <View style={styles.innerContainer}>
+                            <View style={styles.imageContainer}>
+                                <Image source={require('./../assets/images/icon.png')} style={styles.image} />
+                            </View>
+                            <View style={styles.inputContainer}>
+                                <Text style={styles.inputHeader}>Username:</Text>
+                                <TextInput
+                                    style={styles.input}
+                                    value={resetPasswordUsername}
+                                    onChangeText={setResetPasswordUsername}
+                                    returnKeyType="done"
+                                />
+                                <Button title="Forgot password" onPress={handleForgot} />
+                                <Button title="Back to login" onPress={() => switchForm(0)} />
+                            </View>
+                        </View>
+                    </TouchableWithoutFeedback>
+                </ScrollView>
+            </KeyboardAvoidingView>
+        );
+    }
+    else if (form === 3) {
+        return (
+            <KeyboardAvoidingView
+                    behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+                    keyboardVerticalOffset={Platform.OS === 'ios' ? 80 : 0}
+                    style={styles.container}
+            >
+                <ScrollView contentContainerStyle={styles.scrollContainer} keyboardShouldPersistTaps="handled">
+                    <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+                        <View style={styles.innerContainer}>
+                            <View style={styles.imageContainer}>
+                                <Image source={require('./../assets/images/icon.png')} style={styles.image} />
+                            </View>
+                            <View style={styles.inputContainer}>
+                                <Text style={styles.inputHeader}>{securityQuestion}</Text>
+                                <TextInput
+                                    style={styles.input}
+                                    value={securityAnswerAttempt}
+                                    onChangeText={setSecurityAnswerAttempt}
+                                    returnKeyType="next"
+                                />
+                                <Text style={styles.inputHeader}>New password:</Text>
+                                <TextInput
+                                    style={styles.input}
+                                    value={newPassword1}
+                                    onChangeText={setNewPassword1}
+                                    secureTextEntry
+                                    returnKeyType="next"
                                 />
                                 <Text style={styles.inputHeader}>Repeat password:</Text>
                                 <TextInput
@@ -159,8 +296,8 @@ export default function LoginScreen() {
                                     secureTextEntry
                                     returnKeyType="done"
                                 />
-                                <Button title="Create account" onPress={handleSignUp} />
-                                <Button title="I already have an account" onPress={switchForm} />
+                                <Button title="Change password" onPress={resetPassword} />
+                                <Button title="Back to login" onPress={() => switchForm(0)} />
                             </View>
                         </View>
                     </TouchableWithoutFeedback>
