@@ -41,7 +41,7 @@ export default function LoginScreen() {
         }
 
         try {
-            const existingUser = await database.findUserByUsername(loginUsername);
+            const existingUser = await database.findUserByUsername(loginUsername.toLowerCase());
 
             if (!existingUser) {
                 alert('User not found. Please sign up first.');
@@ -75,14 +75,19 @@ export default function LoginScreen() {
             return;
         }
 
-        const existingUser = await database.findUserByUsername(newUsername);
+        if (!newSecurityQuestion) {
+            alert('Please select a security question');
+            return;
+        }
+
+        const existingUser = await database.findUserByUsername(newUsername.toLowerCase());
         if (existingUser) {
             alert('That username is already taken!');
             return;
         }
 
         try {
-            await database.insertUser(newUsername, newPassword1, newSecurityQuestion, newSecurityAnswer.toLowerCase());
+            await database.insertUser(newUsername.toLowerCase(), newPassword1, newSecurityQuestion, newSecurityAnswer.toLowerCase());
             console.log('User: ' + newUsername + ' created successfully');
             navigation.reset({index: 0, routes: [{ name: 'Home' as never }],} as never);
         } catch (error) {
@@ -93,7 +98,7 @@ export default function LoginScreen() {
 
     const handleForgot = async () => {
         try {
-            const results = await database.findUserByUsername(resetPasswordUsername);
+            const results = await database.findUserByUsername(resetPasswordUsername.toLowerCase());
             if (!results) {
                 alert('User not found.');
                 return;
@@ -119,7 +124,7 @@ export default function LoginScreen() {
             return;
         }
         try {
-            await database.resetUserPassword(resetPasswordUsername, newPassword1);
+            await database.resetUserPassword(resetPasswordUsername.toLowerCase(), newPassword1);
             alert('Password has been reset successfully');
             switchForm(0);
         } catch (error) {
@@ -224,7 +229,6 @@ export default function LoginScreen() {
                                     style={styles.input}
                                     value={newSecurityAnswer}
                                     onChangeText={setNewSecurityAnswer}
-                                    secureTextEntry
                                     returnKeyType="done"
                                 />
                                 <Button title="Create account" onPress={handleSignUp} />
