@@ -1,10 +1,10 @@
 import { useNavigation } from "@react-navigation/native";
 import { useState } from "react";
-import { Button, Dimensions, Image, Keyboard, KeyboardAvoidingView, Platform, ScrollView, StyleSheet, Text, TextInput, TouchableWithoutFeedback, View } from "react-native";
+import { Image, Keyboard, KeyboardAvoidingView, Platform, ScrollView, Text, TextInput, TouchableOpacity, TouchableWithoutFeedback, View } from "react-native";
 import { SelectList } from 'react-native-dropdown-select-list';
 import database from './../DatabaseController';
+import styles from './../assets/images/Styles';
 
-const { width } = Dimensions.get('window');
 
 export default function LoginScreen() {
     const navigation = useNavigation();
@@ -148,33 +148,45 @@ export default function LoginScreen() {
             <KeyboardAvoidingView
                 behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
                 keyboardVerticalOffset={Platform.OS === 'ios' ? 80 : 0}
-                style={styles.container}
+                style={styles.loginScreen_container}
             > 
-                <ScrollView contentContainerStyle={styles.scrollContainer} keyboardShouldPersistTaps="handled">
+                <ScrollView contentContainerStyle={styles.loginScreen_scrollContainer} keyboardShouldPersistTaps="handled">
                     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-                        <View style={styles.innerContainer}>
-                            <View style={styles.imageContainer}>
-                                <Image source={require('./../assets/images/icon.png')} style={styles.image} />
+                        <View style={styles.loginScreen_innerContainer}>
+                            <View style={styles.loginScreen_imageContainer}>
+                                <Image source={require('./../assets/images/icon.png')} style={styles.loginScreen_image} />
                             </View>
-                            <View style={styles.inputContainer}>
-                                <Text style={styles.inputHeader}>Username:</Text>
+                            <View style={styles.loginScreen_inputContainer}>
+                                <Text style={styles.loginScreen_inputHeader}>Username:</Text>
                                 <TextInput
-                                    style={styles.input}
+                                    style={styles.loginScreen_input}
                                     value={loginUsername}
                                     onChangeText={setLoginUsername}
                                     returnKeyType="next"
                                 />
-                                <Text style={styles.inputHeader}>Password:</Text>
+                                <Text style={styles.loginScreen_inputHeader}>Password:</Text>
                                 <TextInput
-                                    style={styles.input}
+                                    style={styles.loginScreen_input}
                                     value={loginPassword}
                                     onChangeText={setLoginPassword}
                                     secureTextEntry
                                     returnKeyType="done"
                                 />
-                                <Button title="Login" onPress={handleLogin} />
-                                <Button title="Forgot password?" onPress={() => switchForm(2)} />
-                                <Button title="Don't have an account?" onPress={() => switchForm(1)} />
+                                <TouchableOpacity onPress={handleLogin} >
+                                    <View style={styles.loginScreen_button}>
+                                        <Text style={styles.loginScreen_buttonText}>Login</Text>
+                                    </View>
+                                </TouchableOpacity>
+                                <TouchableOpacity onPress={() => switchForm(2)} >
+                                    <View style={styles.loginScreen_button}>
+                                        <Text style={styles.loginScreen_buttonText}>Forgot Password?</Text>
+                                    </View>
+                                </TouchableOpacity>
+                                <TouchableOpacity onPress={() => switchForm(1)} >
+                                    <View style={styles.loginScreen_button}>
+                                        <Text style={styles.loginScreen_buttonText}>Don't have an account?</Text>
+                                    </View>
+                                </TouchableOpacity>
                             </View>
                         </View>
                     </TouchableWithoutFeedback>
@@ -186,39 +198,39 @@ export default function LoginScreen() {
             <KeyboardAvoidingView
                 behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
                 keyboardVerticalOffset={Platform.OS === 'ios' ? 80 : 0}
-                style={styles.container}
+                style={styles.loginScreen_container}
             >
-                <ScrollView contentContainerStyle={styles.scrollContainer} keyboardShouldPersistTaps="handled">
+                <ScrollView contentContainerStyle={styles.loginScreen_scrollContainer} keyboardShouldPersistTaps="handled">
                     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-                        <View style={styles.innerContainer}>
-                            <View style={styles.imageContainer}>
-                                <Image source={require('./../assets/images/icon.png')} style={styles.image} />
+                        <View style={styles.loginScreen_innerContainer}>
+                            <View style={styles.loginScreen_imageContainer}>
+                                <Image source={require('./../assets/images/icon.png')} style={styles.loginScreen_image} />
                             </View>
-                            <View style={styles.inputContainer}>
-                                <Text style={styles.inputHeader}>Username:</Text>
+                            <View style={styles.loginScreen_inputContainer}>
+                                <Text style={styles.loginScreen_inputHeader}>Username:</Text>
                                 <TextInput
-                                    style={styles.input}
+                                    style={styles.loginScreen_input}
                                     value={newUsername}
                                     onChangeText={setNewUsername}
                                     returnKeyType="next"
                                 />
-                                <Text style={styles.inputHeader}>Password:</Text>
+                                <Text style={styles.loginScreen_inputHeader}>Password:</Text>
                                 <TextInput
-                                    style={styles.input}
+                                    style={styles.loginScreen_input}
                                     value={newPassword1}
                                     onChangeText={setNewPassword1}
                                     secureTextEntry
                                     returnKeyType="next"
                                 />
-                                <Text style={styles.inputHeader}>Repeat password:</Text>
+                                <Text style={styles.loginScreen_inputHeader}>Repeat password:</Text>
                                 <TextInput
-                                    style={styles.input}
+                                    style={styles.loginScreen_input}
                                     value={newPassword2}
                                     onChangeText={setNewPassword2}
                                     secureTextEntry
                                     returnKeyType="next"
                                 />
-                                <Text style={styles.inputHeader}>Security question:</Text>
+                                <Text style={styles.loginScreen_inputHeader}>Security question:</Text>
                                 <SelectList
                                     setSelected={setNewSecurityQuestion}
                                     data={securityQuestions}
@@ -226,13 +238,21 @@ export default function LoginScreen() {
                                     search={false}
                                 />
                                 <TextInput
-                                    style={styles.input}
+                                    style={styles.loginScreen_input}
                                     value={newSecurityAnswer}
                                     onChangeText={setNewSecurityAnswer}
                                     returnKeyType="done"
                                 />
-                                <Button title="Create account" onPress={handleSignUp} />
-                                <Button title="I already have an account" onPress={() => switchForm(0)} />
+                                <TouchableOpacity onPress={handleSignUp} >
+                                    <View style={styles.loginScreen_button}>
+                                        <Text style={styles.loginScreen_buttonText}>Create account</Text>
+                                    </View>
+                                </TouchableOpacity>
+                                <TouchableOpacity onPress={() => switchForm(0)} >
+                                    <View style={styles.loginScreen_button}>
+                                        <Text style={styles.loginScreen_buttonText}>I already have an account</Text>
+                                    </View>
+                                </TouchableOpacity>
                             </View>
                         </View>
                     </TouchableWithoutFeedback>
@@ -244,24 +264,32 @@ export default function LoginScreen() {
             <KeyboardAvoidingView
                     behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
                     keyboardVerticalOffset={Platform.OS === 'ios' ? 80 : 0}
-                    style={styles.container}
+                    style={styles.loginScreen_container}
             >
-                <ScrollView contentContainerStyle={styles.scrollContainer} keyboardShouldPersistTaps="handled">
+                <ScrollView contentContainerStyle={styles.loginScreen_scrollContainer} keyboardShouldPersistTaps="handled">
                     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-                        <View style={styles.innerContainer}>
-                            <View style={styles.imageContainer}>
-                                <Image source={require('./../assets/images/icon.png')} style={styles.image} />
+                        <View style={styles.loginScreen_innerContainer}>
+                            <View style={styles.loginScreen_imageContainer}>
+                                <Image source={require('./../assets/images/icon.png')} style={styles.loginScreen_image} />
                             </View>
-                            <View style={styles.inputContainer}>
-                                <Text style={styles.inputHeader}>Username:</Text>
+                            <View style={styles.loginScreen_inputContainer}>
+                                <Text style={styles.loginScreen_inputHeader}>Username:</Text>
                                 <TextInput
-                                    style={styles.input}
+                                    style={styles.loginScreen_input}
                                     value={resetPasswordUsername}
                                     onChangeText={setResetPasswordUsername}
                                     returnKeyType="done"
                                 />
-                                <Button title="Forgot password" onPress={handleForgot} />
-                                <Button title="Back to login" onPress={() => switchForm(0)} />
+                                <TouchableOpacity onPress={handleForgot} >
+                                    <View style={styles.loginScreen_button}>
+                                        <Text style={styles.loginScreen_buttonText}>Forgot password</Text>
+                                    </View>
+                                </TouchableOpacity>
+                                <TouchableOpacity onPress={() => switchForm(0)} >
+                                    <View style={styles.loginScreen_button}>
+                                        <Text style={styles.loginScreen_buttonText}>Back to login</Text>
+                                    </View>
+                                </TouchableOpacity>
                             </View>
                         </View>
                     </TouchableWithoutFeedback>
@@ -274,40 +302,48 @@ export default function LoginScreen() {
             <KeyboardAvoidingView
                     behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
                     keyboardVerticalOffset={Platform.OS === 'ios' ? 80 : 0}
-                    style={styles.container}
+                    style={styles.loginScreen_container}
             >
-                <ScrollView contentContainerStyle={styles.scrollContainer} keyboardShouldPersistTaps="handled">
+                <ScrollView contentContainerStyle={styles.loginScreen_scrollContainer} keyboardShouldPersistTaps="handled">
                     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-                        <View style={styles.innerContainer}>
-                            <View style={styles.imageContainer}>
-                                <Image source={require('./../assets/images/icon.png')} style={styles.image} />
+                        <View style={styles.loginScreen_innerContainer}>
+                            <View style={styles.loginScreen_imageContainer}>
+                                <Image source={require('./../assets/images/icon.png')} style={styles.loginScreen_image} />
                             </View>
-                            <View style={styles.inputContainer}>
-                                <Text style={styles.inputHeader}>{securityQuestion}</Text>
+                            <View style={styles.loginScreen_inputContainer}>
+                                <Text style={styles.loginScreen_inputHeader}>{securityQuestion}</Text>
                                 <TextInput
-                                    style={styles.input}
+                                    style={styles.loginScreen_input}
                                     value={securityAnswerAttempt}
                                     onChangeText={setSecurityAnswerAttempt}
                                     returnKeyType="next"
                                 />
-                                <Text style={styles.inputHeader}>New password:</Text>
+                                <Text style={styles.loginScreen_inputHeader}>New password:</Text>
                                 <TextInput
-                                    style={styles.input}
+                                    style={styles.loginScreen_input}
                                     value={newPassword1}
                                     onChangeText={setNewPassword1}
                                     secureTextEntry
                                     returnKeyType="next"
                                 />
-                                <Text style={styles.inputHeader}>Repeat password:</Text>
+                                <Text style={styles.loginScreen_inputHeader}>Repeat password:</Text>
                                 <TextInput
-                                    style={styles.input}
+                                    style={styles.loginScreen_input}
                                     value={newPassword2}
                                     onChangeText={setNewPassword2}
                                     secureTextEntry
                                     returnKeyType="done"
                                 />
-                                <Button title="Change password" onPress={resetPassword} />
-                                <Button title="Back to login" onPress={() => switchForm(0)} />
+                                <TouchableOpacity onPress={resetPassword} >
+                                    <View style={styles.loginScreen_button}>
+                                        <Text style={styles.loginScreen_buttonText}>Change password</Text>
+                                    </View>
+                                </TouchableOpacity>
+                                <TouchableOpacity onPress={() => switchForm(0)} >
+                                    <View style={styles.loginScreen_button}>
+                                        <Text style={styles.loginScreen_buttonText}>Back to login</Text>
+                                    </View>
+                                </TouchableOpacity>
                             </View>
                         </View>
                     </TouchableWithoutFeedback>
@@ -316,45 +352,3 @@ export default function LoginScreen() {
         );
     }
 }
-
-const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        backgroundColor: '#e7e7e7ff',
-    },
-    scrollContainer: {
-        flexGrow: 1,
-        justifyContent: 'center',
-        alignItems: 'center',
-    },
-    innerContainer: {
-        width: '100%',
-        alignItems: 'center',
-        paddingBottom: 50,
-    },
-    imageContainer: {
-        alignItems: 'center',
-        marginBottom: 80,
-    },
-    image: {
-        width: width * 0.8,
-        height: (width * 0.8) * 0.5,
-        resizeMode: 'contain',
-    },
-    inputContainer: {
-        width: '80%',
-        marginTop: -30,
-    },
-    input: {
-        width: '100%',
-        padding: 10,
-        marginBottom: 10,
-        borderWidth: 1,
-        borderColor: '#000000ff',
-        borderRadius: 5,
-        backgroundColor: '#ffffffff',
-    },
-    inputHeader: {
-        fontSize: 18,
-    }
-});
