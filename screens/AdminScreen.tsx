@@ -1,9 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import { Button, View } from 'react-native';
-import database, { User } from './../DatabaseController';
+import database, { Quiz, User } from './../DatabaseController';
 
 export default function HomeScreen() {
     const [users, setUsers] = useState<User[]>([]);
+    const [quizzes, setQuizzes] = useState<Quiz[]>([]);
 
     useEffect(() => {
         const loadUsers = async () => {
@@ -14,13 +15,23 @@ export default function HomeScreen() {
             }
         };
 
+        const loadQuizzes = async () => {
+            try {
+                setQuizzes(await database.getQuizzes());
+            } catch (error) {
+                console.error('Error loading quizzes:', error);
+            }
+        };
+
         loadUsers();
+        loadQuizzes();
     }, []);
 
     const resetDatabase = async () => {
         try {
             await database.databaseReset();
             setUsers([]);
+            setQuizzes([]);
             alert('Database has been reset.');
             console.log('Database reset successfully.');
         } catch (error) {
@@ -34,14 +45,25 @@ export default function HomeScreen() {
             console.log("No users found");
         } else {
             users.forEach((user) => {
-                console.log("Username: " + user.username + "  " + "Password: " + user.password + "  " + "Security Question: " + user.securityQuestion + "  " + "Security Answer: " + user.securityAnswer);
+                console.log("Username: " + user.username + "   Password: " + user.password + "   Security Question: " + user.securityQuestion + "   Security Answer: " + user.securityAnswer);
             });
         }
-    };    
+    };
 
+    const listQuizzes = async () => {
+        if (quizzes.length === 0) {
+            console.log("No quizzes found");
+        } else {
+            quizzes.forEach((quiz) => {
+                console.log("ID:" + quiz.id + "  Name: " + quiz.name + "   UserID: " + quiz.userID);
+            });
+        }
+    };
+    
     return (
         <View>
             <Button title="List Users" onPress={listUsers} />
+            <Button title="List quizzes" onPress={listQuizzes} />
             <Button title="Reset Database" onPress={resetDatabase} />
         </View>
     );

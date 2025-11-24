@@ -55,7 +55,7 @@ export default function LoginScreen() {
                 return;
             }
             console.log('User logged in successfully:', existingUser.username);
-            navigation.reset({index: 0, routes: [{ name: 'Home' as never }],} as never);
+            navigation.reset({index: 0, routes: [{ name: 'Home' as never, params: { loggedInUsername: existingUser.username }}],} as never);
         } catch (error) {
             console.error('Login error:', error);
             alert('An error occurred while logging in. Please try again.');
@@ -89,7 +89,7 @@ export default function LoginScreen() {
         try {
             await database.insertUser(newUsername.toLowerCase(), newPassword1, newSecurityQuestion, newSecurityAnswer.toLowerCase());
             console.log('User: ' + newUsername + ' created successfully');
-            navigation.reset({index: 0, routes: [{ name: 'Home' as never }],} as never);
+            navigation.reset({index: 0, routes: [{ name: 'Home' as never, params: {loggedInUsername: newUsername.toLowerCase()} }],} as never);
         } catch (error) {
             console.error('Failed to create user:', error);
             alert('Error creating user. Try again.');
@@ -132,7 +132,7 @@ export default function LoginScreen() {
         }
     };
 
-    const switchForm = async (form: number) => {
+    const switchForm = (form: number) => {
         setLoginUsername('');
         setLoginPassword('');
 
