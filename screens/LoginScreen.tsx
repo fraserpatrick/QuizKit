@@ -63,7 +63,7 @@ export default function LoginScreen() {
     };
 
     const handleSignUp = async () => {
-        if (!newUsername || !newPassword1 || !newPassword2) {
+        if (!newUsername.trim() || !newPassword1.trim() || !newPassword2.trim() || !newSecurityAnswer.trim()) {
             alert('Please fill in all fields');
             return;
         }
