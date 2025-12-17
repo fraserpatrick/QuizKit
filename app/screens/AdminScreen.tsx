@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Button, View } from 'react-native';
-import database, { Quiz, User } from './../DatabaseController';
+import database, { Quiz, User } from './../../DatabaseController';
 
 export default function HomeScreen() {
     const [users, setUsers] = useState<User[]>([]);

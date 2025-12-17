@@ -1,8 +1,8 @@
 import { useNavigation } from '@react-navigation/native';
 import { useState } from 'react';
 import { Image, Keyboard, KeyboardAvoidingView, Platform, ScrollView, Text, TextInput, TouchableOpacity, TouchableWithoutFeedback, View } from 'react-native';
-import styles from './../assets/images/Styles';
-import database from './../DatabaseController';
+import styles from './../../assets/images/Styles';
+import database from './../../DatabaseController';
 
 export default function QuizCreationScreen({route}: any) {
     const {loggedInUsername} = route.params;
