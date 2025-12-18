@@ -7,8 +7,6 @@ export default function RootNavigator() {
     const { isAuthenticated } = useAuth();
 
     return (
-        <NavigationContainer>
-            {isAuthenticated ? <AppNavigator /> : <AuthNavigator />}
-        </NavigationContainer>
+        isAuthenticated ? <AppNavigator /> : <AuthNavigator />
     );
 }

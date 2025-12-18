@@ -41,7 +41,7 @@ export default function QuizCreationScreen({route}: any) {
                 <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
                     <View style={styles.loginScreen_innerContainer}>
                         <View style={styles.loginScreen_imageContainer}>
-                            <Image source={require('./../assets/images/icon.png')} style={styles.loginScreen_image} />
+                            <Image source={require('./../../assets/images/icon.png')} style={styles.loginScreen_image} />
                         </View>
                         <View style={styles.loginScreen_inputContainer}>
                             <Text style={styles.loginScreen_inputHeader}>Quiz title:</Text>

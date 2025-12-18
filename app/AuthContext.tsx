@@ -1,6 +1,10 @@
 import {
     User,
-    onAuthStateChanged
+    onAuthStateChanged,
+    signInWithEmailAndPassword,
+    createUserWithEmailAndPassword,
+    signOut,
+    sendPasswordResetEmail,
 } from 'firebase/auth';
 import React, { ReactNode, createContext, useContext, useEffect, useState } from 'react';
 import { auth } from './firebase';
@@ -30,6 +34,29 @@ export const AuthProvider = ({children} : AuthProviderProps) => {
         });
         return unsubscribe
     }, []);
+
+    const signIn = async (email: string, password: string): Promise<User> => {
+        const result = await signInWithEmailAndPassword(auth, email, password);
+        return result.user;
+    };
+
+    const signUp = async (email: string, password: string): Promise<User> => {
+        const result = await createUserWithEmailAndPassword(auth, email, password);
+        return result.user;
+    }
+
+    const logout = async (): Promise<void> => {
+        await signOut(auth);
+    };
+
+    const resetPassword = async (email: string): Promise<void> => {
+        await sendPasswordResetEmail(auth, email);
+    };
+
+    const getIdToken = async (): Promise<string | null> => {
+        if (!auth.currentUser) return null;
+        return await auth.currentUser.getIdToken();
+    }
 
     const value: AuthContextType = {
         user,
