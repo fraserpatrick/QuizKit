@@ -2,19 +2,33 @@ import { useNavigation } from "expo-router";
 import { useState } from "react";
 import { Image, Text, KeyboardAvoidingView, Platform, ScrollView, TouchableWithoutFeedback, Keyboard, View, TextInput, TouchableOpacity } from "react-native";
 import styles from './../../../assets/images/Styles';
+import { useAuth } from "@/app/AuthContext";
 
 export default function ForgotPasswordScreen() {
     const navigation = useNavigation();
+    const {resetPassword} = useAuth();
 
-    const [resetPasswordUsername, setResetPasswordUsername] = useState('');
+    const [email, setEmail] = useState('');
 
     const handleForgot = () => {
-        if (!resetPasswordUsername.trim()) {
-            alert('Please enter your username');
+        if (!email.trim()) {
+            alert('Please enter your email');
             return;
         }
 
-        console.log('Password reset requested for:', resetPasswordUsername);
+        console.log('Password reset requested for:', email);
+
+        try {
+            const user = resetPassword(email);
+            console.log('Password reset email sent to:', user);
+            alert('Password reset email sent. Please check your inbox.');
+            navigation.navigate('Login' as never);
+        } 
+        catch (error) {
+            console.error('Password reset failed:', error);
+            alert('Password reset failed. Please try again.');
+            setEmail('');
+        }
     }
 
     const handleNavigateToLogin = () => {
@@ -34,16 +48,16 @@ export default function ForgotPasswordScreen() {
                             <Image source={require('./../../../assets/images/icon.png')} style={styles.loginScreen_image} />
                         </View>
                         <View style={styles.loginScreen_inputContainer}>
-                            <Text style={styles.loginScreen_inputHeader}>Username:</Text>
+                            <Text style={styles.loginScreen_inputHeader}>Email:</Text>
                             <TextInput
                                 style={styles.loginScreen_input}
-                                value={resetPasswordUsername}
-                                onChangeText={setResetPasswordUsername}
+                                value={email}
+                                onChangeText={setEmail}
                                 returnKeyType="done"
                             />
                             <TouchableOpacity onPress={handleForgot} >
                                 <View style={styles.loginScreen_button}>
-                                    <Text style={styles.loginScreen_buttonText}>Forgot password</Text>
+                                    <Text style={styles.loginScreen_buttonText}>Send reset password email</Text>
                                 </View>
                             </TouchableOpacity>
                             <TouchableOpacity onPress={handleNavigateToLogin} >

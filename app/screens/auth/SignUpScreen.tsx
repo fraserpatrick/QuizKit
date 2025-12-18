@@ -2,27 +2,42 @@ import { useState } from "react";
 import { Image, Text, KeyboardAvoidingView, Platform, ScrollView, TouchableWithoutFeedback, Keyboard, View, TextInput, TouchableOpacity } from "react-native";
 import styles from './../../../assets/images/Styles';
 import { useNavigation } from "@react-navigation/native";
+import { useAuth } from "@/app/AuthContext";
 
 export default function SignUpScreen() {
     const navigation = useNavigation();
+    const {signUp} = useAuth();
 
-    const [newUsername, setNewUsername] = useState('');
-    const [newPassword1, setNewPassword1] = useState('');
-    const [newPassword2, setNewPassword2] = useState('');
+    const [email, setEmail] = useState('');
+    const [password1, setPassword1] = useState('');
+    const [password2, setPassword2] = useState('');
 
-    const handleSignUp = () => {
-            if (!newUsername.trim() || !newPassword1.trim() || !newPassword2.trim()) {
+    const handleSignUp = async () => {
+            if (!email.trim() || !password1.trim() || !password2.trim()) {
                 alert('Please fill in all fields');
                 return;
             }
-    
-            if (newPassword1 !== newPassword2) {
+
+            if (password1 !== password2) {
                 alert('Passwords do not match');
-                setNewPassword1('');
-                setNewPassword2('');
+                setPassword1('');
+                setPassword2('');
                 return;
             }
-            console.log('Signing up with:', newUsername, newPassword1);
+
+            console.log('Signing up with:', email, password1);
+
+            try {
+                const newUser = await signUp(email, password1);
+                console.log('User account created & signed in!', newUser);
+            }
+            catch (error) {
+                console.error('Sign up failed:', error);
+                alert('Sign up failed. Please try again.');
+                setEmail('');
+                setPassword1('');
+                setPassword2('');
+            }
         };
 
     const handleNavigateToLogin = () => {
@@ -42,26 +57,26 @@ export default function SignUpScreen() {
                             <Image source={require('./../../../assets/images/icon.png')} style={styles.loginScreen_image} />
                         </View>
                         <View style={styles.loginScreen_inputContainer}>
-                            <Text style={styles.loginScreen_inputHeader}>Username:</Text>
+                            <Text style={styles.loginScreen_inputHeader}>Email:</Text>
                             <TextInput
                                 style={styles.loginScreen_input}
-                                value={newUsername}
-                                onChangeText={setNewUsername}
+                                value={email}
+                                onChangeText={setEmail}
                                 returnKeyType="next"
                             />
                             <Text style={styles.loginScreen_inputHeader}>Password:</Text>
                             <TextInput
                                 style={styles.loginScreen_input}
-                                value={newPassword1}
-                                onChangeText={setNewPassword1}
+                                value={password1}
+                                onChangeText={setPassword1}
                                 secureTextEntry
                                 returnKeyType="next"
                             />
                             <Text style={styles.loginScreen_inputHeader}>Repeat password:</Text>
                             <TextInput
                                 style={styles.loginScreen_input}
-                                value={newPassword2}
-                                onChangeText={setNewPassword2}
+                                value={password2}
+                                onChangeText={setPassword2}
                                 secureTextEntry
                                 returnKeyType="next"
                             />

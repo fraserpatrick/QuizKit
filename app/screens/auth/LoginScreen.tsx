@@ -2,22 +2,35 @@ import { useNavigation } from "@react-navigation/native";
 import { useState } from "react";
 import { Image, Keyboard, KeyboardAvoidingView, Platform, ScrollView, Text, TextInput, TouchableOpacity, TouchableWithoutFeedback, View } from "react-native";
 import styles from './../../../assets/images/Styles';
+import { useAuth } from "@/app/AuthContext";
 
 
 export default function LoginScreen() {
     const navigation = useNavigation();
+    const {signIn} = useAuth();
 
-    const [loginUsername, setLoginUsername] = useState('');
-    const [loginPassword, setLoginPassword] = useState('');
+    const [email, setEmail] = useState('');
+    const [password, setPassword] = useState('');
 
 
     const handleLogin = async () => {
-        if (!loginUsername || !loginPassword) {
-            alert('Please enter both username and password');
+        if (!email || !password) {
+            alert('Please enter both email and password');
             return;
         }
 
-        console.log('Attempting login with:', loginUsername, loginPassword);
+        console.log('Attempting login with:', email, password);
+
+        try {
+            const user = await signIn(email,password);
+            console.log('User signed in!', user);
+        } 
+        catch (error) {
+            console.error('Login failed:', error);
+            alert('Login failed. Please check your credentials and try again.');
+            setPassword('');
+            return;
+        }
     };
 
     const handleForgotPassword = () => {
@@ -27,7 +40,6 @@ export default function LoginScreen() {
     const handleCreateAccount = () => {
         navigation.navigate('SignUp' as never);
     }
-
 
 
     return (
@@ -43,18 +55,18 @@ export default function LoginScreen() {
                             <Image source={require('./../../../assets/images/icon.png')} style={styles.loginScreen_image} />
                         </View>
                         <View style={styles.loginScreen_inputContainer}>
-                            <Text style={styles.loginScreen_inputHeader}>Username:</Text>
+                            <Text style={styles.loginScreen_inputHeader}>Email:</Text>
                             <TextInput
                                 style={styles.loginScreen_input}
-                                value={loginUsername}
-                                onChangeText={setLoginUsername}
+                                value={email}
+                                onChangeText={setEmail}
                                 returnKeyType="next"
                             />
                             <Text style={styles.loginScreen_inputHeader}>Password:</Text>
                             <TextInput
                                 style={styles.loginScreen_input}
-                                value={loginPassword}
-                                onChangeText={setLoginPassword}
+                                value={password}
+                                onChangeText={setPassword}
                                 secureTextEntry
                                 returnKeyType="done"
                             />
