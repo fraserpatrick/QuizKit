@@ -4,9 +4,9 @@ import { Image, Keyboard, KeyboardAvoidingView, Platform, ScrollView, Text, Text
 import styles from './../../assets/images/Styles';
 import database from './../../DatabaseController';
 
-export default function QuizCreationScreen({route}: any) {
-    const {loggedInUsername} = route.params;
+export default function QuizCreationScreen() {
     const navigation = useNavigation();
+    const loggedInUsername = 0;
 
     const [quizName, setQuizName] = useState('');
 
@@ -21,8 +21,8 @@ export default function QuizCreationScreen({route}: any) {
             alert('Creating quiz with name: ' + quizName.trim());
             console.log('Creating quiz with name: ' + quizName.trim());
             navigation.reset({index: 1, routes: [
-                {name: 'Home' as never, params: { loggedInUsername: loggedInUsername, } as never,} as never,
-                {name: 'QuizEditor' as never, params: { loggedInUsername: loggedInUsername, passedQuizID: newQuizID, quizName: quizName.trim() } as never,} as never,
+                {name: 'Home' as never} as never,
+                {name: 'QuizEditor' as never, params: { passedQuizID: newQuizID, quizName: quizName.trim() } as never,} as never,
             ],} as never);
         }
         catch (error) {

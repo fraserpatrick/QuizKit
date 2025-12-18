@@ -5,9 +5,8 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import styles from './../../assets/images/Styles';
 import database, { Quiz } from "./../../DatabaseController";
 
-export default function HomeScreen({route}: any) {
+export default function HomeScreen() {
     const navigation = useNavigation();
-    const {loggedInUsername} = route.params;
     const [quizzes, setQuizzes] = useState<Quiz[]>([]);
 
     const loadQuizzes = async () => {
@@ -38,12 +37,12 @@ export default function HomeScreen({route}: any) {
 
 
     const handleCreateQuiz = () => {
-        navigation.navigate('QuizCreationScreen' as never, { loggedInUsername: loggedInUsername } as never);
+        navigation.navigate('QuizCreationScreen' as never);
     }
 
     const handleOpenQuiz = (quiz: Quiz) => {
         alert('Opening quizID: ' + quiz.id + ' with name: ' + quiz.name);
-        navigation.navigate('QuizEditor' as never, { loggedInUsername: loggedInUsername, passedQuizID: quiz.id, quizName: quiz.name } as never);
+        navigation.navigate('QuizEditor' as never, { passedQuizID: quiz.id, quizName: quiz.name } as never);
     };
 
     return (
