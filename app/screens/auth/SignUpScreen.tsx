@@ -25,11 +25,11 @@ export default function SignUpScreen() {
                 return;
             }
 
-            console.log('Signing up with:', email, password1);
+            console.log('Signing up with:', email);
 
             try {
                 const newUser = await signUp(email, password1);
-                console.log('User account created & signed in!', newUser);
+                console.log('User account created & signed in!', newUser.email);
             }
             catch (error) {
                 console.error('Sign up failed:', error);

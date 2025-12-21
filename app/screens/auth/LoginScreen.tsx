@@ -19,11 +19,11 @@ export default function LoginScreen() {
             return;
         }
 
-        console.log('Attempting login with:', email, password);
+        console.log('Attempting login with:', email);
 
         try {
             const user = await signIn(email,password);
-            console.log('User signed in!', user);
+            console.log('User signed in!', user.email);
         } 
         catch (error) {
             console.error('Login failed:', error);

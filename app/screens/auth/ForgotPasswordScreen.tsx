@@ -19,8 +19,7 @@ export default function ForgotPasswordScreen() {
         console.log('Password reset requested for:', email);
 
         try {
-            const user = resetPassword(email);
-            console.log('Password reset email sent to:', user);
+            resetPassword(email);
             alert('Password reset email sent. Please check your inbox.');
             navigation.navigate('Login' as never);
         } 
