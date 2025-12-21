@@ -1,12 +1,12 @@
 import { useNavigation } from '@react-navigation/native';
 import { useState } from 'react';
 import { Image, Keyboard, KeyboardAvoidingView, Platform, ScrollView, Text, TextInput, TouchableOpacity, TouchableWithoutFeedback, View } from 'react-native';
-import styles from './../assets/images/Styles';
-import database from './../DatabaseController';
+import styles from './../../assets/images/Styles';
+import database from './../../DatabaseController';
 
-export default function QuizCreationScreen({route}: any) {
-    const {loggedInUsername} = route.params;
+export default function QuizCreationScreen() {
     const navigation = useNavigation();
+    const loggedInUsername = 0;
 
     const [quizName, setQuizName] = useState('');
 
@@ -21,8 +21,8 @@ export default function QuizCreationScreen({route}: any) {
             alert('Creating quiz with name: ' + quizName.trim());
             console.log('Creating quiz with name: ' + quizName.trim());
             navigation.reset({index: 1, routes: [
-                {name: 'Home' as never, params: { loggedInUsername: loggedInUsername, } as never,} as never,
-                {name: 'QuizEditor' as never, params: { loggedInUsername: loggedInUsername, passedQuizID: newQuizID, quizName: quizName.trim() } as never,} as never,
+                {name: 'Home' as never} as never,
+                {name: 'QuizEditor' as never, params: { passedQuizID: newQuizID, quizName: quizName.trim() } as never,} as never,
             ],} as never);
         }
         catch (error) {
@@ -41,7 +41,7 @@ export default function QuizCreationScreen({route}: any) {
                 <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
                     <View style={styles.loginScreen_innerContainer}>
                         <View style={styles.loginScreen_imageContainer}>
-                            <Image source={require('./../assets/images/icon.png')} style={styles.loginScreen_image} />
+                            <Image source={require('./../../assets/images/icon.png')} style={styles.loginScreen_image} />
                         </View>
                         <View style={styles.loginScreen_inputContainer}>
                             <Text style={styles.loginScreen_inputHeader}>Quiz title:</Text>
