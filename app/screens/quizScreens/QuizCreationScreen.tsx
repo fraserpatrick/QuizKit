@@ -1,7 +1,7 @@
 import { useNavigation } from '@react-navigation/native';
 import { useState } from 'react';
 import { Keyboard, StyleSheet, Text, TextInput, TouchableOpacity, TouchableWithoutFeedback, View } from 'react-native';
-import database from './../../DatabaseController';
+import database from '@/DatabaseController';
 import { SegmentedButtons } from 'react-native-paper';
 
 export default function QuizCreationScreen() {

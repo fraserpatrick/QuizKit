@@ -1,6 +1,6 @@
 import { useNavigation } from '@react-navigation/native';
 import { Alert, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
-import database from './../../DatabaseController';
+import database from '@/DatabaseController';
 
 export default function QuizInfoScreen({route}: any) {
     const navigation = useNavigation();
