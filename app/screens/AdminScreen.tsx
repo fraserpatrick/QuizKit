@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Button, View } from 'react-native';
-import database, { Quiz } from './../../DatabaseController';
+import database, { Quiz } from '@/DatabaseController';
 
 export default function HomeScreen() {
     const [quizzes, setQuizzes] = useState<Quiz[]>([]);

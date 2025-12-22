@@ -1,5 +1,4 @@
-import { NavigationContainer } from '@react-navigation/native';
-import { useAuth } from '../AuthContext';
+import { useAuth } from '@/app/AuthContext';
 import AppNavigator from './AppNav';
 import AuthNavigator from './AuthNav';
 

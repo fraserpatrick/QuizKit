@@ -1,7 +1,7 @@
 import { useNavigation } from "@react-navigation/native";
 import React, { useEffect, useState } from 'react';
 import { FlatList, Text, TouchableOpacity, View, StyleSheet } from 'react-native';
-import database, { Quiz } from "./../../DatabaseController";
+import database, { Quiz } from "@/DatabaseController";
 import { SegmentedButtons } from 'react-native-paper';
 
 export default function HomeScreen() {

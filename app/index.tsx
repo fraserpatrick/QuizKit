@@ -1,4 +1,4 @@
-import { AuthProvider } from './AuthContext';
+import { AuthProvider } from '@/app/AuthContext';
 import RootNav from './navigation/RootNav';
 
 export default function App() {
