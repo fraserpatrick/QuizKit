@@ -1,7 +1,6 @@
 import { useNavigation } from "expo-router";
 import { useState } from "react";
-import { Image, Text, KeyboardAvoidingView, Platform, ScrollView, TouchableWithoutFeedback, Keyboard, View, TextInput, TouchableOpacity } from "react-native";
-import styles from './../../../assets/images/Styles';
+import { Image, Text, StyleSheet, TouchableWithoutFeedback, Keyboard, View, TextInput, TouchableOpacity, Dimensions } from "react-native";
 import { useAuth } from "@/app/AuthContext";
 
 export default function ForgotPasswordScreen() {
@@ -35,39 +34,85 @@ export default function ForgotPasswordScreen() {
     }
 
     return (
-        <KeyboardAvoidingView
-                behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-                keyboardVerticalOffset={Platform.OS === 'ios' ? 80 : 0}
-                style={styles.loginScreen_container}
-        >
-            <ScrollView contentContainerStyle={styles.loginScreen_scrollContainer} keyboardShouldPersistTaps="handled">
-                <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-                    <View style={styles.loginScreen_innerContainer}>
-                        <View style={styles.loginScreen_imageContainer}>
-                            <Image source={require('./../../../assets/images/icon.png')} style={styles.loginScreen_image} />
-                        </View>
-                        <View style={styles.loginScreen_inputContainer}>
-                            <Text style={styles.loginScreen_inputHeader}>Email:</Text>
-                            <TextInput
-                                style={styles.loginScreen_input}
-                                value={email}
-                                onChangeText={setEmail}
-                                returnKeyType="done"
-                            />
-                            <TouchableOpacity onPress={handleForgot} >
-                                <View style={styles.loginScreen_button}>
-                                    <Text style={styles.loginScreen_buttonText}>Send reset password email</Text>
-                                </View>
-                            </TouchableOpacity>
-                            <TouchableOpacity onPress={handleNavigateToLogin} >
-                                <View style={styles.loginScreen_button}>
-                                    <Text style={styles.loginScreen_buttonText}>Back to login</Text>
-                                </View>
-                            </TouchableOpacity>
-                        </View>
+        <View style={styles.container}>
+            <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+                <View style={styles.innerContainer}>
+                    <View style={styles.imageContainer}>
+                        <Image source={require('./../../../assets/images/icon.png')} style={styles.image} />
                     </View>
-                </TouchableWithoutFeedback>
-            </ScrollView>
-        </KeyboardAvoidingView>
+                    <View style={styles.inputContainer}>
+                        <Text style={styles.inputHeader}>Email:</Text>
+                        <TextInput
+                            style={styles.input}
+                            value={email}
+                            onChangeText={setEmail}
+                            returnKeyType="done"
+                        />
+                        <TouchableOpacity onPress={handleForgot} >
+                            <View style={styles.button}>
+                                <Text style={styles.buttonText}>Send reset password email</Text>
+                            </View>
+                        </TouchableOpacity>
+                        <TouchableOpacity onPress={handleNavigateToLogin} >
+                            <View style={styles.button}>
+                                <Text style={styles.buttonText}>Back to login</Text>
+                            </View>
+                        </TouchableOpacity>
+                    </View>
+                </View>
+            </TouchableWithoutFeedback>
+        </View>
     );
 }
+
+
+const { width } = Dimensions.get('window');
+const styles = StyleSheet.create({
+    button:{
+        alignItems: 'center',
+        backgroundColor: '#7a7a7aff',
+        borderRadius: 10,
+        marginTop: 4,
+        marginBottom: 4,
+    },
+    buttonText:{
+        textAlign: 'center',
+        padding: 10,
+        color: 'white',
+    },
+    container:{
+        flexGrow: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+    },
+    innerContainer:{
+        width: '100%',
+        alignItems: 'center',
+        paddingBottom: 50,
+    },
+    imageContainer:{
+        alignItems: 'center',
+        marginBottom: 80,
+    },
+    image:{
+        width: width * 0.8,
+        height: (width * 0.8) * 0.5,
+        resizeMode: 'contain',
+    },
+    inputContainer:{
+        width: '80%',
+        marginTop: -30,
+    },
+    input:{
+        width: '100%',
+        padding: 10,
+        marginBottom: 10,
+        borderWidth: 1,
+        borderColor: '#000000ff',
+        borderRadius: 10,
+        backgroundColor: '#ffffffff',
+    },
+    inputHeader:{
+        fontSize: 18,
+    }
+});
