@@ -1,8 +1,6 @@
 import { useNavigation } from "@react-navigation/native";
 import React, { useEffect, useState } from 'react';
-import { FlatList, Text, TouchableOpacity, View } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
-import styles from './../../assets/images/Styles';
+import { FlatList, Text, TouchableOpacity, View, StyleSheet } from 'react-native';
 import database, { Quiz } from "./../../DatabaseController";
 import { SegmentedButtons } from 'react-native-paper';
 
@@ -33,9 +31,9 @@ export default function HomeScreen() {
     };
 
     const Item = ({ quiz, onPress }: ItemProps) => (
-        <TouchableOpacity onPress={onPress} style={styles.loginScreen_button}>
+        <TouchableOpacity onPress={onPress} style={styles.quizItem}>
             <View>
-                <Text style={styles.loginScreen_buttonText}>{quiz.name}</Text>
+                <Text style={styles.buttonText}>{quiz.name}</Text>
             </View>
         </TouchableOpacity>
     );
@@ -46,7 +44,6 @@ export default function HomeScreen() {
     }
 
     const handleOpenQuiz = (quiz: Quiz) => {
-        alert('Opening quizID: ' + quiz.id + ' with name: ' + quiz.name);
         navigation.navigate('QuizInfoScreen' as never, { passedQuiz: quiz } as never);
     };
 
@@ -59,13 +56,13 @@ export default function HomeScreen() {
     }, [selector, myQuizzes, sharedQuizzes]);
 
     return (
-        <SafeAreaView>
+        <View style={styles.container}>
             <TouchableOpacity onPress={handleCreateQuiz} >
-                <View style={styles.loginScreen_button}>
-                    <Text style={styles.loginScreen_buttonText}>Create Quiz</Text>
+                <View style={styles.button}>
+                    <Text style={styles.buttonText}>Create Quiz</Text>
                 </View>
             </TouchableOpacity>
-            <SafeAreaView>
+            <View style={styles.quizContainer}>
                 <SegmentedButtons
                     value={selector}
                     onValueChange={setSelector}
@@ -83,7 +80,43 @@ export default function HomeScreen() {
                         />
                     )}
                 />
-            </SafeAreaView>
-        </SafeAreaView>
+            </View>
+        </View>
     );
 }
+
+
+const styles = StyleSheet.create({
+    container:{
+        flex: 1,
+        marginLeft: 20,
+        marginRight: 20,
+        marginTop: 10,
+    },
+    quizContainer:{
+        flex: 1,
+        marginTop: 30,
+    },
+    button:{
+        alignItems: 'center',
+        backgroundColor: '#7a7a7aff',
+        borderRadius: 10,
+        marginTop: 4,
+        marginBottom: 4,
+        borderWidth: 2,
+    },
+    buttonText:{
+        textAlign: 'center',
+        padding: 10,
+        color: 'white',
+        fontSize: 20,
+    },
+    quizItem:{
+        alignItems: 'center',
+        backgroundColor: '#7a7a7aff',
+        borderWidth: 1,
+        marginTop: 2,
+        marginLeft: 20,
+        marginRight: 20,
+    },
+});

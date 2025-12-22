@@ -7,6 +7,7 @@ export interface Quiz {
     name: string;
     userID: string;
     visibility: string;
+    description: string;
 }
 
 class DatabaseController {
@@ -21,7 +22,8 @@ class DatabaseController {
                     id INTEGER PRIMARY KEY AUTOINCREMENT,
                     name TEXT NOT NULL,
                     userID TEXT NOT NULL,
-                    visibility TEXT NOT NULL
+                    visibility TEXT NOT NULL,
+                    description TEXT
                 );
             `);
         } catch (error) {
@@ -49,12 +51,12 @@ class DatabaseController {
         }
     }
 
-    public async createQuiz(name: string, userID: number, visibility: string): Promise<Quiz> {
-        const insertSQL = `INSERT INTO quiz (name, userID, visibility) VALUES (?, ?, ?)`;
+    public async createQuiz(name: string, userID: number, visibility: string, description: string): Promise<Quiz> {
+        const insertSQL = `INSERT INTO quiz (name, userID, visibility, description) VALUES (?, ?, ?, ?)`;
 
-        await this.execute(insertSQL, [name, userID, visibility]);
+        await this.execute(insertSQL, [name, userID, visibility, description]);
 
-        const selectSQL = `SELECT id, name, userID, visibility FROM quiz WHERE id = last_insert_rowid()`;
+        const selectSQL = `SELECT id, name, userID, visibility, description FROM quiz WHERE id = last_insert_rowid()`;
 
         const [quiz] = await this.select<Quiz>(selectSQL);
         if (!quiz) {
@@ -66,6 +68,11 @@ class DatabaseController {
     public getQuizzes(): Promise<Quiz[]> {
         const sql = `SELECT * FROM quiz`;
         return this.select<Quiz>(sql);
+    }
+
+    public deleteQuiz(quizID: number): Promise<boolean> {
+        const sql = `DELETE FROM quiz WHERE id = ?`;
+        return this.execute(sql, [quizID]);
     }
 
 
