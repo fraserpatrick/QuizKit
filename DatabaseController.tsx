@@ -6,6 +6,7 @@ export interface Quiz {
     id?: number;
     name: string;
     userID: string;
+    visibility: string;
 }
 
 class DatabaseController {
@@ -19,7 +20,8 @@ class DatabaseController {
                 CREATE TABLE IF NOT EXISTS quiz (
                     id INTEGER PRIMARY KEY AUTOINCREMENT,
                     name TEXT NOT NULL,
-                    userID TEXT NOT NULL
+                    userID TEXT NOT NULL,
+                    visibility TEXT NOT NULL
                 );
             `);
         } catch (error) {
@@ -47,21 +49,18 @@ class DatabaseController {
         }
     }
 
-    public async createQuiz(name: string, userID: number): Promise<number> {
-        const sql = `INSERT INTO quiz (name, userID) VALUES (?, ?)`;
+    public async createQuiz(name: string, userID: number, visibility: string): Promise<Quiz> {
+        const insertSQL = `INSERT INTO quiz (name, userID, visibility) VALUES (?, ?, ?)`;
 
-        try {
-            const result = await db.runAsync(sql, [name, userID]);
+        await this.execute(insertSQL, [name, userID, visibility]);
 
-            const newId = (result as any).lastInsertRowId;
-            if (!newId && newId !== 0) {
-                throw new Error('Failed to get new quiz ID');
-            }
-            return newId;
-        } catch (error) {
-            console.error('createQuiz error:', error);
-            throw error;
+        const selectSQL = `SELECT id, name, userID, visibility FROM quiz WHERE id = last_insert_rowid()`;
+
+        const [quiz] = await this.select<Quiz>(selectSQL);
+        if (!quiz) {
+            throw new Error('Failed to retrieve the newly created quiz');
         }
+        return quiz;
     }
 
     public getQuizzes(): Promise<Quiz[]> {

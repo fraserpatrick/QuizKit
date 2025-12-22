@@ -4,14 +4,19 @@ import { FlatList, Text, TouchableOpacity, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import styles from './../../assets/images/Styles';
 import database, { Quiz } from "./../../DatabaseController";
+import { SegmentedButtons } from 'react-native-paper';
 
 export default function HomeScreen() {
     const navigation = useNavigation();
+    const [myQuizzes, setMyQuizzes] = useState<Quiz[]>([]);
+    const [sharedQuizzes, setSharedQuizzes] = useState<Quiz[]>([]);
     const [quizzes, setQuizzes] = useState<Quiz[]>([]);
+    const [selector, setSelector] = useState('myQuizzes');
 
     const loadQuizzes = async () => {
         try {
-            setQuizzes(await database.getQuizzes());
+            const loadingQuizzes = await database.getQuizzes();
+            setMyQuizzes(loadingQuizzes);
         } catch (error) {
             console.error('Error loading quizzes:', error);
         }
@@ -42,8 +47,16 @@ export default function HomeScreen() {
 
     const handleOpenQuiz = (quiz: Quiz) => {
         alert('Opening quizID: ' + quiz.id + ' with name: ' + quiz.name);
-        navigation.navigate('QuizEditor' as never, { passedQuizID: quiz.id, quizName: quiz.name } as never);
+        navigation.navigate('QuizInfoScreen' as never, { passedQuiz: quiz } as never);
     };
+
+    useEffect(() => {
+        if (selector === 'myQuizzes') {
+            setQuizzes(myQuizzes);
+        } else {
+            setQuizzes(sharedQuizzes);
+        }
+    }, [selector, myQuizzes, sharedQuizzes]);
 
     return (
         <SafeAreaView>
@@ -53,6 +66,13 @@ export default function HomeScreen() {
                 </View>
             </TouchableOpacity>
             <SafeAreaView>
+                <SegmentedButtons
+                    value={selector}
+                    onValueChange={setSelector}
+                    buttons={[
+                        { value: 'myQuizzes', label: 'My Quizzes'}, { value: 'sharedQuizzes', label: 'Shared Quizzes'},        
+                    ]}
+                />
                 <FlatList
                     data={quizzes}
                     keyExtractor={(item) => String(item.id)}

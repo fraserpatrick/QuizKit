@@ -35,7 +35,7 @@ export default function HomeScreen() {
             console.log("No quizzes found");
         } else {
             quizzes.forEach((quiz) => {
-                console.log("ID:" + quiz.id + "  Name: " + quiz.name + "   UserID: " + quiz.userID);
+                console.log("ID:" + quiz.id + "  Name: " + quiz.name + "   UserID: " + quiz.userID + "   Visibility: " + quiz.visibility);
             });
         }
     };

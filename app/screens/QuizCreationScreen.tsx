@@ -3,12 +3,14 @@ import { useState } from 'react';
 import { Image, Keyboard, KeyboardAvoidingView, Platform, ScrollView, Text, TextInput, TouchableOpacity, TouchableWithoutFeedback, View } from 'react-native';
 import styles from './../../assets/images/Styles';
 import database from './../../DatabaseController';
+import { SegmentedButtons } from 'react-native-paper';
 
 export default function QuizCreationScreen() {
     const navigation = useNavigation();
     const loggedInUsername = 0;
 
     const [quizName, setQuizName] = useState('');
+    const [visibility, setVisibility] = useState('Private');
 
     const handleCreateQuiz = async  () => {
         if (quizName.trim() === '') {
@@ -17,12 +19,12 @@ export default function QuizCreationScreen() {
         }
 
         try {
-            const newQuizID = await database.createQuiz(quizName.trim(), loggedInUsername);
+            const newQuiz = await database.createQuiz(quizName.trim(), loggedInUsername, visibility);
             alert('Creating quiz with name: ' + quizName.trim());
             console.log('Creating quiz with name: ' + quizName.trim());
             navigation.reset({index: 1, routes: [
                 {name: 'Home' as never} as never,
-                {name: 'QuizEditor' as never, params: { passedQuizID: newQuizID, quizName: quizName.trim() } as never,} as never,
+                {name: 'QuizEditor' as never, params: { passedQuiz: newQuiz } as never,} as never,
             ],} as never);
         }
         catch (error) {
@@ -50,6 +52,14 @@ export default function QuizCreationScreen() {
                                 value={quizName}
                                 onChangeText={setQuizName}
                                 returnKeyType="done"
+                            />
+                            <Text style={styles.loginScreen_inputHeader}>Visibility:</Text>
+                            <SegmentedButtons
+                                value={visibility}
+                                onValueChange={setVisibility}
+                                buttons={[
+                                    { value: 'Private', label: 'Private'}, { value: 'Public', label: 'Public'},        
+                                ]}
                             />
                             <TouchableOpacity onPress={handleCreateQuiz} >
                                 <View style={styles.loginScreen_button}>
