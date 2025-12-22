@@ -1,6 +1,6 @@
 import { useNavigation } from '@react-navigation/native';
 import { useState } from 'react';
-import { Keyboard, StyleSheet, Text, TextInput, TouchableOpacity, TouchableWithoutFeedback, View } from 'react-native';
+import { Alert, Keyboard, StyleSheet, Text, TextInput, TouchableOpacity, TouchableWithoutFeedback, View } from 'react-native';
 import database from '@/DatabaseController';
 import { SegmentedButtons } from 'react-native-paper';
 
@@ -12,12 +12,19 @@ export default function QuizCreationScreen() {
     const [description, setDescription] = useState('');
     const [visibility, setVisibility] = useState('Private');
 
-    const handleCreateQuiz = async  () => {
+    const handleCreateQuiz = () => {
         if (name.trim() === '') {
-            alert('Please enter a valid quiz name.');
+            alert('Please enter a valid quiz title.');
             return;
         }
 
+        Alert.alert('Create quiz?', 'Are you sure you want to create this quiz?', [
+            {text: 'No, go back', style: 'cancel',},
+            {text: 'Yes, create quiz', onPress: createQuiz , style: 'default',},
+        ]);
+    }
+
+    const createQuiz = async () => {
         try {
             const newQuiz = await database.createQuiz(name.trim(), loggedInUsername, visibility, description.trim());
             alert('Creating quiz with name: ' + name.trim());
