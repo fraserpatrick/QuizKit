@@ -42,7 +42,7 @@ export default function QuizInfoScreen({route}: any) {
         <View style={styles.container}>
             <View style={styles.infoContainer}>
                 <Text style={styles.header}>Title: {passedQuiz.name}</Text>
-                <Text style={styles.header}>Owner:</Text>
+                <Text style={styles.header}>Owner: {passedQuiz.userID}</Text>
                 <Text style={styles.header}>Description: {passedQuiz.description}</Text>
                 <Text style={styles.header}>Visibility: {passedQuiz.visibility}</Text>
             </View>

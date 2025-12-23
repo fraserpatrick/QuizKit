@@ -10,6 +10,12 @@ export interface Quiz {
     description: string;
 }
 
+export interface User {
+    id?: number;
+    email: string;
+    username: string;
+}
+
 class DatabaseController {
     constructor() {
         this.initialize();
@@ -24,6 +30,17 @@ class DatabaseController {
                     userID TEXT NOT NULL,
                     visibility TEXT NOT NULL,
                     description TEXT
+                );
+            `);
+        } catch (error) {
+            console.error('Database initialization error:', error);
+        }
+        try {
+            await db.execAsync(`
+                CREATE TABLE IF NOT EXISTS user (
+                    id INTEGER PRIMARY KEY AUTOINCREMENT,
+                    email TEXT NOT NULL,
+                    username TEXT NOT NULL
                 );
             `);
         } catch (error) {
@@ -51,7 +68,7 @@ class DatabaseController {
         }
     }
 
-    public async createQuiz(name: string, userID: number, visibility: string, description: string): Promise<Quiz> {
+    public async createQuiz(name: string, userID: string, visibility: string, description: string): Promise<Quiz> {
         const insertSQL = `INSERT INTO quiz (name, userID, visibility, description) VALUES (?, ?, ?, ?)`;
 
         await this.execute(insertSQL, [name, userID, visibility, description]);
@@ -69,15 +86,41 @@ class DatabaseController {
         const sql = `SELECT * FROM quiz`;
         return this.select<Quiz>(sql);
     }
+    public getMyQuizzes(username: string): Promise<Quiz[]> {
+        const sql = `SELECT * FROM quiz WHERE userID = ?`;
+        return this.select<Quiz>(sql, [username]);
+    }
+    
+    public getSharedQuizzes(username: string): Promise<Quiz[]> {
+        const sql = `SELECT * FROM quiz WHERE visibility = 'Public' AND userID != ?`;
+        return this.select<Quiz>(sql, [username]);
+    }
 
     public deleteQuiz(quizID: number): Promise<boolean> {
         const sql = `DELETE FROM quiz WHERE id = ?`;
         return this.execute(sql, [quizID]);
     }
 
+    public createUser(email: string, username: string): Promise<boolean> {
+        const insertSQL = `INSERT INTO user (email, username) VALUES (?, ?)`;
+        return this.execute(insertSQL, [email, username])
+    }
+
+    public getUser(email: string): Promise<User[]> {
+        const sql = `SELECT * FROM user WHERE email = ?`;
+        return this.select<User>(sql, [email]);
+    }
+
+    public getUsers(): Promise<User[]> {
+        const sql = `SELECT * FROM user`;
+        return this.select<User>(sql);
+    }
+
 
     public async databaseReset(): Promise<boolean>{
         const dropQuizTable = `DROP TABLE IF EXISTS quiz;`;
+        const dropUserTable = `DROP TABLE IF EXISTS user;`;
+        await this.execute(dropUserTable);
         return this.execute(dropQuizTable);
     }
 }

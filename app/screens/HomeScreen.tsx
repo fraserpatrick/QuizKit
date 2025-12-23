@@ -3,26 +3,35 @@ import React, { useEffect, useState } from 'react';
 import { FlatList, Text, TouchableOpacity, View, StyleSheet } from 'react-native';
 import database, { Quiz } from "@/DatabaseController";
 import { SegmentedButtons } from 'react-native-paper';
+import { useAuth } from "../AuthContext";
 
 export default function HomeScreen() {
     const navigation = useNavigation();
+    const {user} = useAuth();
+
     const [myQuizzes, setMyQuizzes] = useState<Quiz[]>([]);
     const [sharedQuizzes, setSharedQuizzes] = useState<Quiz[]>([]);
     const [quizzes, setQuizzes] = useState<Quiz[]>([]);
     const [selector, setSelector] = useState('myQuizzes');
 
-    const loadQuizzes = async () => {
-        try {
-            const loadingQuizzes = await database.getQuizzes();
-            setMyQuizzes(loadingQuizzes);
-        } catch (error) {
-            console.error('Error loading quizzes:', error);
-        }
-    };
+    const loadUserAndQuizzes = async () => {
+    try {
+        const loggedInUser = await database.getUser(user?.email || '');
+        const username = loggedInUser[0].username;
 
-    useEffect(() => {
-        loadQuizzes();
-    }, []);
+        const myQuizzes = await database.getMyQuizzes(username);
+        setMyQuizzes(myQuizzes);
+
+        const sharedQuizzes = await database.getSharedQuizzes(username);
+        setSharedQuizzes(sharedQuizzes);
+    } catch (error) {
+        console.error('Error loading data:', error);
+    }
+};
+
+useEffect(() => {
+    loadUserAndQuizzes();
+}, []);
 
 
     type ItemProps = {

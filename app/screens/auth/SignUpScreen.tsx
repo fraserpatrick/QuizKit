@@ -2,17 +2,19 @@ import { useState } from "react";
 import { Image, Text, StyleSheet, TouchableWithoutFeedback, Keyboard, View, TextInput, TouchableOpacity, Dimensions } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import { useAuth } from "@/app/AuthContext";
+import database from "@/DatabaseController";
 
 export default function SignUpScreen() {
     const navigation = useNavigation();
     const {signUp} = useAuth();
 
+    const [username, setUsername] = useState('');
     const [email, setEmail] = useState('');
     const [password1, setPassword1] = useState('');
     const [password2, setPassword2] = useState('');
 
     const handleSignUp = async () => {
-            if (!email.trim() || !password1.trim() || !password2.trim()) {
+            if (!username.trim() || !email.trim() || !password1.trim() || !password2.trim()) {
                 alert('Please fill in all fields');
                 return;
             }
@@ -37,6 +39,16 @@ export default function SignUpScreen() {
                 setPassword1('');
                 setPassword2('');
             }
+            try {
+                await database.createUser(email, username);
+            }
+            catch (error) {
+                console.error('Sign up failed:', error);
+                alert('Sign up failed. Please try again.');
+                setEmail('');
+                setPassword1('');
+                setPassword2('');
+            }
         };
 
     const handleNavigateToLogin = () => {
@@ -51,6 +63,13 @@ export default function SignUpScreen() {
                         <Image source={require('./../../../assets/images/icon.png')} style={styles.image} />
                     </View>
                     <View style={styles.inputContainer}>
+                        <Text style={styles.inputHeader}>Username:</Text>
+                        <TextInput
+                            style={styles.input}
+                            value={username}
+                            onChangeText={setUsername}
+                            returnKeyType="next"
+                        />
                         <Text style={styles.inputHeader}>Email:</Text>
                         <TextInput
                             style={styles.input}
@@ -72,7 +91,7 @@ export default function SignUpScreen() {
                             value={password2}
                             onChangeText={setPassword2}
                             secureTextEntry
-                            returnKeyType="next"
+                            returnKeyType="done"
                         />
                         <TouchableOpacity onPress={handleSignUp} >
                             <View style={styles.button}>

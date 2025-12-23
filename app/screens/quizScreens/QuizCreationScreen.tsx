@@ -1,16 +1,30 @@
 import { useNavigation } from '@react-navigation/native';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Alert, Keyboard, StyleSheet, Text, TextInput, TouchableOpacity, TouchableWithoutFeedback, View } from 'react-native';
 import database from '@/DatabaseController';
 import { SegmentedButtons } from 'react-native-paper';
+import { useAuth } from '@/app/AuthContext';
 
 export default function QuizCreationScreen() {
     const navigation = useNavigation();
-    const loggedInUsername = 0;
+    const {user} = useAuth();
 
+    const [username, setUsername] = useState('');
     const [name, setName] = useState('');
     const [description, setDescription] = useState('');
     const [visibility, setVisibility] = useState('Private');
+
+    useEffect(() => {
+        const loadUser = async () => {
+            try {
+                const loggedInUser = await database.getUser(user?.email || '');
+                setUsername(loggedInUser[0].username);
+            } catch (error) {
+                console.error('Error loading user:', error);
+            }
+        };
+        loadUser();
+    }, []);
 
     const handleCreateQuiz = () => {
         if (name.trim() === '') {
@@ -26,7 +40,7 @@ export default function QuizCreationScreen() {
 
     const createQuiz = async () => {
         try {
-            const newQuiz = await database.createQuiz(name.trim(), loggedInUsername, visibility, description.trim());
+            const newQuiz = await database.createQuiz(name.trim(), username, visibility, description.trim());
             alert('Creating quiz with name: ' + name.trim());
             console.log('Creating quiz with name: ' + name.trim());
 
@@ -57,7 +71,6 @@ export default function QuizCreationScreen() {
                         style={styles.bigInput}
                         value={description}
                         onChangeText={setDescription}
-                        returnKeyType="done"
                         multiline
                         textAlignVertical="top"
                     />
