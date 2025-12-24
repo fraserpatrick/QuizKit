@@ -67,7 +67,8 @@ export default function ProfileScreen({route}: any) {
 
     const [quizzes, setQuizzes] = useState<Quiz[]>([]);
     const [user, setUser] = useState<User>({email: '', username: '', totalQuizPlays: 0, totalQuestionsAnswered: 0, TotalQuestionsCorrect: 0});
-
+    const ownProfile = passedUsername === username;
+    const [isEditing, setIsEditing] = useState(false);
 
     useEffect(() => {
         const loadQuizzes = async () => {
@@ -86,7 +87,7 @@ export default function ProfileScreen({route}: any) {
                 console.error('Error loading user:', error);
             }
         };
-
+        loadQuizzes();
         loadUser();
     }, []);
 
@@ -107,37 +108,55 @@ export default function ProfileScreen({route}: any) {
         navigation.navigate('QuizInfoScreen' as never, { passedQuiz: quiz } as never);
     };
 
-    return (
-        <View style={styles.container}>
-            <Text style={styles.usernameHeader}>{passedUsername}'s Profile</Text>
-            <View style={styles.statsContainer}>
-                <Text style={styles.containerHeader}>Game Statistics</Text>
-                <Text>Total Quizzes: {user.totalQuizPlays}</Text>
-                <Text>Total Questions Answered: {user.totalQuestionsAnswered}</Text>
-                <Text>Total Questions Correct: {user.TotalQuestionsCorrect}</Text>
+    if (!isEditing) {
+        return (
+            <View style={styles.container}>
+                <Text style={styles.usernameHeader}>{passedUsername}'s Profile</Text>
+                <View style={styles.statsContainer}>
+                    <Text style={styles.containerHeader}>Game Statistics</Text>
+                    <Text>Total Quizzes: {user.totalQuizPlays}</Text>
+                    <Text>Total Questions Answered: {user.totalQuestionsAnswered}</Text>
+                    <Text>Total Questions Correct: {user.TotalQuestionsCorrect}</Text>
+                </View>
+                <View style={styles.quizContainer}>
+                    <Text style={styles.containerHeader}>Owned Quizzes</Text>
+                    <FlatList
+                        data={quizzes}
+                        keyExtractor={(item) => String(item.id)}
+                        renderItem={({ item }) => (
+                            <Item
+                                quiz={item}
+                                onPress={() => handleOpenQuiz(item)}
+                            />
+                        )}
+                    />
+                </View>
+                {ownProfile && (
+                    <View style={styles.buttonContainer}>
+                        <TouchableOpacity onPress={() => setIsEditing(true)} >
+                            <View style={styles.button}>
+                                <Text style={styles.buttonText}>Edit Profile</Text>
+                            </View>
+                        </TouchableOpacity>
+                    </View>
+                )}
             </View>
-            <View style={styles.quizContainer}>
-                <Text style={styles.containerHeader}>Owned Quizzes</Text>
-                <FlatList
-                    data={quizzes}
-                    keyExtractor={(item) => String(item.id)}
-                    renderItem={({ item }) => (
-                        <Item
-                            quiz={item}
-                            onPress={() => handleOpenQuiz(item)}
-                        />
-                    )}
-                />
+        );
+    }
+    else {
+        return (
+            <View style={styles.container}>
+                <Text>Editing Profile for {passedUsername}</Text>
+                <View>
+                    <Button title="Reset Database" onPress={resetDatabase} />
+                    <Button title="List Database" onPress={listDatabase} />
+                </View>
+                <Button title="Save Changes" onPress={() => setIsEditing(false)} />
             </View>
-            <View >
-                <Text>{'\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n'}</Text>
-                <Button title="Reset Database" onPress={resetDatabase} />
-                <Button title="List Database" onPress={listDatabase} />
-                <Text>Logged in as: {username}</Text>
-            </View>
-        </View>
-    );
+        );
+    }
 }
+
 
 const styles = StyleSheet.create({
     container:{
@@ -148,17 +167,20 @@ const styles = StyleSheet.create({
         fontSize: 32,
         textAlign: 'center',
         marginBottom: 10,
+        flex: 0.05,
     },
     statsContainer:{
         borderWidth: 2,
         marginBottom: 10,
         padding: 10,
         backgroundColor: '#e0e0e0ff',
+        flex: 0.2,
     },
     quizContainer:{
         borderWidth: 2,
         backgroundColor: '#e0e0e0ff',
         padding: 10,
+        flex: 0.6,
     },
     containerHeader:{
         fontSize: 20,
@@ -179,5 +201,22 @@ const styles = StyleSheet.create({
         padding: 5,
         color: 'white',
         fontSize: 16,
+    },
+    buttonContainer:{
+        flex: 0.1,
+    },
+    button:{
+        alignItems: 'center',
+        backgroundColor: '#7a7a7aff',
+        borderRadius: 10,
+        marginTop: 4,
+        marginBottom: 4,
+        borderWidth: 2,
+    },
+    buttonText:{
+        textAlign: 'center',
+        padding: 10,
+        color: 'white',
+        fontSize: 20,
     },
 });
