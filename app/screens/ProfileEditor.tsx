@@ -54,6 +54,8 @@ export default function ProfileEditor() {
     const resetDatabase = async () => {
         try {
             await database.databaseReset();
+            TEMPsetQuizzes([]);
+            TEMPsetUsers([]);
             alert('Database has been reset.');
             console.log('Database reset successfully.');
         } catch (error) {
@@ -70,27 +72,42 @@ export default function ProfileEditor() {
     const [passwordInput2, setPasswordInput2] = useState('');
 
     const handleProfileSave = async () => {
-        if (passwordInput1.trim() !== passwordInput2.trim()) {
-            alert('Passwords do not match.');
-            return;
-        }
-
         if (usernameInput.trim() === '') {
             alert('Username cannot be empty.');
+            setUsernameInput(username!);
             return;
         }
 
-        if (usernameInput !== username) {
-            const existingUsers = await database.getUserByUsername(usernameInput);
+        if (passwordInput1.trim() !== passwordInput2.trim()) {
+            alert('Passwords do not match.');
+            setPasswordInput1('');
+            setPasswordInput2('');
+            return;
+        }
+        if (passwordInput1.trim().length < 6 && passwordInput1.trim() !== '') {
+            alert('Password must be at least 6 characters long.');
+            setPasswordInput1('');
+            setPasswordInput2('');
+            return;
+        }
+        if (passwordInput1.trim().toLowerCase() === passwordInput1.trim() && passwordInput1.trim() !== '') {
+            alert('Password must contain at least one uppercase letter.');
+            setPasswordInput1('');
+            setPasswordInput2('');
+            return;
+        }
+
+        if (usernameInput.trim().toLowerCase() !== username) {
+            const existingUsers = await database.getUserByUsername(usernameInput.trim().toLowerCase());
             if (existingUsers.length > 0) {
                 alert('Username is already taken.');
                 return;
             }
 
             try {
-                await database.updateUsername(user!.email!, usernameInput);
-                await database.updateQuizToNewUsername(username!, usernameInput);
-                changeUsername(usernameInput);
+                await database.updateUsername(user!.email!, usernameInput.trim().toLowerCase());
+                await database.updateQuizToNewUsername(username!, usernameInput.trim().toLowerCase());
+                changeUsername(usernameInput.trim().toLowerCase());
                 alert('Username updated successfully.');
                 navigation.goBack();
             } catch (error) {
@@ -109,6 +126,8 @@ export default function ProfileEditor() {
                 alert('Failed to update password.');
             }
         }
+
+        navigation.goBack();
     };
 
 

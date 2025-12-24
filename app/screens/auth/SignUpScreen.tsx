@@ -7,7 +7,7 @@ import { MaterialCommunityIcons } from "@expo/vector-icons";
 
 export default function SignUpScreen() {
     const navigation = useNavigation();
-    const {signUp} = useAuth();
+    const {signUp, changeUsername} = useAuth();
 
     const [username, setUsername] = useState('');
     const [email, setEmail] = useState('');
@@ -17,42 +17,55 @@ export default function SignUpScreen() {
     const [showPassword2, setShowPassword2] = useState(false);
 
     const handleSignUp = async () => {
-            if (!username.trim() || !email.trim() || !password1.trim() || !password2.trim()) {
-                alert('Please fill in all fields');
-                return;
-            }
+        if (!username.trim() || !email.trim() || !password1.trim() || !password2.trim()) {
+            alert('Please fill in all fields');
+            return;
+        }
 
-            if (password1 !== password2) {
-                alert('Passwords do not match');
-                setPassword1('');
-                setPassword2('');
-                return;
-            }
+        if (password1 !== password2) {
+            alert('Passwords do not match');
+            setPassword1('');
+            setPassword2('');
+            return;
+        }
 
-            console.log('Signing up with:', email);
+        if (password1.trim().length < 6) {
+            alert('Password must be at least 6 characters long.');
+            setPassword1('');
+            setPassword2('');
+            return;
+        }
 
-            try {
-                const newUser = await signUp(email, password1);
-                console.log('User account created & signed in!', newUser.email);
-            }
-            catch (error) {
-                console.error('Sign up failed:', error);
-                alert('Sign up failed. Please try again.');
-                setEmail('');
-                setPassword1('');
-                setPassword2('');
-            }
-            try {
-                await database.createUser(email, username);
-            }
-            catch (error) {
-                console.error('Sign up failed:', error);
-                alert('Sign up failed. Please try again.');
-                setEmail('');
-                setPassword1('');
-                setPassword2('');
-            }
-        };
+        if (password1.trim().toLowerCase() === password1.trim()) {
+            alert('Password must contain at least one uppercase letter.');
+            setPassword1('');
+            setPassword2('');
+            return;
+        }
+
+        try {
+            const newUser = await signUp(email.trim().toLowerCase(), password1.trim());
+            console.log('User account created & signed in!', newUser.email);
+            changeUsername(username.trim().toLowerCase());
+        }
+        catch (error) {
+            console.error('Sign up failed:', error);
+            alert('Sign up failed. Please try again.');
+            setEmail('');
+            setPassword1('');
+            setPassword2('');
+        }
+        try {
+            await database.createUser(email.trim().toLowerCase(), username.trim().toLowerCase());
+        }
+        catch (error) {
+            console.error('Sign up failed:', error);
+            alert('Sign up failed. Please try again.');
+            setEmail('');
+            setPassword1('');
+            setPassword2('');
+        }
+    };
 
     const handleNavigateToLogin = () => {
         navigation.navigate('Login' as never);
