@@ -3,6 +3,7 @@ import { View, Text, Button, TouchableOpacity, TextInput, StyleSheet, Keyboard, 
 import { useNavigation } from '@react-navigation/native';
 import { useAuth } from '@/app/AuthContext';
 import database, { Quiz, User } from '@/DatabaseController';
+import { MaterialCommunityIcons } from '@expo/vector-icons';
 
 export default function ProfileEditor() {
     const { username, user, changeUsername, changePassword } = useAuth();
@@ -70,6 +71,8 @@ export default function ProfileEditor() {
     const [usernameInput, setUsernameInput] = useState(username!);
     const [passwordInput1, setPasswordInput1] = useState('');
     const [passwordInput2, setPasswordInput2] = useState('');
+    const [showPassword1, setShowPassword1] = useState(false);
+    const [showPassword2, setShowPassword2] = useState(false);
 
     const handleProfileSave = async () => {
         if (usernameInput.trim() === '') {
@@ -130,6 +133,13 @@ export default function ProfileEditor() {
         navigation.goBack();
     };
 
+    const toggleShowPassword1 = () => {
+        setShowPassword1(!showPassword1);
+    };
+    const toggleShowPassword2 = () => {
+        setShowPassword2(!showPassword2);
+    };
+
 
     return (
         <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
@@ -141,23 +151,40 @@ export default function ProfileEditor() {
                     onChangeText={setUsernameInput}
                     returnKeyType="done"
                 />
-
                 <Text style={styles.inputHeader}>New Password:</Text>
-                <TextInput
-                    style={styles.input}
-                    value={passwordInput1}
-                    onChangeText={setPasswordInput1}
-                    secureTextEntry
-                    returnKeyType="done"
-                />
+                <View style={styles.passwordContainer}>
+                    <TextInput
+                        style={styles.passwordInput}
+                        value={passwordInput1}
+                        onChangeText={setPasswordInput1}
+                        secureTextEntry={!showPassword1}
+                        returnKeyType="next"
+                    />
+                    <TouchableOpacity style={styles.iconButton} onPress={toggleShowPassword1}>
+                        <MaterialCommunityIcons
+                            name={showPassword1 ? 'eye-off' : 'eye'}
+                            size={24}
+                            color="#aaa"
+                        />
+                    </TouchableOpacity>
+                </View>
                 <Text style={styles.inputHeader}>Repeat New Password:</Text>
-                <TextInput
-                    style={styles.input}
-                    value={passwordInput2}
-                    onChangeText={setPasswordInput2}
-                    secureTextEntry
-                    returnKeyType="done"
-                />
+                <View style={styles.passwordContainer}>
+                    <TextInput
+                        style={styles.passwordInput}
+                        value={passwordInput2}
+                        onChangeText={setPasswordInput2}
+                        secureTextEntry={!showPassword2}
+                        returnKeyType="done"
+                    />
+                    <TouchableOpacity style={styles.iconButton} onPress={toggleShowPassword2}>
+                        <MaterialCommunityIcons
+                            name={showPassword2 ? 'eye-off' : 'eye'}
+                            size={24}
+                            color="#aaa"
+                        />
+                    </TouchableOpacity>
+                </View>
                 <TouchableOpacity onPress={handleProfileSave}>
                     <View style={styles.button}>
                         <Text style={styles.buttonText}>Save Profile Changes</Text>
@@ -204,5 +231,22 @@ const styles = StyleSheet.create({
         padding: 10,
         color: 'white',
         fontSize: 20,
+    },
+    passwordInput:{
+        flex: 1,
+        paddingVertical: 10,
+    },
+    passwordContainer: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        borderWidth: 1,
+        borderColor: '#000000ff',
+        borderRadius: 10,
+        backgroundColor: '#ffffffff',
+        paddingHorizontal: 10,
+        marginBottom: 10,
+    },
+    iconButton: {
+        marginLeft: -50, 
     },
 });
