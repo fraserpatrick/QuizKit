@@ -4,11 +4,13 @@ import QuizCreationScreen from '../screens/quizScreens/QuizCreationScreen';
 import QuizEditor from '../screens/quizScreens/QuizEditor';
 import ProfileScreen from '../screens/ProfileScreen';
 import QuizInfoScreen from '../screens/quizScreens/QuizInfoScreen';
-import { Button } from 'react-native';
+import { Alert, Button } from 'react-native';
+import { useAuth } from '@/app/AuthContext';
 
 const Stack = createNativeStackNavigator();
 
 export default function AppNav() {
+    const { logout } = useAuth();
 
     const homeScreenOptions = ({navigation}) => ({
         title: 'QuizKit',
@@ -16,6 +18,19 @@ export default function AppNav() {
             <Button title="Profile" onPress={() => navigation.navigate('ProfileScreen' as never)} />
         )
     });
+    
+    const profileScreenOptions = () => ({
+        headerRight: () => (
+            <Button title="Logout" onPress={handleLogout} />
+        )
+    });
+
+    const handleLogout = () => Alert.alert(
+        'Logout', 'Are you sure you want to logout?', [
+            {text: 'No, stay logged in', style: 'cancel',},
+            {text: 'Yes, logout', onPress: () => logout(), style: 'destructive',},
+        ]
+    );
 
 
     return (
@@ -24,7 +39,7 @@ export default function AppNav() {
             <Stack.Screen name="QuizCreationScreen" component={QuizCreationScreen} />
             <Stack.Screen name="QuizInfoScreen" component={QuizInfoScreen} />
             <Stack.Screen name="QuizEditor" component={QuizEditor} />
-            <Stack.Screen name="ProfileScreen" component={ProfileScreen} />
+            <Stack.Screen name="ProfileScreen" component={ProfileScreen} options={profileScreenOptions} />
         </Stack.Navigator>
     );
 }
