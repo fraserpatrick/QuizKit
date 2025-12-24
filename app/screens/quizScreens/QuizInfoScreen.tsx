@@ -46,7 +46,11 @@ export default function QuizInfoScreen({route}: any) {
             <View style={ownedByUser ? {flex: 0.74} : {flex: 0.9}}>
                 <Text style={styles.header}>Title: {passedQuiz.name}</Text>
                 {!ownedByUser && (
-                    <Text style={styles.header}>Owner: {passedQuiz.userID}</Text>
+                    <Text style={styles.header}>Owner:
+                        <TouchableOpacity onPress={() => {navigation.navigate('ProfileScreen' as never, { passedUsername: passedQuiz.userID } as never)}}>
+                            <Text style={styles.inlineButtonText}>{passedQuiz.userID}</Text>
+                        </TouchableOpacity>
+                    </Text>
                 )}
                 <Text style={styles.header}>Description: {passedQuiz.description}</Text>
                 {ownedByUser && (
@@ -105,5 +109,10 @@ const styles = StyleSheet.create({
         padding: 10,
         color: 'white',
         fontSize: 20,
+    },
+    inlineButtonText:{
+        fontSize: 24,
+        textDecorationLine: 'underline',
+        textAlignVertical: 'center',
     },
 });

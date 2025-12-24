@@ -16,7 +16,7 @@ export default function HomeScreen() {
 
     const loadQuizzes = async () => {
         try {
-            const myQuizzes = await database.getMyQuizzes(username!);
+            const myQuizzes = await database.getUsersQuizzes(username!);
             setMyQuizzes(myQuizzes);
             
             const sharedQuizzes = await database.getSharedQuizzes(username!);

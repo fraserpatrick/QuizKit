@@ -86,7 +86,8 @@ class DatabaseController {
         const sql = `SELECT * FROM quiz`;
         return this.select<Quiz>(sql);
     }
-    public getMyQuizzes(username: string): Promise<Quiz[]> {
+
+    public getUsersQuizzes(username: string): Promise<Quiz[]> {
         const sql = `SELECT * FROM quiz WHERE userID = ?`;
         return this.select<Quiz>(sql, [username]);
     }
