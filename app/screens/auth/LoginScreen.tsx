@@ -48,56 +48,54 @@ export default function LoginScreen() {
 
 
     return (
-        <View style={styles.container}>
-            <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-                <View style={styles.innerContainer}>
-                    <View style={styles.imageContainer}>
-                        <Image source={require('./../../../assets/images/icon.png')} style={styles.image} />
-                    </View>
-                    <View style={styles.inputContainer}>
-                        <Text style={styles.inputHeader}>Email:</Text>
-                        <TextInput
-                            style={styles.input}
-                            value={email}
-                            onChangeText={setEmail}
-                            returnKeyType="next"
-                        />
-                        <Text style={styles.inputHeader}>Password:</Text>
-                        <View style={styles.passwordContainer}>
-                            <TextInput
-                                style={styles.passwordInput}
-                                value={password}
-                                onChangeText={setPassword}
-                                secureTextEntry={!showPassword}
-                                returnKeyType="done"
-                            />
-                            <TouchableOpacity style={styles.iconButton} onPress={toggleShowPassword}>
-                                <MaterialCommunityIcons
-                                    name={showPassword ? 'eye-off' : 'eye'}
-                                    size={24}
-                                    color="#aaa"
-                                />
-                            </TouchableOpacity>
-                        </View>
-                        <TouchableOpacity onPress={handleLogin} >
-                            <View style={styles.button}>
-                                <Text style={styles.buttonText}>Login</Text>
-                            </View>
-                        </TouchableOpacity>
-                        <TouchableOpacity onPress={handleForgotPassword} >
-                            <View style={styles.button}>
-                                <Text style={styles.buttonText}>Forgot Password?</Text>
-                            </View>
-                        </TouchableOpacity>
-                        <TouchableOpacity onPress={handleCreateAccount} >
-                            <View style={styles.button}>
-                                <Text style={styles.buttonText}>Don't have an account?</Text>
-                            </View>
-                        </TouchableOpacity>
-                    </View>
+        <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+            <View style={styles.container}>
+                <View style={styles.imageContainer}>
+                    <Image source={require('./../../../assets/images/icon.png')} style={styles.image} />
                 </View>
-            </TouchableWithoutFeedback>
-        </View>
+                <View style={styles.inputContainer}>
+                    <Text style={styles.inputHeader}>Email:</Text>
+                    <TextInput
+                        style={styles.input}
+                        value={email}
+                        onChangeText={setEmail}
+                        returnKeyType="next"
+                    />
+                    <Text style={styles.inputHeader}>Password:</Text>
+                    <View style={styles.passwordContainer}>
+                        <TextInput
+                            style={styles.passwordInput}
+                            value={password}
+                            onChangeText={setPassword}
+                            secureTextEntry={!showPassword}
+                            returnKeyType="done"
+                        />
+                        <TouchableOpacity style={styles.iconButton} onPress={toggleShowPassword}>
+                            <MaterialCommunityIcons
+                                name={showPassword ? 'eye-off' : 'eye'}
+                                size={24}
+                                color="#aaa"
+                            />
+                        </TouchableOpacity>
+                    </View>
+                    <TouchableOpacity onPress={handleLogin} >
+                        <View style={styles.button}>
+                            <Text style={styles.buttonText}>Login</Text>
+                        </View>
+                    </TouchableOpacity>
+                    <TouchableOpacity onPress={handleForgotPassword} >
+                        <View style={styles.button}>
+                            <Text style={styles.buttonText}>Forgot Password?</Text>
+                        </View>
+                    </TouchableOpacity>
+                    <TouchableOpacity onPress={handleCreateAccount} >
+                        <View style={styles.button}>
+                            <Text style={styles.buttonText}>Don't have an account?</Text>
+                        </View>
+                    </TouchableOpacity>
+                </View>
+            </View>
+        </TouchableWithoutFeedback>
     );
 }
 
@@ -120,11 +118,6 @@ const styles = StyleSheet.create({
         flexGrow: 1,
         justifyContent: 'center',
         alignItems: 'center',
-    },
-    innerContainer:{
-        width: '100%',
-        alignItems: 'center',
-        paddingBottom: 50,
     },
     imageContainer:{
         alignItems: 'center',

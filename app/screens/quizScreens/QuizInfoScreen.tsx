@@ -43,7 +43,6 @@ export default function QuizInfoScreen({route}: any) {
 
     return (
         <View style={styles.container}>
-
             <View style={ownedByUser ? {flex: 0.74} : {flex: 0.9}}>
                 <Text style={styles.header}>Title: {passedQuiz.name}</Text>
                 {!ownedByUser && (
@@ -60,20 +59,18 @@ export default function QuizInfoScreen({route}: any) {
                         <Text style={styles.buttonText}>Play quiz</Text>
                     </View>
                 </TouchableOpacity>
-                {ownedByUser && (
-                    <>
-                        <TouchableOpacity onPress={navToEditor} >
-                            <View style={styles.button}>
-                                <Text style={styles.buttonText}>Edit quiz</Text>
-                            </View>
-                        </TouchableOpacity>
-                        <TouchableOpacity onPress={handleQuizDelete} >
-                            <View style={styles.button}>
-                                <Text style={styles.buttonText}>Delete quiz</Text>
-                            </View>
-                        </TouchableOpacity>
-                    </>
-                )}
+                {ownedByUser && (<>
+                    <TouchableOpacity onPress={navToEditor} >
+                        <View style={styles.button}>
+                            <Text style={styles.buttonText}>Edit quiz</Text>
+                        </View>
+                    </TouchableOpacity>
+                    <TouchableOpacity onPress={handleQuizDelete} >
+                        <View style={styles.button}>
+                            <Text style={styles.buttonText}>Delete quiz</Text>
+                        </View>
+                    </TouchableOpacity>
+                </>)}
             </View>
         </View>
     );

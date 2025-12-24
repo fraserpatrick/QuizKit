@@ -34,34 +34,32 @@ export default function ForgotPasswordScreen() {
     }
 
     return (
-        <View style={styles.container}>
-            <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-                <View style={styles.innerContainer}>
-                    <View style={styles.imageContainer}>
-                        <Image source={require('./../../../assets/images/icon.png')} style={styles.image} />
-                    </View>
-                    <View style={styles.inputContainer}>
-                        <Text style={styles.inputHeader}>Email:</Text>
-                        <TextInput
-                            style={styles.input}
-                            value={email}
-                            onChangeText={setEmail}
-                            returnKeyType="done"
-                        />
-                        <TouchableOpacity onPress={handleForgot} >
-                            <View style={styles.button}>
-                                <Text style={styles.buttonText}>Send reset password email</Text>
-                            </View>
-                        </TouchableOpacity>
-                        <TouchableOpacity onPress={handleNavigateToLogin} >
-                            <View style={styles.button}>
-                                <Text style={styles.buttonText}>Back to login</Text>
-                            </View>
-                        </TouchableOpacity>
-                    </View>
+        <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+            <View style={styles.container}>
+                <View style={styles.imageContainer}>
+                    <Image source={require('./../../../assets/images/icon.png')} style={styles.image} />
                 </View>
-            </TouchableWithoutFeedback>
-        </View>
+                <View style={styles.inputContainer}>
+                    <Text style={styles.inputHeader}>Email:</Text>
+                    <TextInput
+                        style={styles.input}
+                        value={email}
+                        onChangeText={setEmail}
+                        returnKeyType="done"
+                    />
+                    <TouchableOpacity onPress={handleForgot} >
+                        <View style={styles.button}>
+                            <Text style={styles.buttonText}>Send reset password email</Text>
+                        </View>
+                    </TouchableOpacity>
+                    <TouchableOpacity onPress={handleNavigateToLogin} >
+                        <View style={styles.button}>
+                            <Text style={styles.buttonText}>Back to login</Text>
+                        </View>
+                    </TouchableOpacity>
+                </View>
+            </View>
+        </TouchableWithoutFeedback>
     );
 }
 
@@ -84,11 +82,6 @@ const styles = StyleSheet.create({
         flexGrow: 1,
         justifyContent: 'center',
         alignItems: 'center',
-    },
-    innerContainer:{
-        width: '100%',
-        alignItems: 'center',
-        paddingBottom: 50,
     },
     imageContainer:{
         alignItems: 'center',
