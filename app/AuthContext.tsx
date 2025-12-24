@@ -46,8 +46,6 @@ export const AuthProvider = ({children} : AuthProviderProps) => {
             const users = await database.getUser(firebaseUser.email);
             if (users.length > 0) {
                 setUsername(users[0].username);
-            } else {
-                setUsername(null);
             }
         } catch (error) {
             console.error('Failed to load username:', error);
@@ -81,7 +79,8 @@ export const AuthProvider = ({children} : AuthProviderProps) => {
         return await auth.currentUser.getIdToken();
     }
 
-    const changeUsername = async (newUsername: string): Promise<void> => {       
+    const changeUsername = async (newUsername: string): Promise<void> => {  
+        console.log('Changing username from:', username, 'to:', newUsername);     
         setUsername(newUsername);
     }
 
