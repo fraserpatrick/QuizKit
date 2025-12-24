@@ -1,10 +1,13 @@
 import { useNavigation } from '@react-navigation/native';
 import { Alert, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import database from '@/DatabaseController';
+import { useAuth } from '@/app/AuthContext';
 
 export default function QuizInfoScreen({route}: any) {
     const navigation = useNavigation();
     const {passedQuiz} = route.params;
+    const { username } = useAuth();
+    const ownedByUser = passedQuiz.userID === username;
 
 
     const navToPlayer = () => {
@@ -40,11 +43,16 @@ export default function QuizInfoScreen({route}: any) {
 
     return (
         <View style={styles.container}>
-            <View style={styles.infoContainer}>
+
+            <View style={ownedByUser ? {flex: 0.74} : {flex: 0.9}}>
                 <Text style={styles.header}>Title: {passedQuiz.name}</Text>
-                <Text style={styles.header}>Owner: {passedQuiz.userID}</Text>
+                {!ownedByUser && (
+                    <Text style={styles.header}>Owner: {passedQuiz.userID}</Text>
+                )}
                 <Text style={styles.header}>Description: {passedQuiz.description}</Text>
-                <Text style={styles.header}>Visibility: {passedQuiz.visibility}</Text>
+                {ownedByUser && (
+                    <Text style={styles.header}>Visibility: {passedQuiz.visibility}</Text>
+                )}
             </View>
             <View style={styles.buttonsContainer}>
                 <TouchableOpacity onPress={navToPlayer} >
@@ -52,16 +60,20 @@ export default function QuizInfoScreen({route}: any) {
                         <Text style={styles.buttonText}>Play quiz</Text>
                     </View>
                 </TouchableOpacity>
-                <TouchableOpacity onPress={navToEditor} >
-                    <View style={styles.button}>
-                        <Text style={styles.buttonText}>Edit quiz</Text>
-                    </View>
-                </TouchableOpacity>
-                <TouchableOpacity onPress={handleQuizDelete} >
-                    <View style={styles.button}>
-                        <Text style={styles.buttonText}>Delete quiz</Text>
-                    </View>
-                </TouchableOpacity>
+                {ownedByUser && (
+                    <>
+                        <TouchableOpacity onPress={navToEditor} >
+                            <View style={styles.button}>
+                                <Text style={styles.buttonText}>Edit quiz</Text>
+                            </View>
+                        </TouchableOpacity>
+                        <TouchableOpacity onPress={handleQuizDelete} >
+                            <View style={styles.button}>
+                                <Text style={styles.buttonText}>Delete quiz</Text>
+                            </View>
+                        </TouchableOpacity>
+                    </>
+                )}
             </View>
         </View>
     );
@@ -75,11 +87,8 @@ const styles = StyleSheet.create({
         marginRight: 20,
         marginTop: 10,
     },
-    infoContainer:{
-        flex: 0.7,
-    },
     buttonsContainer:{
-        flex: 0.2,
+        flex: 0.1,
         marginBottom: 0,
     },
     header:{
