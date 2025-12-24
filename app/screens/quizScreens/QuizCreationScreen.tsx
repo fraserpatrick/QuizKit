@@ -7,24 +7,11 @@ import { useAuth } from '@/app/AuthContext';
 
 export default function QuizCreationScreen() {
     const navigation = useNavigation();
-    const {user} = useAuth();
+    const {username} = useAuth();
 
-    const [username, setUsername] = useState('');
     const [name, setName] = useState('');
     const [description, setDescription] = useState('');
     const [visibility, setVisibility] = useState('Private');
-
-    useEffect(() => {
-        const loadUser = async () => {
-            try {
-                const loggedInUser = await database.getUser(user?.email || '');
-                setUsername(loggedInUser[0].username);
-            } catch (error) {
-                console.error('Error loading user:', error);
-            }
-        };
-        loadUser();
-    }, []);
 
     const handleCreateQuiz = () => {
         if (name.trim() === '') {
@@ -40,7 +27,7 @@ export default function QuizCreationScreen() {
 
     const createQuiz = async () => {
         try {
-            const newQuiz = await database.createQuiz(name.trim(), username, visibility, description.trim());
+            const newQuiz = await database.createQuiz(name.trim(), username!, visibility, description.trim());
             alert('Creating quiz with name: ' + name.trim());
             console.log('Creating quiz with name: ' + name.trim());
 

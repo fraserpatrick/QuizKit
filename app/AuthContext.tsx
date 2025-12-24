@@ -8,6 +8,7 @@ import {
 } from 'firebase/auth';
 import React, { ReactNode, createContext, useContext, useEffect, useState } from 'react';
 import { auth } from './firebase';
+import database from '@/DatabaseController';
 
 interface AuthContextType {
     user: User | null;
@@ -17,6 +18,7 @@ interface AuthContextType {
     logout: () => Promise<void>;
     resetPassword: (email: string) => Promise<void>;
     getIdToken: () => Promise<string | null>;
+    username: string | null;
 }
 
 interface AuthProviderProps {
@@ -27,11 +29,28 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export const AuthProvider = ({children} : AuthProviderProps) => {
     const [user, setUser] = useState<User | null>(null);
+    const [username, setUsername] = useState<string | null>(null);
 
     useEffect(() => {
-        const unsubscribe = onAuthStateChanged(auth, (firebaseUser) => {
+        const unsubscribe = onAuthStateChanged(auth, async (firebaseUser) => {
             setUser(firebaseUser);
-        });
+        if (!firebaseUser?.email) {
+            setUsername(null);
+            return;
+        }
+
+        try {
+            const users = await database.getUser(firebaseUser.email);
+            if (users.length > 0) {
+                setUsername(users[0].username);
+            } else {
+                setUsername(null);
+            }
+        } catch (error) {
+            console.error('Failed to load username:', error);
+            setUsername(null);
+        }
+    });
         return unsubscribe
     }, []);
 
@@ -47,6 +66,7 @@ export const AuthProvider = ({children} : AuthProviderProps) => {
 
     const logout = async (): Promise<void> => {
         await signOut(auth);
+        setUsername(null);
     };
 
     const resetPassword = async (email: string): Promise<void> => {
@@ -66,6 +86,7 @@ export const AuthProvider = ({children} : AuthProviderProps) => {
         logout,
         resetPassword,
         getIdToken,
+        username,
     };
 
     return (

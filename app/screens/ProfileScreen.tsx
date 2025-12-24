@@ -1,10 +1,10 @@
-import { Alert, Button, View } from 'react-native';
+import { Text, Alert, Button, View } from 'react-native';
 import { useAuth } from '@/app/AuthContext';
 import database, { Quiz, User } from '@/DatabaseController';
 import { useState, useEffect } from 'react';
 
 export default function HomeScreen() {
-    const { logout } = useAuth();
+    const { logout, username } = useAuth();
     const [quizzes, setQuizzes] = useState<Quiz[]>([]);
     const [users, setUsers] = useState<User[]>([]);
 
@@ -70,6 +70,7 @@ export default function HomeScreen() {
             <Button title="Logout" onPress={handleLogout} />
             <Button title="Reset Database" onPress={resetDatabase} />
             <Button title="List Database" onPress={listDatabase} />
+            <Text>Logged in as: {username}</Text>
         </View>
     );
 }

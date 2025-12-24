@@ -7,31 +7,29 @@ import { useAuth } from "../AuthContext";
 
 export default function HomeScreen() {
     const navigation = useNavigation();
-    const {user} = useAuth();
+    const {username} = useAuth();
 
     const [myQuizzes, setMyQuizzes] = useState<Quiz[]>([]);
     const [sharedQuizzes, setSharedQuizzes] = useState<Quiz[]>([]);
     const [quizzes, setQuizzes] = useState<Quiz[]>([]);
     const [selector, setSelector] = useState('myQuizzes');
 
-    const loadUserAndQuizzes = async () => {
-    try {
-        const loggedInUser = await database.getUser(user?.email || '');
-        const username = loggedInUser[0].username;
+    const loadQuizzes = async () => {
+        try {
+            const myQuizzes = await database.getMyQuizzes(username!);
+            setMyQuizzes(myQuizzes);
+            
+            const sharedQuizzes = await database.getSharedQuizzes(username!);
+            setSharedQuizzes(sharedQuizzes);
+        } catch (error) {
+            console.error('Error loading data:', error);
+        }
+    };
 
-        const myQuizzes = await database.getMyQuizzes(username);
-        setMyQuizzes(myQuizzes);
-
-        const sharedQuizzes = await database.getSharedQuizzes(username);
-        setSharedQuizzes(sharedQuizzes);
-    } catch (error) {
-        console.error('Error loading data:', error);
-    }
-};
-
-useEffect(() => {
-    loadUserAndQuizzes();
-}, []);
+    useEffect(() => {
+        if (!username) return;
+        loadQuizzes();
+    }, [username]);
 
 
     type ItemProps = {
