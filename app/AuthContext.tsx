@@ -19,6 +19,7 @@ interface AuthContextType {
     resetPassword: (email: string) => Promise<void>;
     getIdToken: () => Promise<string | null>;
     username: string | null;
+    changeUsername: (newUsername: string) => Promise<void>;
 }
 
 interface AuthProviderProps {
@@ -78,6 +79,10 @@ export const AuthProvider = ({children} : AuthProviderProps) => {
         return await auth.currentUser.getIdToken();
     }
 
+    const changeUsername = async (newUsername: string): Promise<void> => {       
+        setUsername(newUsername);
+    }
+
     const value: AuthContextType = {
         user,
         isAuthenticated: !! user,
@@ -87,6 +92,7 @@ export const AuthProvider = ({children} : AuthProviderProps) => {
         resetPassword,
         getIdToken,
         username,
+        changeUsername,
     };
 
     return (

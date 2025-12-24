@@ -1,4 +1,4 @@
-import { Text, Button, View, TouchableOpacity, StyleSheet, FlatList } from 'react-native';
+import { Text, View, TouchableOpacity, StyleSheet, FlatList } from 'react-native';
 import { useAuth } from '@/app/AuthContext';
 import database, { Quiz, User } from '@/DatabaseController';
 import { useState, useEffect } from 'react';
@@ -9,66 +9,10 @@ export default function ProfileScreen({route}: any) {
     const navigation = useNavigation();
     const passedUsername = route?.params?.passedUsername ?? username;
 
-    const [TEMPquizzes, TEMPsetQuizzes] = useState<Quiz[]>([]);
-    const [TEMPusers, TEMPsetUsers] = useState<User[]>([]);
-
-    useEffect(() => {
-        const loadQuizzes = async () => {
-            try {
-                TEMPsetQuizzes(await database.getQuizzes());
-            } catch (error) {
-                console.error('Error loading quizzes:', error);
-            }
-        };
-        const loadUsers = async () => {
-            try {
-                TEMPsetUsers(await database.getUsers());
-            } catch (error) {
-                console.error('Error loading users:', error);
-            }
-        };
-
-        loadQuizzes();
-        loadUsers();
-    }, []);
-
-
-    const listDatabase = async () => {
-        if (TEMPquizzes.length === 0) {
-            console.log("No quizzes found");
-        } else {
-            console.log("Quizzes:");
-            TEMPquizzes.forEach((quiz) => {
-                console.log("ID:" + quiz.id + "  Name: " + quiz.name + "   UserID: " + quiz.userID + "   Visibility: " + quiz.visibility);
-            });
-        }
-        if (TEMPusers.length === 0) {
-            console.log("No users found");
-        } else {
-            console.log("Users:");
-            TEMPusers.forEach((user) => {
-                console.log("ID:" + user.id + "  Email: " + user.email + "   Username: " + user.username + "   TotalQuizPlays: " + user.totalQuizPlays + "   TotalQuestionsAnswered: " + user.totalQuestionsAnswered + "   TotalQuestionsCorrect: " + user.TotalQuestionsCorrect);
-            });
-        }
-    };
-
-    const resetDatabase = async () => {
-        try {
-            await database.databaseReset();
-            alert('Database has been reset.');
-            console.log('Database reset successfully.');
-        } catch (error) {
-            console.error('Error resetting database:', error);
-            alert('Failed to reset database.');
-        }
-    };
-
-
-
     const [quizzes, setQuizzes] = useState<Quiz[]>([]);
     const [user, setUser] = useState<User>({email: '', username: '', totalQuizPlays: 0, totalQuestionsAnswered: 0, TotalQuestionsCorrect: 0});
     const ownProfile = passedUsername === username;
-    const [isEditing, setIsEditing] = useState(false);
+
 
     useEffect(() => {
         const loadQuizzes = async () => {
@@ -108,53 +52,40 @@ export default function ProfileScreen({route}: any) {
         navigation.navigate('QuizInfoScreen' as never, { passedQuiz: quiz } as never);
     };
 
-    if (!isEditing) {
-        return (
-            <View style={styles.container}>
-                <Text style={styles.usernameHeader}>{passedUsername}'s Profile</Text>
-                <View style={styles.statsContainer}>
-                    <Text style={styles.containerHeader}>Game Statistics</Text>
-                    <Text>Total Quizzes: {user.totalQuizPlays}</Text>
-                    <Text>Total Questions Answered: {user.totalQuestionsAnswered}</Text>
-                    <Text>Total Questions Correct: {user.TotalQuestionsCorrect}</Text>
-                </View>
-                <View style={styles.quizContainer}>
-                    <Text style={styles.containerHeader}>Owned Quizzes</Text>
-                    <FlatList
-                        data={quizzes}
-                        keyExtractor={(item) => String(item.id)}
-                        renderItem={({ item }) => (
-                            <Item
-                                quiz={item}
-                                onPress={() => handleOpenQuiz(item)}
-                            />
-                        )}
-                    />
-                </View>
-                {ownProfile && (
-                    <View style={styles.buttonContainer}>
-                        <TouchableOpacity onPress={() => setIsEditing(true)} >
-                            <View style={styles.button}>
-                                <Text style={styles.buttonText}>Edit Profile</Text>
-                            </View>
-                        </TouchableOpacity>
-                    </View>
-                )}
+
+    return (
+        <View style={styles.container}>
+            <Text style={styles.usernameHeader}>{passedUsername}'s Profile</Text>
+            <View style={styles.statsContainer}>
+                <Text style={styles.containerHeader}>Game Statistics</Text>
+                <Text>Total Quizzes: {user.totalQuizPlays}</Text>
+                <Text>Total Questions Answered: {user.totalQuestionsAnswered}</Text>
+                <Text>Total Questions Correct: {user.TotalQuestionsCorrect}</Text>
             </View>
-        );
-    }
-    else {
-        return (
-            <View style={styles.container}>
-                <Text>Editing Profile for {passedUsername}</Text>
-                <View>
-                    <Button title="Reset Database" onPress={resetDatabase} />
-                    <Button title="List Database" onPress={listDatabase} />
-                </View>
-                <Button title="Save Changes" onPress={() => setIsEditing(false)} />
+            <View style={styles.quizContainer}>
+                <Text style={styles.containerHeader}>Owned Quizzes</Text>
+                <FlatList
+                    data={quizzes}
+                    keyExtractor={(item) => String(item.id)}
+                    renderItem={({ item }) => (
+                        <Item
+                            quiz={item}
+                            onPress={() => handleOpenQuiz(item)}
+                        />
+                    )}
+                />
             </View>
-        );
-    }
+            {ownProfile && (
+                <View style={styles.buttonContainer}>
+                    <TouchableOpacity onPress={() => navigation.navigate('ProfileEditor' as never)} >
+                        <View style={styles.button}>
+                            <Text style={styles.buttonText}>Edit Profile</Text>
+                        </View>
+                    </TouchableOpacity>
+                </View>
+            )}
+        </View>
+    );
 }
 
 

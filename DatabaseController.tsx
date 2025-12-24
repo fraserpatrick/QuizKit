@@ -108,6 +108,7 @@ class DatabaseController {
         return this.execute(sql, [quizID]);
     }
 
+
     public createUser(email: string, username: string): Promise<boolean> {
         const insertSQL = `INSERT INTO user (email, username) VALUES (?, ?)`;
         return this.execute(insertSQL, [email, username])
@@ -126,6 +127,16 @@ class DatabaseController {
     public getUsers(): Promise<User[]> {
         const sql = `SELECT * FROM user`;
         return this.select<User>(sql);
+    }
+
+    public updateUsername(email: string, newUsername: string): Promise<boolean> {
+        const sql = `UPDATE user SET username = ? WHERE email = ?`;
+        return this.execute(sql, [newUsername, email]);
+    }
+
+    public updateQuizToNewUsername(oldUsername: string, newUsername: string): Promise<boolean> {
+        const sql = `UPDATE quiz SET userID = ? WHERE userID = ?`;
+        return this.execute(sql, [newUsername, oldUsername]);
     }
 
 

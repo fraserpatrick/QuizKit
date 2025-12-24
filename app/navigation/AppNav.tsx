@@ -3,6 +3,7 @@ import HomeScreen from '../screens/HomeScreen';
 import QuizCreationScreen from '../screens/quizScreens/QuizCreationScreen';
 import QuizEditor from '../screens/quizScreens/QuizEditor';
 import ProfileScreen from '../screens/ProfileScreen';
+import ProfileEditor from '../screens/ProfileEditor';
 import QuizInfoScreen from '../screens/quizScreens/QuizInfoScreen';
 import { Alert, Button } from 'react-native';
 import { useAuth } from '@/app/AuthContext';
@@ -40,6 +41,7 @@ export default function AppNav() {
             <Stack.Screen name="QuizInfoScreen" component={QuizInfoScreen} />
             <Stack.Screen name="QuizEditor" component={QuizEditor} />
             <Stack.Screen name="ProfileScreen" component={ProfileScreen} options={profileScreenOptions} />
+            <Stack.Screen name="ProfileEditor" component={ProfileEditor} />
         </Stack.Navigator>
     );
 }
