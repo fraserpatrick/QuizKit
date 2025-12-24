@@ -47,7 +47,7 @@ export default function ProfileScreen({route}: any) {
         } else {
             console.log("Users:");
             TEMPusers.forEach((user) => {
-                console.log("ID:" + user.id + "  Email: " + user.email + "   Username: " + user.username);
+                console.log("ID:" + user.id + "  Email: " + user.email + "   Username: " + user.username + "   TotalQuizPlays: " + user.totalQuizPlays + "   TotalQuestionsAnswered: " + user.totalQuestionsAnswered + "   TotalQuestionsCorrect: " + user.TotalQuestionsCorrect);
             });
         }
     };
@@ -66,6 +66,7 @@ export default function ProfileScreen({route}: any) {
 
 
     const [quizzes, setQuizzes] = useState<Quiz[]>([]);
+    const [user, setUser] = useState<User>({email: '', username: '', totalQuizPlays: 0, totalQuestionsAnswered: 0, TotalQuestionsCorrect: 0});
 
 
     useEffect(() => {
@@ -76,9 +77,17 @@ export default function ProfileScreen({route}: any) {
                 console.error('Error loading quizzes:', error);
             }
         };
-        
 
-        loadQuizzes();
+        const loadUser = async () => {
+            try {
+                const users = await database.getUserByUsername(passedUsername);
+                setUser(users[0]);
+            } catch (error) {
+                console.error('Error loading user:', error);
+            }
+        };
+
+        loadUser();
     }, []);
 
     type ItemProps = {
@@ -103,7 +112,9 @@ export default function ProfileScreen({route}: any) {
             <Text style={styles.usernameHeader}>{passedUsername}'s Profile</Text>
             <View style={styles.statsContainer}>
                 <Text style={styles.containerHeader}>Game Statistics</Text>
-                <Text>Total Quizzes: {quizzes.length}</Text>
+                <Text>Total Quizzes: {user.totalQuizPlays}</Text>
+                <Text>Total Questions Answered: {user.totalQuestionsAnswered}</Text>
+                <Text>Total Questions Correct: {user.TotalQuestionsCorrect}</Text>
             </View>
             <View style={styles.quizContainer}>
                 <Text style={styles.containerHeader}>Owned Quizzes</Text>

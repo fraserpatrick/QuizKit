@@ -14,6 +14,9 @@ export interface User {
     id?: number;
     email: string;
     username: string;
+    totalQuizPlays?: number;
+    totalQuestionsAnswered?: number;
+    TotalQuestionsCorrect?: number;
 }
 
 class DatabaseController {
@@ -40,7 +43,10 @@ class DatabaseController {
                 CREATE TABLE IF NOT EXISTS user (
                     id INTEGER PRIMARY KEY AUTOINCREMENT,
                     email TEXT NOT NULL,
-                    username TEXT NOT NULL
+                    username TEXT NOT NULL,
+                    totalQuizPlays INTEGER DEFAULT 0,
+                    totalQuestionsAnswered INTEGER DEFAULT 0,
+                    TotalQuestionsCorrect INTEGER DEFAULT 0
                 );
             `);
         } catch (error) {
@@ -110,6 +116,11 @@ class DatabaseController {
     public getUser(email: string): Promise<User[]> {
         const sql = `SELECT * FROM user WHERE email = ?`;
         return this.select<User>(sql, [email]);
+    }
+
+    public getUserByUsername(username: string): Promise<User[]> {
+        const sql = `SELECT * FROM user WHERE username = ?`;
+        return this.select<User>(sql, [username]);
     }
 
     public getUsers(): Promise<User[]> {
