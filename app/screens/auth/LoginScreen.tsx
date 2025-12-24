@@ -1,7 +1,8 @@
 import { useNavigation } from "@react-navigation/native";
-import { useState } from "react";
+import React, { useState } from "react";
 import { StyleSheet, Image, Keyboard, Text, TextInput, TouchableOpacity, TouchableWithoutFeedback, View, Dimensions } from "react-native";
 import { useAuth } from "@/app/AuthContext";
+import { MaterialCommunityIcons } from '@expo/vector-icons';
 
 
 export default function LoginScreen() {
@@ -10,6 +11,7 @@ export default function LoginScreen() {
 
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
+    const [showPassword, setShowPassword] = useState(false);
 
 
     const handleLogin = async () => {
@@ -40,6 +42,10 @@ export default function LoginScreen() {
         navigation.navigate('SignUp' as never);
     }
 
+    const toggleShowPassword = () => {
+        setShowPassword(!showPassword);
+    };
+
 
     return (
         <View style={styles.container}>
@@ -57,13 +63,22 @@ export default function LoginScreen() {
                             returnKeyType="next"
                         />
                         <Text style={styles.inputHeader}>Password:</Text>
-                        <TextInput
-                            style={styles.input}
-                            value={password}
-                            onChangeText={setPassword}
-                            secureTextEntry
-                            returnKeyType="done"
-                        />
+                        <View style={styles.passwordContainer}>
+                            <TextInput
+                                style={styles.passwordInput}
+                                value={password}
+                                onChangeText={setPassword}
+                                secureTextEntry={!showPassword}
+                                returnKeyType="done"
+                            />
+                            <TouchableOpacity style={styles.iconButton} onPress={toggleShowPassword}>
+                                <MaterialCommunityIcons
+                                    name={showPassword ? 'eye-off' : 'eye'}
+                                    size={24}
+                                    color="#aaa"
+                                />
+                            </TouchableOpacity>
+                        </View>
                         <TouchableOpacity onPress={handleLogin} >
                             <View style={styles.button}>
                                 <Text style={styles.buttonText}>Login</Text>
@@ -132,6 +147,23 @@ const styles = StyleSheet.create({
         borderColor: '#000000ff',
         borderRadius: 10,
         backgroundColor: '#ffffffff',
+    },
+    passwordInput:{
+        flex: 1,
+        paddingVertical: 10,
+    },
+    passwordContainer: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        borderWidth: 1,
+        borderColor: '#000000ff',
+        borderRadius: 10,
+        backgroundColor: '#ffffffff',
+        paddingHorizontal: 10,
+        marginBottom: 10,
+    },
+    iconButton: {
+        marginLeft: -50, 
     },
     inputHeader:{
         fontSize: 18,

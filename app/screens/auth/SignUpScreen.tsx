@@ -1,8 +1,9 @@
 import { useState } from "react";
-import { Image, Text, StyleSheet, TouchableWithoutFeedback, Keyboard, View, TextInput, TouchableOpacity, Dimensions } from "react-native";
+import { Text, StyleSheet, TouchableWithoutFeedback, Keyboard, View, TextInput, TouchableOpacity } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import { useAuth } from "@/app/AuthContext";
 import database from "@/DatabaseController";
+import { MaterialCommunityIcons } from "@expo/vector-icons";
 
 export default function SignUpScreen() {
     const navigation = useNavigation();
@@ -12,6 +13,8 @@ export default function SignUpScreen() {
     const [email, setEmail] = useState('');
     const [password1, setPassword1] = useState('');
     const [password2, setPassword2] = useState('');
+    const [showPassword1, setShowPassword1] = useState(false);
+    const [showPassword2, setShowPassword2] = useState(false);
 
     const handleSignUp = async () => {
             if (!username.trim() || !email.trim() || !password1.trim() || !password2.trim()) {
@@ -54,14 +57,19 @@ export default function SignUpScreen() {
     const handleNavigateToLogin = () => {
         navigation.navigate('Login' as never);
     }
-    
+
+    const toggleShowPassword1 = () => {
+        setShowPassword1(!showPassword1);
+    };
+    const toggleShowPassword2 = () => {
+        setShowPassword2(!showPassword2);
+    };
+
+
     return (
-        <View style={styles.container}>
-            <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+        <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+            <View style={styles.container}>
                 <View style={styles.innerContainer}>
-                    <View style={styles.imageContainer}>
-                        <Image source={require('./../../../assets/images/icon.png')} style={styles.image} />
-                    </View>
                     <View style={styles.inputContainer}>
                         <Text style={styles.inputHeader}>Username:</Text>
                         <TextInput
@@ -78,21 +86,39 @@ export default function SignUpScreen() {
                             returnKeyType="next"
                         />
                         <Text style={styles.inputHeader}>Password:</Text>
-                        <TextInput
-                            style={styles.input}
-                            value={password1}
-                            onChangeText={setPassword1}
-                            secureTextEntry
-                            returnKeyType="next"
-                        />
+                        <View style={styles.passwordContainer}>
+                            <TextInput
+                                style={styles.passwordInput}
+                                value={password1}
+                                onChangeText={setPassword1}
+                                secureTextEntry={!showPassword1}
+                                returnKeyType="next"
+                            />
+                            <TouchableOpacity style={styles.iconButton} onPress={toggleShowPassword1}>
+                                <MaterialCommunityIcons
+                                    name={showPassword1 ? 'eye-off' : 'eye'}
+                                    size={24}
+                                    color="#aaa"
+                                />
+                            </TouchableOpacity>
+                        </View>
                         <Text style={styles.inputHeader}>Repeat password:</Text>
-                        <TextInput
-                            style={styles.input}
-                            value={password2}
-                            onChangeText={setPassword2}
-                            secureTextEntry
-                            returnKeyType="done"
-                        />
+                        <View style={styles.passwordContainer}>
+                            <TextInput
+                                style={styles.passwordInput}
+                                value={password2}
+                                onChangeText={setPassword2}
+                                secureTextEntry={!showPassword2}
+                                returnKeyType="next"
+                            />
+                            <TouchableOpacity style={styles.iconButton} onPress={toggleShowPassword2}>
+                                <MaterialCommunityIcons
+                                    name={showPassword2 ? 'eye-off' : 'eye'}
+                                    size={24}
+                                    color="#aaa"
+                                />
+                            </TouchableOpacity>
+                        </View>
                         <TouchableOpacity onPress={handleSignUp} >
                             <View style={styles.button}>
                                 <Text style={styles.buttonText}>Create account</Text>
@@ -105,13 +131,12 @@ export default function SignUpScreen() {
                         </TouchableOpacity>
                     </View>
                 </View>
-            </TouchableWithoutFeedback>
-        </View>
+            </View>
+        </TouchableWithoutFeedback>
     );
 }
 
 
-const { width } = Dimensions.get('window');
 const styles = StyleSheet.create({
     button:{
         alignItems: 'center',
@@ -135,15 +160,6 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         paddingBottom: 50,
     },
-    imageContainer:{
-        alignItems: 'center',
-        marginBottom: 80,
-    },
-    image:{
-        width: width * 0.8,
-        height: (width * 0.8) * 0.5,
-        resizeMode: 'contain',
-    },
     inputContainer:{
         width: '80%',
         marginTop: -30,
@@ -156,6 +172,23 @@ const styles = StyleSheet.create({
         borderColor: '#000000ff',
         borderRadius: 10,
         backgroundColor: '#ffffffff',
+    },
+    passwordInput:{
+        flex: 1,
+        paddingVertical: 10,
+    },
+    passwordContainer: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        borderWidth: 1,
+        borderColor: '#000000ff',
+        borderRadius: 10,
+        backgroundColor: '#ffffffff',
+        paddingHorizontal: 10,
+        marginBottom: 10,
+    },
+    iconButton: {
+        marginLeft: -50, 
     },
     inputHeader:{
         fontSize: 18,
