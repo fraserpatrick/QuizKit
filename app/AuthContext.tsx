@@ -5,6 +5,7 @@ import {
     createUserWithEmailAndPassword,
     signOut,
     sendPasswordResetEmail,
+    updatePassword,
 } from 'firebase/auth';
 import React, { ReactNode, createContext, useContext, useEffect, useState } from 'react';
 import { auth } from './firebase';
@@ -20,6 +21,7 @@ interface AuthContextType {
     getIdToken: () => Promise<string | null>;
     username: string | null;
     changeUsername: (newUsername: string) => Promise<void>;
+    changePassword?: (newPassword: string) => Promise<void>;
 }
 
 interface AuthProviderProps {
@@ -83,6 +85,14 @@ export const AuthProvider = ({children} : AuthProviderProps) => {
         setUsername(newUsername);
     }
 
+    const changePassword = async (newPassword: string): Promise<void> => {
+        if (auth.currentUser) {
+            await updatePassword(auth.currentUser, newPassword);
+        } else {
+            throw new Error('No authenticated user');
+        }
+    }
+
     const value: AuthContextType = {
         user,
         isAuthenticated: !! user,
@@ -93,6 +103,7 @@ export const AuthProvider = ({children} : AuthProviderProps) => {
         getIdToken,
         username,
         changeUsername,
+        changePassword,
     };
 
     return (

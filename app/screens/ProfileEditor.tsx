@@ -5,7 +5,7 @@ import { useAuth } from '@/app/AuthContext';
 import database, { Quiz, User } from '@/DatabaseController';
 
 export default function ProfileEditor() {
-    const { username, user, changeUsername } = useAuth();
+    const { username, user, changeUsername, changePassword } = useAuth();
     const navigation = useNavigation();
 
     const [TEMPquizzes, TEMPsetQuizzes] = useState<Quiz[]>([]);
@@ -101,8 +101,9 @@ export default function ProfileEditor() {
 
         if (passwordInput1.trim() !== '') {
             try {
-                
+                changePassword!(passwordInput1);
                 alert('Password updated successfully.');
+                navigation.goBack();
             } catch (error) {
                 console.error('Error updating password:', error);
                 alert('Failed to update password.');
