@@ -7,7 +7,7 @@ export default function QuizInfoScreen({route}: any) {
     const navigation = useNavigation();
     const {passedQuiz} = route.params;
     const { username } = useAuth();
-    const ownedByUser = passedQuiz.userID === username;
+    const ownedByUser = passedQuiz.owner === username;
 
 
     const navToPlayer = () => {
@@ -30,7 +30,7 @@ export default function QuizInfoScreen({route}: any) {
         console.log('Deleting quiz with id: ' + passedQuiz.id);
         try{
             database.deleteQuiz(passedQuiz.id);
-            alert('Deleted quiz : ' + passedQuiz.name);
+            alert('Deleted quiz : ' + passedQuiz.title);
         }
         catch(error){
             console.error('Error deleting quiz: ', error);
@@ -44,11 +44,11 @@ export default function QuizInfoScreen({route}: any) {
     return (
         <View style={styles.container}>
             <View style={ownedByUser ? {flex: 0.74} : {flex: 0.9}}>
-                <Text style={styles.header}>Title: {passedQuiz.name}</Text>
+                <Text style={styles.header}>Title: {passedQuiz.title}</Text>
                 {!ownedByUser && (
                     <Text style={styles.header}>Owner:
-                        <TouchableOpacity onPress={() => {navigation.navigate('ProfileScreen' as never, { passedUsername: passedQuiz.userID } as never)}}>
-                            <Text style={styles.inlineButtonText}>{passedQuiz.userID}</Text>
+                        <TouchableOpacity onPress={() => {navigation.navigate('ProfileScreen' as never, { passedUsername: passedQuiz.owner } as never)}}>
+                            <Text style={styles.inlineButtonText}>{passedQuiz.owner}</Text>
                         </TouchableOpacity>
                     </Text>
                 )}

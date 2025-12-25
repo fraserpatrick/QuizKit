@@ -4,8 +4,8 @@ const db = SQLite.openDatabaseSync('QuizkitDatabase.db');
 
 export interface Quiz {
     id?: number;
-    name: string;
-    userID: string;
+    title: string;
+    owner: string;
     visibility: string;
     description: string;
 }
@@ -29,8 +29,8 @@ class DatabaseController {
             await db.execAsync(`
                 CREATE TABLE IF NOT EXISTS quiz (
                     id INTEGER PRIMARY KEY AUTOINCREMENT,
-                    name TEXT NOT NULL,
-                    userID TEXT NOT NULL,
+                    title TEXT NOT NULL,
+                    owner TEXT NOT NULL,
                     visibility TEXT NOT NULL,
                     description TEXT
                 );
@@ -74,13 +74,12 @@ class DatabaseController {
         }
     }
 
-    public async createQuiz(name: string, userID: string, visibility: string, description: string): Promise<Quiz> {
-        const insertSQL = `INSERT INTO quiz (name, userID, visibility, description) VALUES (?, ?, ?, ?)`;
+    public async createQuiz(title: string, owner: string, visibility: string, description: string): Promise<Quiz> {
+        const insertSQL = `INSERT INTO quiz (title, owner, visibility, description) VALUES (?, ?, ?, ?)`;
 
-        await this.execute(insertSQL, [name, userID, visibility, description]);
+        await this.execute(insertSQL, [title, owner, visibility, description]);
 
-        const selectSQL = `SELECT id, name, userID, visibility, description FROM quiz WHERE id = last_insert_rowid()`;
-
+        const selectSQL = `SELECT id, title, owner, visibility, description FROM quiz WHERE id = last_insert_rowid()`;
         const [quiz] = await this.select<Quiz>(selectSQL);
         if (!quiz) {
             throw new Error('Failed to retrieve the newly created quiz');
@@ -93,14 +92,14 @@ class DatabaseController {
         return this.select<Quiz>(sql);
     }
 
-    public getUsersQuizzes(username: string): Promise<Quiz[]> {
-        const sql = `SELECT * FROM quiz WHERE userID = ?`;
-        return this.select<Quiz>(sql, [username]);
+    public getUsersQuizzes(owner: string): Promise<Quiz[]> {
+        const sql = `SELECT * FROM quiz WHERE owner = ?`;
+        return this.select<Quiz>(sql, [owner]);
     }
-    
-    public getSharedQuizzes(username: string): Promise<Quiz[]> {
-        const sql = `SELECT * FROM quiz WHERE visibility = 'Public' AND userID != ?`;
-        return this.select<Quiz>(sql, [username]);
+
+    public getSharedQuizzes(owner: string): Promise<Quiz[]> {
+        const sql = `SELECT * FROM quiz WHERE visibility = 'Public' AND owner != ?`;
+        return this.select<Quiz>(sql, [owner]);
     }
 
     public deleteQuiz(quizID: number): Promise<boolean> {

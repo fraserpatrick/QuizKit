@@ -43,7 +43,7 @@ export default function ProfileScreen({route}: any) {
     const Item = ({ quiz, onPress }: ItemProps) => (
         <TouchableOpacity onPress={onPress} style={styles.quizItem}>
             <View>
-                <Text style={styles.quizText}>{quiz.name}</Text>
+                <Text style={styles.quizText}>{quiz.title}</Text>
             </View>
         </TouchableOpacity>
     );

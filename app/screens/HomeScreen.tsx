@@ -40,7 +40,7 @@ export default function HomeScreen() {
     const Item = ({ quiz, onPress }: ItemProps) => (
         <TouchableOpacity onPress={onPress} style={styles.quizItem}>
             <View>
-                <Text style={styles.buttonText}>{quiz.name}</Text>
+                <Text style={styles.buttonText}>{quiz.title}</Text>
             </View>
         </TouchableOpacity>
     );

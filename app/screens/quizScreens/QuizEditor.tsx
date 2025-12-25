@@ -7,7 +7,7 @@ export default function QuizEditor({route}: any) {
         return (
             <View>
                 <Text>{passedQuiz.id}</Text>
-                <Text>{passedQuiz.name}</Text>
+                <Text>{passedQuiz.title}</Text>
             </View>
         );
 }

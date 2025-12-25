@@ -39,7 +39,7 @@ export default function ProfileEditor() {
         } else {
             console.log("Quizzes:");
             TEMPquizzes.forEach((quiz) => {
-                console.log("ID:" + quiz.id + "  Name: " + quiz.name + "   UserID: " + quiz.userID + "   Visibility: " + quiz.visibility);
+                console.log("ID:" + quiz.id + "  Title: " + quiz.title + "   Owner: " + quiz.owner + "   Visibility: " + quiz.visibility);
             });
         }
         if (TEMPusers.length === 0) {
