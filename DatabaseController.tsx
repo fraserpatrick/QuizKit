@@ -25,6 +25,9 @@ export interface Question {
     type: string;
     text: string;
     correctAnswer: string;
+    wrongAnswer1: string;
+    wrongAnswer2: string;
+    wrongAnswer3: string;
 }
 
 class DatabaseController {
@@ -67,7 +70,10 @@ class DatabaseController {
                     quizID INTEGER NOT NULL,
                     type TEXT NOT NULL,
                     text TEXT NOT NULL,
-                    correctAnswer TEXT NOT NULL
+                    correctAnswer TEXT NOT NULL,
+                    wrongAnswer1 TEXT,
+                    wrongAnswer2 TEXT,
+                    wrongAnswer3 TEXT
                 );
             `);
         } catch (error) {
@@ -160,9 +166,9 @@ class DatabaseController {
     }
 
 
-    public createQuestion(quizID: number, type: string, text: string, correctAnswer: string): Promise<boolean> {
-        const insertSQL = `INSERT INTO question (quizID, type, text, correctAnswer) VALUES (?, ?, ?, ?)`;
-        return this.execute(insertSQL, [quizID, type, text, correctAnswer]);
+    public createQuestion(quizID: number, type: string, text: string, correctAnswer: string, wrongAnswer1: string, wrongAnswer2: string, wrongAnswer3: string): Promise<boolean> {
+        const insertSQL = `INSERT INTO question (quizID, type, text, correctAnswer, wrongAnswer1, wrongAnswer2, wrongAnswer3) VALUES (?, ?, ?, ?, ?, ?, ?)`;
+        return this.execute(insertSQL, [quizID, type, text, correctAnswer, wrongAnswer1, wrongAnswer2, wrongAnswer3]);
     }
 
     public getQuestions(): Promise<Question[]> {
@@ -175,9 +181,9 @@ class DatabaseController {
         return this.select<Question>(sql, [quizID]);
     }
 
-    public updateQuestion(questionID: number, type: string, text: string, correctAnswer: string): Promise<boolean> {
-        const sql = `UPDATE question SET type = ?, text = ?, correctAnswer = ? WHERE id = ?`;
-        return this.execute(sql, [type, text, correctAnswer, questionID]);
+    public updateQuestion(questionID: number, type: string, text: string, correctAnswer: string, wrongAnswer1: string, wrongAnswer2: string, wrongAnswer3: string): Promise<boolean> {
+        const sql = `UPDATE question SET type = ?, text = ?, correctAnswer = ?, wrongAnswer1 = ?, wrongAnswer2 = ?, wrongAnswer3 = ? WHERE id = ?`;
+        return this.execute(sql, [type, text, correctAnswer, wrongAnswer1, wrongAnswer2, wrongAnswer3, questionID]);
     }
 
     public deleteQuestion(questionID: number): Promise<boolean> {

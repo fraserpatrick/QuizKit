@@ -64,7 +64,7 @@ export default function ProfileEditor() {
         } else {
             console.log("Questions:");
             TEMPquestions.forEach((question) => {
-                console.log("ID:" + question.id + "  QuizID: " + question.quizID + "   Type: " + question.type + "   Text: " + question.text + "   CorrectAnswer: " + question.correctAnswer);
+                console.log("ID:" + question.id + "  QuizID: " + question.quizID + "   Type: " + question.type + "   Text: " + question.text + "   CorrectAnswer: " + question.correctAnswer + "   wrongAnswer1: " + question.wrongAnswer1 + "   wrongAnswer2: " + question.wrongAnswer2 + "   wrongAnswer3: " + question.wrongAnswer3);
             });
         }
     };

@@ -3,6 +3,7 @@ import database from "@/DatabaseController";
 import React, { useState } from "react";
 import { useNavigation } from "@react-navigation/native";
 import { SelectList } from 'react-native-dropdown-select-list';
+import { SegmentedButtons } from "react-native-paper";
 
 export default function QuestionEditor({route}: any) {
     const {passedQuestion, passedQuiz} = route.params;
@@ -11,7 +12,7 @@ export default function QuestionEditor({route}: any) {
     const types = [
         'Single Answer',
         'Multiple Choice',
-        'True/False',
+        'True or False',
     ];
 
     const defaultTypeOption = passedQuestion
@@ -21,6 +22,9 @@ export default function QuestionEditor({route}: any) {
     const [text, setText] = useState(passedQuestion ? passedQuestion.text : '');
     const [type, setType] = useState(passedQuestion ? passedQuestion.type : '');
     const [answer, setAnswer] = useState(passedQuestion ? passedQuestion.correctAnswer : '');
+    const [wrongAnswer1, setWrongAnswer1] = useState(passedQuestion ? passedQuestion.wrongAnswer1 : '');
+    const [wrongAnswer2, setWrongAnswer2] = useState(passedQuestion ? passedQuestion.wrongAnswer2 : '');
+    const [wrongAnswer3, setWrongAnswer3] = useState(passedQuestion ? passedQuestion.wrongAnswer3 : '');
 
 
     const saveQuestion = async () => {
@@ -29,12 +33,23 @@ export default function QuestionEditor({route}: any) {
             return;
         }
 
+        if (type === 'Multiple Choice') {
+            if (!wrongAnswer1?.trim() || !wrongAnswer2?.trim() || !wrongAnswer3?.trim()) {
+                alert('Please provide all incorrect answers.');
+                return;
+            }
+        }
+
+        const wa1 = type === 'Multiple Choice' ? wrongAnswer1 : null;
+        const wa2 = type === 'Multiple Choice' ? wrongAnswer2 : null;
+        const wa3 = type === 'Multiple Choice' ? wrongAnswer3 : null;
+
         try {
             if (!passedQuestion) {
-                await database.createQuestion(passedQuiz.id, type, text, answer);
+                await database.createQuestion(passedQuiz.id, type, text.trim(), answer.trim(), wa1, wa2, wa3);
                 alert('Question saved successfully.');
             } else {
-                await database.updateQuestion(passedQuestion.id, type, text, answer);
+                await database.updateQuestion(passedQuestion.id, type, text.trim(), answer.trim(), wa1, wa2, wa3);
                 alert('Question updated successfully.');
             }
 
@@ -74,7 +89,6 @@ export default function QuestionEditor({route}: any) {
                         value={text}
                         onChangeText={setText}
                     />
-
                     <Text style={styles.inputHeader}>Type:</Text>
                     <SelectList
                         setSelected={setType}
@@ -84,13 +98,46 @@ export default function QuestionEditor({route}: any) {
                         defaultOption={defaultTypeOption}
                     />
 
-                    
                     <Text style={styles.inputHeader}>Answer:</Text>
-                    <TextInput
-                        style={styles.input}
-                        value={answer}
-                        onChangeText={setAnswer}
-                    />
+                    {type === 'Single Answer' &&(<>
+                        <TextInput
+                            style={styles.input}
+                            value={answer}
+                            onChangeText={setAnswer}
+                        />
+                    </>)}
+                    {type === 'Multiple Choice' &&(<>
+                        <TextInput
+                            style={styles.input}
+                            value={answer}
+                            onChangeText={setAnswer}
+                        />
+                        <Text style={styles.inputHeader}>Incorrect answers:</Text>
+                        <TextInput
+                            style={styles.input}
+                            value={wrongAnswer1}
+                            onChangeText={setWrongAnswer1}
+                        />
+                        <TextInput
+                            style={styles.input}
+                            value={wrongAnswer2}
+                            onChangeText={setWrongAnswer2}
+                        />
+                        <TextInput
+                            style={styles.input}
+                            value={wrongAnswer3}
+                            onChangeText={setWrongAnswer3}
+                        />
+                    </>)}
+                    {type === 'True or False' &&(<>
+                        <SegmentedButtons
+                            value={answer}
+                            onValueChange={setAnswer}
+                            buttons={[
+                                { value: 'True', label: 'True'}, { value: 'False', label: 'False'},        
+                            ]}
+                        />
+                    </>)}
                 </View>
 
                 <View style={passedQuestion ? {flex: 0.2} : {flex: 0.1}}>
