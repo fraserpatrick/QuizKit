@@ -1,20 +1,65 @@
-import { useNavigation } from '@react-navigation/native';
-import { navigate } from 'expo-router/build/global-state/routing';
-import { Text, TouchableOpacity, View, StyleSheet } from 'react-native';
+import { useFocusEffect, useNavigation } from '@react-navigation/native';
+import { Text, TouchableOpacity, View, StyleSheet, FlatList } from 'react-native';
+import database, { Question } from '@/DatabaseController';
+import { useState, useCallback } from 'react';
 
 export default function QuizEditor({route}: any) {
     const {passedQuiz} = route.params;
     const navigation = useNavigation();
 
+    const [questions, setQuestions] = useState<Question[]>([]);
+
+    const loadQuestions = async () => {
+            try {
+                const questions = await database.getQuestionsByQuizID(passedQuiz.id!);
+                setQuestions(questions);
+                
+            } catch (error) {
+                console.error('Error loading data:', error);
+            }
+        };
+    
+    useFocusEffect(
+        useCallback(() => {
+            loadQuestions();
+        }, [passedQuiz.id])
+    );
+
+    type ItemProps = {
+            question: Question;
+            onPress: () => void;
+        };
+    
+        const Item = ({ question, onPress }: ItemProps) => (
+            <TouchableOpacity onPress={onPress} style={styles.questionItem}>
+                <View>
+                    <Text style={styles.buttonText}>{question.text}</Text>
+                </View>
+            </TouchableOpacity>
+        );
+
     const handleCreateQuestions = () => {
-        navigation.navigate('QuestionEditor', { passedQuestion: null } as never);
+        navigation.navigate('QuestionEditor', { passedQuestion: null, passedQuiz: passedQuiz } as never);
     };
+
+    const handleOpenQuestion = (question: Question) => {
+        navigation.navigate('QuestionEditor', { passedQuestion: question, passedQuiz: passedQuiz } as never);
+    }
 
 
     return (
         <View style={styles.container}>
             <View style={styles.questionsContainer}>
-
+                <FlatList
+                    data={questions}
+                    keyExtractor={(item) => String(item.id)}
+                    renderItem={({ item }) => (
+                        <Item
+                            question={item}
+                            onPress={() => handleOpenQuestion(item)}
+                        />
+                    )}
+                />
             </View>
             <View style={styles.buttonsContainer}>
                 <TouchableOpacity onPress={handleCreateQuestions} >
@@ -54,5 +99,13 @@ const styles = StyleSheet.create({
         padding: 10,
         color: 'white',
         fontSize: 20,
+    },
+    questionItem:{
+        alignItems: 'center',
+        backgroundColor: '#7a7a7aff',
+        borderWidth: 1,
+        marginTop: 2,
+        marginLeft: 20,
+        marginRight: 20,
     },
 });

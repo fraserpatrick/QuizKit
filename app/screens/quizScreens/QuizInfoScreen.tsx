@@ -15,7 +15,6 @@ export default function QuizInfoScreen({route}: any) {
     }
 
     const navToEditor = () => {
-        console.log('Navigating to Quiz Editor');
         navigation.navigate('QuizEditor' as never, { passedQuiz: passedQuiz } as never);
     }
 

@@ -19,6 +19,14 @@ export interface User {
     TotalQuestionsCorrect?: number;
 }
 
+export interface Question {
+    id?: number;
+    quizID: number;
+    type: string;
+    text: string;
+    correctAnswer: string;
+}
+
 class DatabaseController {
     constructor() {
         this.initialize();
@@ -36,7 +44,7 @@ class DatabaseController {
                 );
             `);
         } catch (error) {
-            console.error('Database initialization error:', error);
+            console.error('Quiz table initialization error:', error);
         }
         try {
             await db.execAsync(`
@@ -50,7 +58,20 @@ class DatabaseController {
                 );
             `);
         } catch (error) {
-            console.error('Database initialization error:', error);
+            console.error('User table initialization error:', error);
+        }
+        try {
+            await db.execAsync(`
+                CREATE TABLE IF NOT EXISTS question (
+                    id INTEGER PRIMARY KEY AUTOINCREMENT,
+                    quizID INTEGER NOT NULL,
+                    type TEXT NOT NULL,
+                    text TEXT NOT NULL,
+                    correctAnswer TEXT NOT NULL
+                );
+            `);
+        } catch (error) {
+            console.error('Question table initialization error:', error);
         }
     }
 
@@ -139,9 +160,37 @@ class DatabaseController {
     }
 
 
+    public createQuestion(quizID: number, type: string, text: string, correctAnswer: string): Promise<boolean> {
+        const insertSQL = `INSERT INTO question (quizID, type, text, correctAnswer) VALUES (?, ?, ?, ?)`;
+        return this.execute(insertSQL, [quizID, type, text, correctAnswer]);
+    }
+
+    public getQuestions(): Promise<Question[]> {
+        const sql = `SELECT * FROM question`;
+        return this.select<Question>(sql);
+    }
+
+    public getQuestionsByQuizID(quizID: number): Promise<Question[]> {
+        const sql = `SELECT * FROM question WHERE quizID = ?`;
+        return this.select<Question>(sql, [quizID]);
+    }
+
+    public updateQuestion(questionID: number, type: string, text: string, correctAnswer: string): Promise<boolean> {
+        const sql = `UPDATE question SET type = ?, text = ?, correctAnswer = ? WHERE id = ?`;
+        return this.execute(sql, [type, text, correctAnswer, questionID]);
+    }
+
+    public deleteQuestion(questionID: number): Promise<boolean> {
+        const sql = `DELETE FROM question WHERE id = ?`;
+        return this.execute(sql, [questionID]);
+    }
+
+
     public async databaseReset(): Promise<boolean>{
         const dropQuizTable = `DROP TABLE IF EXISTS quiz;`;
         const dropUserTable = `DROP TABLE IF EXISTS user;`;
+        const dropQuestionTable = `DROP TABLE IF EXISTS question;`;
+        await this.execute(dropQuestionTable);
         await this.execute(dropUserTable);
         return this.execute(dropQuizTable);
     }

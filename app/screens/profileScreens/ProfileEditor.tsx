@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { View, Text, Button, TouchableOpacity, TextInput, StyleSheet, Keyboard, TouchableWithoutFeedback } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { useAuth } from '@/app/AuthContext';
-import database, { Quiz, User } from '@/DatabaseController';
+import database, { Quiz, User, Question } from '@/DatabaseController';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 
 export default function ProfileEditor() {
@@ -11,6 +11,7 @@ export default function ProfileEditor() {
 
     const [TEMPquizzes, TEMPsetQuizzes] = useState<Quiz[]>([]);
     const [TEMPusers, TEMPsetUsers] = useState<User[]>([]);
+    const [TEMPquestions, TEMPsetQuestions] = useState<Question[]>([]);
 
     useEffect(() => {
         const loadQuizzes = async () => {
@@ -27,9 +28,17 @@ export default function ProfileEditor() {
                 console.error('Error loading users:', error);
             }
         };
+        const loadQuestions = async () => {
+            try {
+                TEMPsetQuestions(await database.getQuestions());
+            } catch (error) {
+                console.error('Error loading questions:', error);
+            }
+        };
 
         loadQuizzes();
         loadUsers();
+        loadQuestions();
     }, []);
 
 
@@ -50,6 +59,14 @@ export default function ProfileEditor() {
                 console.log("ID:" + user.id + "  Email: " + user.email + "   Username: " + user.username + "   TotalQuizPlays: " + user.totalQuizPlays + "   TotalQuestionsAnswered: " + user.totalQuestionsAnswered + "   TotalQuestionsCorrect: " + user.TotalQuestionsCorrect);
             });
         }
+        if (TEMPquestions.length === 0) {
+            console.log("No questions found");
+        } else {
+            console.log("Questions:");
+            TEMPquestions.forEach((question) => {
+                console.log("ID:" + question.id + "  QuizID: " + question.quizID + "   Type: " + question.type + "   Text: " + question.text + "   CorrectAnswer: " + question.correctAnswer);
+            });
+        }
     };
 
     const resetDatabase = async () => {
@@ -57,6 +74,7 @@ export default function ProfileEditor() {
             await database.databaseReset();
             TEMPsetQuizzes([]);
             TEMPsetUsers([]);
+            TEMPsetQuestions([]);
             alert('Database has been reset.');
             console.log('Database reset successfully.');
         } catch (error) {
