@@ -1,6 +1,6 @@
 import { useNavigation } from "@react-navigation/native";
-import React, { useEffect, useState } from 'react';
-import { FlatList, Text, TouchableOpacity, View, StyleSheet } from 'react-native';
+import React, { useEffect, useLayoutEffect, useState } from 'react';
+import { FlatList, Text, TouchableOpacity, View, StyleSheet, Button } from 'react-native';
 import database, { Quiz } from "@/DatabaseController";
 import { SegmentedButtons } from 'react-native-paper';
 import { useAuth } from "../AuthContext";
@@ -8,6 +8,15 @@ import { useAuth } from "../AuthContext";
 export default function HomeScreen() {
     const navigation = useNavigation();
     const {username} = useAuth();
+
+    useLayoutEffect(() => {
+        navigation.setOptions({
+            title: 'QuizKit',
+            headerRight: () => (
+                <Button title="Profile" onPress={() => navigation.navigate('ProfileScreen' as never)} />
+            )
+        });
+        }, []);
 
     const [myQuizzes, setMyQuizzes] = useState<Quiz[]>([]);
     const [sharedQuizzes, setSharedQuizzes] = useState<Quiz[]>([]);

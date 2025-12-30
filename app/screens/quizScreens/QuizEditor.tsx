@@ -1,11 +1,24 @@
 import { useFocusEffect, useNavigation } from '@react-navigation/native';
-import { Text, TouchableOpacity, View, StyleSheet, FlatList } from 'react-native';
+import { Text, TouchableOpacity, View, StyleSheet, FlatList, Button } from 'react-native';
 import database, { Question } from '@/DatabaseController';
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useLayoutEffect } from 'react';
 
 export default function QuizEditor({route}: any) {
     const {passedQuiz} = route.params;
     const navigation = useNavigation();
+
+    useLayoutEffect(() => {
+        navigation.setOptions({
+            headerRight: () => (
+                <Button
+                    title="Settings"
+                    onPress={() =>
+                        navigation.navigate('QuizInfoEditor', { passedQuiz })
+                    }
+                />
+            ),
+        });
+    }, [navigation, passedQuiz]);
 
     const [questions, setQuestions] = useState<Question[]>([]);
 

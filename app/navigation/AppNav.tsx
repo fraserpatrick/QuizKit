@@ -7,44 +7,19 @@ import ProfileEditor from '../screens/profileScreens/ProfileEditor';
 import QuizInfoScreen from '../screens/quizScreens/QuizInfoScreen';
 import QuestionEditor from '../screens/quizScreens/QuestionEditor';
 import QuizInfoEditor from '../screens/quizScreens/QuizInfoEditor';
-import { Alert, Button } from 'react-native';
-import { useAuth } from '@/app/AuthContext';
 
 const Stack = createNativeStackNavigator();
 
 export default function AppNav() {
-    const { logout } = useAuth();
-
-    const homeScreenOptions = ({navigation}) => ({
-        title: 'QuizKit',
-        headerRight: () => (
-            <Button title="Profile" onPress={() => navigation.navigate('ProfileScreen' as never)} />
-        )
-    });
-    
-    const profileScreenOptions = () => ({
-        headerRight: () => (
-            <Button title="Logout" onPress={handleLogout} />
-        )
-    });
-
-    const handleLogout = () => Alert.alert(
-        'Logout', 'Are you sure you want to logout?', [
-            {text: 'No, stay logged in', style: 'cancel',},
-            {text: 'Yes, logout', onPress: () => logout(), style: 'destructive',},
-        ]
-    );
-
-
     return (
         <Stack.Navigator>
-            <Stack.Screen name="Home" component={HomeScreen} options={homeScreenOptions} />
+            <Stack.Screen name="Home" component={HomeScreen} />
             <Stack.Screen name="QuizCreationScreen" component={QuizCreationScreen} />
             <Stack.Screen name="QuizInfoScreen" component={QuizInfoScreen} />
             <Stack.Screen name="QuizEditor" component={QuizEditor} />
             <Stack.Screen name="QuestionEditor" component={QuestionEditor} />
             <Stack.Screen name="QuizInfoEditor" component={QuizInfoEditor} />
-            <Stack.Screen name="ProfileScreen" component={ProfileScreen} options={profileScreenOptions} />
+            <Stack.Screen name="ProfileScreen" component={ProfileScreen} />
             <Stack.Screen name="ProfileEditor" component={ProfileEditor} />
         </Stack.Navigator>
     );

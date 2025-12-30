@@ -1,13 +1,28 @@
-import { Text, View, TouchableOpacity, StyleSheet, FlatList } from 'react-native';
+import { Text, View, TouchableOpacity, StyleSheet, FlatList, Alert, Button } from 'react-native';
 import { useAuth } from '@/app/AuthContext';
 import database, { Quiz, User } from '@/DatabaseController';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useLayoutEffect } from 'react';
 import { useNavigation } from '@react-navigation/native';
 
 export default function ProfileScreen({route}: any) {
-    const { username } = useAuth();
+    const { username, logout } = useAuth();
     const navigation = useNavigation();
     const passedUsername = route?.params?.passedUsername ?? username;
+
+    useLayoutEffect(() => {
+        navigation.setOptions({
+            headerRight: () => (
+                <Button title="Logout" onPress={handleLogout} />
+            )
+        });
+    }, []);
+
+    const handleLogout = () => Alert.alert(
+        'Logout', 'Are you sure you want to logout?', [
+            {text: 'No, stay logged in', style: 'cancel',},
+            {text: 'Yes, logout', onPress: () => logout(), style: 'destructive',},
+        ]
+    );
 
     const [quizzes, setQuizzes] = useState<Quiz[]>([]);
     const [user, setUser] = useState<User>({email: '', username: '', totalQuizPlays: 0, totalQuestionsAnswered: 0, TotalQuestionsCorrect: 0});
