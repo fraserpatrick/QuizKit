@@ -19,12 +19,12 @@ export default function QuizCreationScreen() {
     }, []);
 
 
-    const [name, setName] = useState('');
+    const [title, setTitle] = useState('');
     const [description, setDescription] = useState('');
     const [visibility, setVisibility] = useState('Private');
 
     const handleCreateQuiz = () => {
-        if (name.trim() === '') {
+        if (title.trim() === '') {
             alert('Please enter a valid quiz title.');
             return;
         }
@@ -37,9 +37,9 @@ export default function QuizCreationScreen() {
 
     const createQuiz = async () => {
         try {
-            const newQuiz = await database.createQuiz(name.trim(), username!, visibility, description.trim());
-            alert('Creating quiz with name: ' + name.trim());
-            console.log('Creating quiz with name: ' + name.trim());
+            const newQuiz = await database.createQuiz(title.trim(), username!, visibility, description.trim());
+            alert('Creating quiz with title: ' + title.trim());
+            console.log('Creating quiz with title: ' + title.trim());
 
             navigation.reset({index: 1, routes: [
                 {name: 'Home' as never} as never,
@@ -59,8 +59,8 @@ export default function QuizCreationScreen() {
                     <Text style={styles.inputHeader}>Title:</Text>
                     <TextInput
                         style={styles.input}
-                        value={name}
-                        onChangeText={setName}
+                        value={title}
+                        onChangeText={setTitle}
                         returnKeyType="next"
                     />
                     <Text style={styles.inputHeader}>Description:</Text>
