@@ -9,6 +9,10 @@ export default function QuizEditor({route}: any) {
 
     useLayoutEffect(() => {
         navigation.setOptions({
+            title: 'Quiz Editor',
+            headerLeft: () => (
+                <Button title="< Back" onPress={navigation.goBack} />
+            ),
             headerRight: () => (
                 <Button
                     title="Settings"

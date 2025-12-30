@@ -11,6 +11,10 @@ export default function ProfileScreen({route}: any) {
 
     useLayoutEffect(() => {
         navigation.setOptions({
+            title: 'Profile',
+            headerLeft: () => (
+                <Button title="< Back" onPress={navigation.goBack} />
+            ),
             headerRight: () => (
                 <Button title="Logout" onPress={handleLogout} />
             )

@@ -1,6 +1,6 @@
 import { useNavigation } from '@react-navigation/native';
-import { useState } from 'react';
-import { Alert, Keyboard, StyleSheet, Text, TextInput, TouchableOpacity, TouchableWithoutFeedback, View } from 'react-native';
+import { useLayoutEffect, useState } from 'react';
+import { Alert, Button, Keyboard, StyleSheet, Text, TextInput, TouchableOpacity, TouchableWithoutFeedback, View } from 'react-native';
 import database from '@/DatabaseController';
 import { SegmentedButtons } from 'react-native-paper';
 import { useAuth } from '@/app/AuthContext';
@@ -8,6 +8,16 @@ import { useAuth } from '@/app/AuthContext';
 export default function QuizCreationScreen() {
     const navigation = useNavigation();
     const {username} = useAuth();
+
+    useLayoutEffect(() => {
+        navigation.setOptions({
+            title: 'Create a Quiz',
+            headerLeft: () => (
+                <Button title="< Back" onPress={navigation.goBack} />
+            )
+        });
+    }, []);
+
 
     const [name, setName] = useState('');
     const [description, setDescription] = useState('');

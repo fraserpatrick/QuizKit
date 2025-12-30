@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useLayoutEffect, useState } from 'react';
 import { View, Text, Button, TouchableOpacity, TextInput, StyleSheet, Keyboard, TouchableWithoutFeedback } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { useAuth } from '@/app/AuthContext';
@@ -8,6 +8,16 @@ import { MaterialCommunityIcons } from '@expo/vector-icons';
 export default function ProfileEditor() {
     const { username, user, changeUsername, changePassword } = useAuth();
     const navigation = useNavigation();
+
+    useLayoutEffect(() => {
+        navigation.setOptions({
+            title: 'Edit Profile',
+            headerLeft: () => (
+                <Button title="< Profile" onPress={navigation.goBack} />
+            ),
+        });
+    }, []);
+
 
     const [TEMPquizzes, TEMPsetQuizzes] = useState<Quiz[]>([]);
     const [TEMPusers, TEMPsetUsers] = useState<User[]>([]);

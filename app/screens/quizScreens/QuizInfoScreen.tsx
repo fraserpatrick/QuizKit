@@ -1,13 +1,23 @@
 import { useNavigation } from '@react-navigation/native';
-import { Alert, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { Alert, Button, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import database from '@/DatabaseController';
 import { useAuth } from '@/app/AuthContext';
+import { useLayoutEffect } from 'react';
 
 export default function QuizInfoScreen({route}: any) {
     const navigation = useNavigation();
     const {passedQuiz} = route.params;
     const { username } = useAuth();
     const ownedByUser = passedQuiz.owner === username;
+
+    useLayoutEffect(() => {
+        navigation.setOptions({
+            title: 'Quiz info',
+            headerLeft: () => (
+                <Button title="< Back" onPress={navigation.goBack} />
+            )
+        });
+    }, []);
 
 
     const navToPlayer = () => {
@@ -17,7 +27,6 @@ export default function QuizInfoScreen({route}: any) {
     const navToEditor = () => {
         navigation.navigate('QuizEditor' as never, { passedQuiz: passedQuiz } as never);
     }
-
 
     const handleQuizDelete = () => Alert.alert(
         'Delete Quiz', 'Are you sure you want to delete this quiz?', [

@@ -1,6 +1,6 @@
-import { View, Text, StyleSheet, TextInput, TouchableWithoutFeedback, Keyboard, TouchableOpacity, Alert } from "react-native";
+import { View, Text, StyleSheet, TextInput, TouchableWithoutFeedback, Keyboard, TouchableOpacity, Alert, Button } from "react-native";
 import database from "@/DatabaseController";
-import React, { useState } from "react";
+import React, { useLayoutEffect, useState } from "react";
 import { useNavigation } from "@react-navigation/native";
 import { SelectList } from 'react-native-dropdown-select-list';
 import { SegmentedButtons } from "react-native-paper";
@@ -8,6 +8,16 @@ import { SegmentedButtons } from "react-native-paper";
 export default function QuestionEditor({route}: any) {
     const {passedQuestion, passedQuiz} = route.params;
     const navigation = useNavigation();
+
+    useLayoutEffect(() => {
+        navigation.setOptions({
+            title: 'Question Editor',
+            headerLeft: () => (
+                <Button title="< Back" onPress={navigation.goBack} />
+            )
+        });
+    }, []);
+
 
     const types = [
         'Single Answer',
@@ -98,7 +108,9 @@ export default function QuestionEditor({route}: any) {
                         defaultOption={defaultTypeOption}
                     />
 
-                    <Text style={styles.inputHeader}>Answer:</Text>
+                    {type && (
+                        <Text style={styles.inputHeader}>Answer:</Text>
+                    )}
                     {type === 'Single Answer' &&(<>
                         <TextInput
                             style={styles.input}
