@@ -16,14 +16,14 @@ export default function QuizInfoScreen({route}: any) {
             headerLeft: () => (
                 <Button title="< Back" onPress={navigation.goBack} />
             ),
-            headerRight: () => (
+            headerRight: ownedByUser? () => (
                 <Button
                     title="Settings"
                     onPress={() =>
                         navigation.navigate('QuizInfoEditor', { passedQuiz })
                     }
                 />
-            ),
+            ): undefined
         });
     }, []);
 
