@@ -134,6 +134,18 @@ class DatabaseController {
         return this.execute(sql, [quizID]);
     }
 
+    public async updateQuiz(quizID: number, title: string, visibility: string, description: string) : Promise<Quiz>{
+        const updateSQL = `UPDATE quiz SET title = ?, visibility = ?, description = ? WHERE id = ?`;
+        await this.execute(updateSQL, [title, visibility, description, quizID]);
+
+        const selectSQL = `SELECT id, title, owner, visibility, description FROM quiz WHERE id = ?`;
+        const [quiz] = await this.select<Quiz>(selectSQL, [quizID]);
+        if (!quiz) {
+            throw new Error('Failed to retrieve the newly created quiz');
+        }
+        return quiz;
+    }
+
 
     public createUser(email: string, username: string): Promise<boolean> {
         const insertSQL = `INSERT INTO user (email, username) VALUES (?, ?)`;

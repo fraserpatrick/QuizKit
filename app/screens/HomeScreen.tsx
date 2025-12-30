@@ -1,5 +1,5 @@
-import { useNavigation } from "@react-navigation/native";
-import React, { useEffect, useLayoutEffect, useState } from 'react';
+import { useFocusEffect, useNavigation } from "@react-navigation/native";
+import React, { useCallback, useEffect, useLayoutEffect, useState } from 'react';
 import { FlatList, Text, TouchableOpacity, View, StyleSheet, Button } from 'react-native';
 import database, { Quiz } from "@/DatabaseController";
 import { SegmentedButtons } from 'react-native-paper';
@@ -35,10 +35,12 @@ export default function HomeScreen() {
         }
     };
 
-    useEffect(() => {
-        if (!username) return;
-        loadQuizzes();
-    }, [username]);
+    useFocusEffect(
+        useCallback(() => {
+            if (!username) return;
+            loadQuizzes();
+        }, [username])
+    );
 
 
     type ItemProps = {
