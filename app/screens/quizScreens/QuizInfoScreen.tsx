@@ -15,7 +15,15 @@ export default function QuizInfoScreen({route}: any) {
             title: 'Quiz info',
             headerLeft: () => (
                 <Button title="< Back" onPress={navigation.goBack} />
-            )
+            ),
+            headerRight: () => (
+                <Button
+                    title="Settings"
+                    onPress={() =>
+                        navigation.navigate('QuizInfoEditor', { passedQuiz })
+                    }
+                />
+            ),
         });
     }, []);
 
@@ -74,7 +82,7 @@ export default function QuizInfoScreen({route}: any) {
                 {ownedByUser && (<>
                     <TouchableOpacity onPress={navToEditor} >
                         <View style={styles.button}>
-                            <Text style={styles.buttonText}>Edit quiz</Text>
+                            <Text style={styles.buttonText}>Edit questions</Text>
                         </View>
                     </TouchableOpacity>
                     <TouchableOpacity onPress={handleQuizDelete} >

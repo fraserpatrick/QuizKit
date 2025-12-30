@@ -12,17 +12,9 @@ export default function QuizEditor({route}: any) {
             title: 'Quiz Editor',
             headerLeft: () => (
                 <Button title="< Back" onPress={navigation.goBack} />
-            ),
-            headerRight: () => (
-                <Button
-                    title="Settings"
-                    onPress={() =>
-                        navigation.navigate('QuizInfoEditor', { passedQuiz })
-                    }
-                />
-            ),
+            )
         });
-    }, [navigation, passedQuiz]);
+    }, []);
 
     const [questions, setQuestions] = useState<Question[]>([]);
 
