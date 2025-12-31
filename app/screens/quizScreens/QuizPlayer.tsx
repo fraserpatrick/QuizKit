@@ -2,6 +2,7 @@ import { useFocusEffect, useNavigation } from "@react-navigation/native";
 import { useCallback, useLayoutEffect, useState } from "react";
 import { View, Text, Button, Alert, Keyboard, TouchableWithoutFeedback, StyleSheet, TouchableOpacity, TextInput } from "react-native";
 import database, {Question} from '@/DatabaseController';
+import { SegmentedButtons } from "react-native-paper";
 
 export default function QuizPlayer({route}: any) {
     const navigation = useNavigation();
@@ -21,6 +22,7 @@ export default function QuizPlayer({route}: any) {
     const [questions, setQuestions] = useState<Question[]>([]);
     const [currentQuestion, setCurrentQuestion] = useState(0);
     const [answer, setAnswer] = useState('');
+    const [answers, setAnswers] = useState<string[]>([]);
 
     const loadQuestions = async () => {
         try {
@@ -72,13 +74,18 @@ export default function QuizPlayer({route}: any) {
     }
 
     const handleNextQuestion = () => {
-        if (currentQuestion < questions.length - 1) {
-            setCurrentQuestion(currentQuestion + 1);
-        }
+        setAnswers(prev => [...prev, answer]);
+        setCurrentQuestion(prev => prev + 1);
+        setAnswer('');
     }
 
     const finishQuiz = () => {
-        navigation.navigate('QuizPlayerSummary' as never);
+        const finalAnswers = [...answers, answer];
+        navigation.reset({index: 2, routes: [
+            {name: 'Home' as never},
+            {name: 'QuizInfoScreen' as never, params: { passedQuiz: passedQuiz }},
+            {name: 'QuizPlayerSummary' as never, params: { passedQuiz: passedQuiz, questions: questions, answers: finalAnswers }}
+        ],} as never);
     }
 
 
@@ -90,6 +97,16 @@ export default function QuizPlayer({route}: any) {
                         <Text style={styles.questionHeader}>
                             Question {currentQuestion+1}. {questions[currentQuestion].text}?
                         </Text>
+                        {questions[currentQuestion].type === 'Single Answer' && (
+                            <TextInput 
+                            style={styles.input}
+                            value={answer}
+                            onChangeText={setAnswer}
+                            multiline
+                            textAlignVertical="top">
+                        </TextInput>
+                        )}
+                        {questions[currentQuestion].type === 'Multiple Choice' && (
                         <TextInput 
                             style={styles.bigInput}
                             value={answer}
@@ -97,6 +114,16 @@ export default function QuizPlayer({route}: any) {
                             multiline
                             textAlignVertical="top">
                         </TextInput>
+                        )}
+                        {questions[currentQuestion].type === 'True or False' && (
+                            <SegmentedButtons
+                                value={answer}
+                                onValueChange={setAnswer}
+                                buttons={[
+                                    { value: 'True', label: 'True'}, { value: 'False', label: 'False'},        
+                                ]}
+                            />
+                        )}                        
                     </View>
                     <View style={styles.buttonsContainer}>
                         {currentQuestion < questions.length -1 ? (
@@ -116,9 +143,13 @@ export default function QuizPlayer({route}: any) {
                 </View>
             </TouchableWithoutFeedback>
         ) : (
-            <View>
-                <Button title="Start quiz" onPress={handleQuizStart}/>
-                <Text>{questions.length}</Text>
+            <View style={styles.container}>
+                <TouchableOpacity onPress={handleQuizStart} >
+                    <View style={styles.button}>
+                        <Text style={styles.buttonText}>Start Quiz</Text>
+                    </View>
+                </TouchableOpacity>
+                <Text style={styles.questionHeader}>Number of questions: {questions.length}</Text>
             </View>
         )}
     </>);

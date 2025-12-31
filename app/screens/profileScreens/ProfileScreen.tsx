@@ -29,7 +29,7 @@ export default function ProfileScreen({route}: any) {
     );
 
     const [quizzes, setQuizzes] = useState<Quiz[]>([]);
-    const [user, setUser] = useState<User>({email: '', username: '', totalQuizPlays: 0, totalQuestionsAnswered: 0, TotalQuestionsCorrect: 0});
+    const [user, setUser] = useState<User>({email: '', username: '', totalQuizPlays: 0, totalQuestionsAnswered: 0, totalQuestionsCorrect: 0});
     const ownProfile = passedUsername === username;
 
 
@@ -79,7 +79,7 @@ export default function ProfileScreen({route}: any) {
                 <Text style={styles.containerHeader}>Game Statistics</Text>
                 <Text>Total Quizzes: {user.totalQuizPlays}</Text>
                 <Text>Total Questions Answered: {user.totalQuestionsAnswered}</Text>
-                <Text>Total Questions Correct: {user.TotalQuestionsCorrect}</Text>
+                <Text>Total Questions Correct: {user.totalQuestionsCorrect}</Text>
             </View>
             <View style={styles.quizContainer}>
                 <Text style={styles.containerHeader}>Owned Quizzes</Text>

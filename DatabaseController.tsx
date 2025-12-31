@@ -16,7 +16,7 @@ export interface User {
     username: string;
     totalQuizPlays?: number;
     totalQuestionsAnswered?: number;
-    TotalQuestionsCorrect?: number;
+    totalQuestionsCorrect?: number;
 }
 
 export interface Question {
@@ -57,7 +57,7 @@ class DatabaseController {
                     username TEXT NOT NULL,
                     totalQuizPlays INTEGER DEFAULT 0,
                     totalQuestionsAnswered INTEGER DEFAULT 0,
-                    TotalQuestionsCorrect INTEGER DEFAULT 0
+                    totalQuestionsCorrect INTEGER DEFAULT 0
                 );
             `);
         } catch (error) {
@@ -175,6 +175,11 @@ class DatabaseController {
     public updateQuizToNewUsername(oldUsername: string, newUsername: string): Promise<boolean> {
         const sql = `UPDATE quiz SET userID = ? WHERE userID = ?`;
         return this.execute(sql, [newUsername, oldUsername]);
+    }
+
+    public updateUserStats(username: string, plays: number, answered: number, correct: number): Promise<boolean> {
+        const sql = `UPDATE user SET totalQuizPlays = ?, totalQuestionsAnswered = ?, totalQuestionsCorrect = ? WHERE username = ?`;
+        return this.execute(sql, [plays, answered, correct, username]);
     }
 
 
