@@ -1,12 +1,12 @@
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import HomeScreen from '../screens/HomeScreen';
-import QuizCreationScreen from '../screens/quizScreens/QuizCreationScreen';
-import QuizEditor from '../screens/quizScreens/QuizEditor';
+import QuizCreationScreen from '../screens/quizScreens/editors/QuizCreationScreen';
+import QuizEditor from '../screens/quizScreens/editors/QuizEditor';
 import ProfileScreen from '../screens/profileScreens/ProfileScreen';
 import ProfileEditor from '../screens/profileScreens/ProfileEditor';
 import QuizInfoScreen from '../screens/quizScreens/QuizInfoScreen';
-import QuestionEditor from '../screens/quizScreens/QuestionEditor';
-import QuizInfoEditor from '../screens/quizScreens/QuizInfoEditor';
+import QuestionEditor from '../screens/quizScreens/editors/QuestionEditor';
+import QuizInfoEditor from '../screens/quizScreens/editors/QuizInfoEditor';
 import QuizPlayer from '../screens/quizScreens/QuizPlayer';
 
 const Stack = createNativeStackNavigator();
