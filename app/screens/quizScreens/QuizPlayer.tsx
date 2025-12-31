@@ -1,0 +1,173 @@
+import { useFocusEffect, useNavigation } from "@react-navigation/native";
+import { useCallback, useLayoutEffect, useState } from "react";
+import { View, Text, Button, Alert, Keyboard, TouchableWithoutFeedback, StyleSheet, TouchableOpacity, TextInput } from "react-native";
+import database, {Question} from '@/DatabaseController';
+
+export default function QuizPlayer({route}: any) {
+    const navigation = useNavigation();
+    const {passedQuiz} = route.params;
+    const [quizStarted, setQuizStarted] = useState(false);
+
+    useLayoutEffect(() => {
+        navigation.setOptions({
+            title: 'Quiz Player',
+            headerLeft: () => (
+                <Button title="< Exit" onPress={handleExit} />
+            )
+        });
+    }, [navigation, quizStarted]);
+
+
+    const [questions, setQuestions] = useState<Question[]>([]);
+    const [currentQuestion, setCurrentQuestion] = useState(0);
+    const [answer, setAnswer] = useState('');
+
+    const loadQuestions = async () => {
+        try {
+            const questions = await database.getQuestionsByQuizID(passedQuiz.id!);
+            setQuestions(questions);
+        } catch (error) {
+            console.error('Error loading data:', error);
+        }
+    };
+        
+    useFocusEffect(
+        useCallback(() => {
+            loadQuestions();
+        }, [passedQuiz.id])
+    );
+
+
+    const handleExit = () => {
+        if (quizStarted){
+            Alert.alert( 'Exit Player', 'Are you ready to exit this quiz?', [
+                {text: 'No, keep playing', style: 'cancel',},
+                {text: 'Yes, exit quiz', onPress: () => navigation.goBack(), style: 'destructive',},
+            ]);
+        }
+        else {
+            navigation.goBack();
+        }
+    }
+
+    const handleQuizStart = () => {
+        if (questions.length === 0) {
+            Alert.alert('No questions', 'This quiz has no questions.');
+            return;
+        }
+
+        Alert.alert(
+            'Start Quiz',
+            'Are you ready to start this quiz?',
+            [
+                { text: 'Not yet', style: 'cancel' },
+                { text: 'Yes, start playing', onPress: startQuiz }
+            ]
+        );
+    };
+
+
+    const startQuiz = () => {
+        setQuizStarted(true);
+    }
+
+    const handleNextQuestion = () => {
+        if (currentQuestion < questions.length - 1) {
+            setCurrentQuestion(currentQuestion + 1);
+        }
+    }
+
+
+    return (<>
+        {quizStarted ? (
+            <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+                <View style={styles.container}>
+                    <View style={styles.inputContainer}>
+                        <Text style={styles.questionHeader}>
+                            Question {currentQuestion+1}. {questions[currentQuestion].text}?
+                        </Text>
+                        <TextInput 
+                            style={styles.bigInput}
+                            value={answer}
+                            onChangeText={setAnswer}
+                            multiline
+                            textAlignVertical="top">
+                        </TextInput>
+                    </View>
+                    <View style={styles.buttonsContainer}>
+                        {currentQuestion < questions.length -1 ? (
+                            <TouchableOpacity onPress={handleNextQuestion} >
+                                <View style={styles.button}>
+                                    <Text style={styles.buttonText}>Next Question</Text>
+                                </View>
+                            </TouchableOpacity>
+                        ):(
+                            <TouchableOpacity onPress={() => console.log("FINISH")} >
+                                <View style={styles.button}>
+                                    <Text style={styles.buttonText}>Finish Quiz</Text>
+                                </View>
+                            </TouchableOpacity>
+                        )}
+                    </View>
+                </View>
+            </TouchableWithoutFeedback>
+        ) : (
+            <View>
+                <Button title="Start quiz" onPress={handleQuizStart}/>
+                <Text>{questions.length}</Text>
+            </View>
+        )}
+    </>);
+}
+
+
+const styles = StyleSheet.create({
+    container:{
+        flex: 1,
+        marginLeft: 20,
+        marginRight: 20,
+        marginTop: 10,
+    },
+    inputContainer:{
+        flex: 0.9,
+    },
+    buttonsContainer:{
+        flex: 0.1,
+    },
+    questionHeader:{
+        fontSize: 20,
+    },
+    button:{
+        alignItems: 'center',
+        backgroundColor: '#7a7a7aff',
+        borderRadius: 10,
+        marginTop: 4,
+        marginBottom: 4,
+        borderWidth: 2,
+    },
+    buttonText:{
+        textAlign: 'center',
+        padding: 10,
+        color: 'white',
+        fontSize: 20,
+    },
+    input:{
+        width: '100%',
+        padding: 10,
+        marginBottom: 10,
+        borderWidth: 1,
+        borderColor: '#000000ff',
+        borderRadius: 10,
+        backgroundColor: '#ffffffff',
+    },
+    bigInput:{
+        width: '100%',
+        padding: 10,
+        marginBottom: 10,
+        borderWidth: 1,
+        borderColor: '#000000ff',
+        borderRadius: 10,
+        backgroundColor: '#ffffffff',
+        height: 150,
+    },
+});

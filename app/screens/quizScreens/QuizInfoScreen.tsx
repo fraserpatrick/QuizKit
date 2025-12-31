@@ -29,7 +29,7 @@ export default function QuizInfoScreen({route}: any) {
 
 
     const navToPlayer = () => {
-        console.log('Navigating to Quiz Player');
+        navigation.navigate('QuizPlayer' as never, { passedQuiz: passedQuiz } as never);
     }
 
     const navToEditor = () => {
