@@ -77,6 +77,10 @@ export default function QuizPlayer({route}: any) {
         }
     }
 
+    const finishQuiz = () => {
+        navigation.navigate('QuizPlayerSummary' as never);
+    }
+
 
     return (<>
         {quizStarted ? (
@@ -102,7 +106,7 @@ export default function QuizPlayer({route}: any) {
                                 </View>
                             </TouchableOpacity>
                         ):(
-                            <TouchableOpacity onPress={() => console.log("FINISH")} >
+                            <TouchableOpacity onPress={finishQuiz} >
                                 <View style={styles.button}>
                                     <Text style={styles.buttonText}>Finish Quiz</Text>
                                 </View>

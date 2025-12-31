@@ -8,6 +8,7 @@ import QuizInfoScreen from '../screens/quizScreens/QuizInfoScreen';
 import QuestionEditor from '../screens/quizScreens/editors/QuestionEditor';
 import QuizInfoEditor from '../screens/quizScreens/editors/QuizInfoEditor';
 import QuizPlayer from '../screens/quizScreens/QuizPlayer';
+import QuizPlayerSummary from '../screens/quizScreens/QuizPlayerSummary';
 
 const Stack = createNativeStackNavigator();
 
@@ -23,6 +24,7 @@ export default function AppNav() {
             <Stack.Screen name="ProfileScreen" component={ProfileScreen} />
             <Stack.Screen name="ProfileEditor" component={ProfileEditor} />
             <Stack.Screen name="QuizPlayer" component={QuizPlayer} />
+            <Stack.Screen name="QuizPlayerSummary" component={QuizPlayerSummary} />
         </Stack.Navigator>
     );
 }
