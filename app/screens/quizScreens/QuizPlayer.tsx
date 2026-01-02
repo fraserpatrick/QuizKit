@@ -76,9 +76,25 @@ export default function QuizPlayer({route}: any) {
     }
 
     const handleNextQuestion = () => {
-        setAnswers(prev => [...prev, answer]);
+        setAnswers(prev => {
+            const updated = [...prev];
+            updated[currentQuestion] = answer;
+            return updated;
+        });
+
         setCurrentQuestion(prev => prev + 1);
-        setAnswer('');
+        setAnswer(answers[currentQuestion + 1] ?? '');
+    }
+
+    const handlePrevQuestion = () => {
+        setAnswers(prev => {
+            const updated = [...prev];
+            updated[currentQuestion] = answer;
+            return updated;
+        });
+
+        setCurrentQuestion(prev => prev - 1);
+        setAnswer(answers[currentQuestion - 1] ?? '');
     }
 
     const finishQuiz = () => {
@@ -135,13 +151,10 @@ export default function QuizPlayer({route}: any) {
 
             case 'True or False':
                 return (
-                    <SegmentedButtons
+                    <MultipleChoiceInput
+                        options={['True', 'False']}
                         value={answer}
-                        onValueChange={setAnswer}
-                        buttons={[
-                            { value: 'True', label: 'True' },
-                            { value: 'False', label: 'False' },
-                        ]}
+                        onChange={setAnswer}
                     />
                 );
 
@@ -154,8 +167,10 @@ export default function QuizPlayer({route}: any) {
         {quizStarted ? (
             <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
                 <View style={styles.container}>
-                    <View style={styles.inputContainer}>
+                    <View style={styles.questionContainer}>
                         <Text style={styles.questionHeader}>{questions[currentQuestion].text}?</Text>
+                    </View>
+                    <View style={styles.inputContainer}>
                         {renderQuestion(questions[currentQuestion])}
                     </View>
                     <View style={styles.buttonsContainer}>
@@ -169,6 +184,13 @@ export default function QuizPlayer({route}: any) {
                             <TouchableOpacity onPress={finishQuiz} >
                                 <View style={styles.button}>
                                     <Text style={styles.buttonText}>Finish Quiz</Text>
+                                </View>
+                            </TouchableOpacity>
+                        )}
+                        {currentQuestion !== 0 && (
+                            <TouchableOpacity  onPress={handlePrevQuestion}>
+                                <View style={styles.button}>
+                                    <Text style={styles.buttonText}>Previous Question</Text>
                                 </View>
                             </TouchableOpacity>
                         )}
@@ -196,11 +218,23 @@ const styles = StyleSheet.create({
         marginRight: 20,
         marginTop: 10,
     },
+    questionContainer:{
+        flex: 0.2,
+        borderWidth: 1,
+        padding: 10,
+        margin: 10,
+        backgroundColor: '#cececeff'
+    },
     inputContainer:{
-        flex: 0.9,
+        flex: 0.6,
+        borderWidth: 1,
+        padding: 10,
+        margin: 10,
+        backgroundColor: '#cececeff'
     },
     buttonsContainer:{
-        flex: 0.1,
+        flex: 0.2,
+        margin: 10,
     },
     questionHeader:{
         fontSize: 20,
@@ -239,7 +273,7 @@ const styles = StyleSheet.create({
         height: 150,
     },
     choiceButton: {
-        padding: 14,
+        padding: 10,
         marginVertical: 6,
         borderRadius: 10,
         borderWidth: 2,
@@ -254,6 +288,7 @@ const styles = StyleSheet.create({
         textAlign: 'center',
     },
     choiceTextSelected: {
+        fontSize: 20,
         color: '#ffffff',
         fontWeight: 'bold',
     },
