@@ -8,19 +8,21 @@ export default function QuizPlayer({route}: any) {
     const navigation = useNavigation();
     const {passedQuiz} = route.params;
     const [quizStarted, setQuizStarted] = useState(false);
+    const [currentQuestion, setCurrentQuestion] = useState(0);
+    const [questions, setQuestions] = useState<Question[]>([]);
 
     useLayoutEffect(() => {
         navigation.setOptions({
-            title: 'Quiz Player',
+            title: quizStarted
+                ? `Question ${currentQuestion + 1} of ${questions.length}`
+                : `${passedQuiz.title}`,
             headerLeft: () => (
                 <Button title="< Exit" onPress={handleExit} />
             )
         });
-    }, [navigation, quizStarted]);
+    }, [navigation, currentQuestion, quizStarted]);
 
 
-    const [questions, setQuestions] = useState<Question[]>([]);
-    const [currentQuestion, setCurrentQuestion] = useState(0);
     const [answer, setAnswer] = useState('');
     const [answers, setAnswers] = useState<string[]>([]);
 
@@ -32,7 +34,7 @@ export default function QuizPlayer({route}: any) {
             console.error('Error loading data:', error);
         }
     };
-        
+
     useFocusEffect(
         useCallback(() => {
             loadQuestions();
@@ -89,41 +91,72 @@ export default function QuizPlayer({route}: any) {
     }
 
 
+    const MultipleChoiceInput = ({options, value, onChange,}: {options: string[]; value: string; onChange: (val: string) => void;}) => {
+        return (
+            <View>
+                {options.map(option => {
+                    const selected = value === option;
+
+                    return (
+                        <TouchableOpacity
+                            key={option}
+                            onPress={() => onChange(option)}
+                            style={[styles.choiceButton, selected && styles.choiceButtonSelected,]}
+                        >
+                            <Text style={[styles.choiceText, selected && styles.choiceTextSelected,]}>
+                                {option}
+                            </Text>
+                        </TouchableOpacity>
+                    );
+                })}
+            </View>
+        );
+    };
+
+    const renderQuestion= (question: Question) => {
+        switch (question.type) {
+            case 'Single Answer':
+                return (
+                    <TextInput
+                        style={styles.input}
+                        value={answer}
+                        onChangeText={setAnswer}
+                    />
+                );
+
+            case 'Multiple Choice':
+                return (
+                    <MultipleChoiceInput
+                        options={question.options}
+                        value={answer}
+                        onChange={setAnswer}
+                    />
+                );
+
+            case 'True or False':
+                return (
+                    <SegmentedButtons
+                        value={answer}
+                        onValueChange={setAnswer}
+                        buttons={[
+                            { value: 'True', label: 'True' },
+                            { value: 'False', label: 'False' },
+                        ]}
+                    />
+                );
+
+            default:
+                return null;
+        }
+    };
+
     return (<>
         {quizStarted ? (
             <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
                 <View style={styles.container}>
                     <View style={styles.inputContainer}>
-                        <Text style={styles.questionHeader}>
-                            Question {currentQuestion+1}. {questions[currentQuestion].text}?
-                        </Text>
-                        {questions[currentQuestion].type === 'Single Answer' && (
-                            <TextInput 
-                            style={styles.input}
-                            value={answer}
-                            onChangeText={setAnswer}
-                            multiline
-                            textAlignVertical="top">
-                        </TextInput>
-                        )}
-                        {questions[currentQuestion].type === 'Multiple Choice' && (
-                        <TextInput 
-                            style={styles.bigInput}
-                            value={answer}
-                            onChangeText={setAnswer}
-                            multiline
-                            textAlignVertical="top">
-                        </TextInput>
-                        )}
-                        {questions[currentQuestion].type === 'True or False' && (
-                            <SegmentedButtons
-                                value={answer}
-                                onValueChange={setAnswer}
-                                buttons={[
-                                    { value: 'True', label: 'True'}, { value: 'False', label: 'False'},        
-                                ]}
-                            />
-                        )}                        
+                        <Text style={styles.questionHeader}>{questions[currentQuestion].text}?</Text>
+                        {renderQuestion(questions[currentQuestion])}
                     </View>
                     <View style={styles.buttonsContainer}>
                         {currentQuestion < questions.length -1 ? (
@@ -204,5 +237,24 @@ const styles = StyleSheet.create({
         borderRadius: 10,
         backgroundColor: '#ffffffff',
         height: 150,
+    },
+    choiceButton: {
+        padding: 14,
+        marginVertical: 6,
+        borderRadius: 10,
+        borderWidth: 2,
+        backgroundColor: '#ffffff',
+    },
+    choiceButtonSelected: {
+        backgroundColor: '#7a7a7aff',
+    },
+    choiceText: {
+        fontSize: 18,
+        color: '#000000',
+        textAlign: 'center',
+    },
+    choiceTextSelected: {
+        color: '#ffffff',
+        fontWeight: 'bold',
     },
 });
