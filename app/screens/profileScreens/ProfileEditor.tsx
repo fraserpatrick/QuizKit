@@ -66,7 +66,7 @@ export default function ProfileEditor() {
         } else {
             console.log("Users:");
             TEMPusers.forEach((user) => {
-                console.log("ID:" + user.id + "  Email: " + user.email + "   Username: " + user.username + "   TotalQuizPlays: " + user.totalQuizPlays + "   TotalQuestionsAnswered: " + user.totalQuestionsAnswered + "   TotalQuestionsCorrect: " + user.TotalQuestionsCorrect);
+                console.log("ID:" + user.id + "  Email: " + user.email + "   Username: " + user.username + "   TotalQuizPlays: " + user.totalQuizPlays + "   TotalQuestionsAnswered: " + user.totalQuestionsAnswered + "   TotalQuestionsCorrect: " + user.totalQuestionsCorrect);
             });
         }
         if (TEMPquestions.length === 0) {
@@ -74,7 +74,7 @@ export default function ProfileEditor() {
         } else {
             console.log("Questions:");
             TEMPquestions.forEach((question) => {
-                console.log("ID:" + question.id + "  QuizID: " + question.quizID + "   Type: " + question.type + "   Text: " + question.text + "   CorrectAnswer: " + question.correctAnswer + "   wrongAnswer1: " + question.wrongAnswer1 + "   wrongAnswer2: " + question.wrongAnswer2 + "   wrongAnswer3: " + question.wrongAnswer3);
+                console.log("ID:" + question.id + "  QuizID: " + question.quizID + "   Type: " + question.type + "   Text: " + question.text + "   CorrectAnswer: " + question.correctAnswer + "   options: " + question.options);
             });
         }
     };

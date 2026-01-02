@@ -25,9 +25,7 @@ export interface Question {
     type: string;
     text: string;
     correctAnswer: string;
-    wrongAnswer1: string;
-    wrongAnswer2: string;
-    wrongAnswer3: string;
+    options: string[];
 }
 
 class DatabaseController {
@@ -71,9 +69,7 @@ class DatabaseController {
                     type TEXT NOT NULL,
                     text TEXT NOT NULL,
                     correctAnswer TEXT NOT NULL,
-                    wrongAnswer1 TEXT,
-                    wrongAnswer2 TEXT,
-                    wrongAnswer3 TEXT
+                    options TEXT
                 );
             `);
         } catch (error) {
@@ -173,7 +169,7 @@ class DatabaseController {
     }
 
     public updateQuizToNewUsername(oldUsername: string, newUsername: string): Promise<boolean> {
-        const sql = `UPDATE quiz SET userID = ? WHERE userID = ?`;
+        const sql = `UPDATE quiz SET owner = ? WHERE owner = ?`;
         return this.execute(sql, [newUsername, oldUsername]);
     }
 
@@ -185,24 +181,34 @@ class DatabaseController {
     }
 
 
-    public createQuestion(quizID: number, type: string, text: string, correctAnswer: string, wrongAnswer1: string, wrongAnswer2: string, wrongAnswer3: string): Promise<boolean> {
-        const insertSQL = `INSERT INTO question (quizID, type, text, correctAnswer, wrongAnswer1, wrongAnswer2, wrongAnswer3) VALUES (?, ?, ?, ?, ?, ?, ?)`;
-        return this.execute(insertSQL, [quizID, type, text, correctAnswer, wrongAnswer1, wrongAnswer2, wrongAnswer3]);
+    public createQuestion(quizID: number, type: string, text: string, correctAnswer: string, options: string[]): Promise<boolean> {
+        const insertSQL = `INSERT INTO question (quizID, type, text, correctAnswer, options) VALUES (?, ?, ?, ?, ?)`;
+        return this.execute(insertSQL, [quizID, type, text, correctAnswer, JSON.stringify(options)]);
     }
 
-    public getQuestions(): Promise<Question[]> {
+    public async getQuestions(): Promise<Question[]> {
         const sql = `SELECT * FROM question`;
-        return this.select<Question>(sql);
+        const rows = await this.select<any>(sql);
+
+        return rows.map(row => ({
+            ...row,
+            options: row.options ? JSON.parse(row.options) : [],
+        }));
     }
 
-    public getQuestionsByQuizID(quizID: number): Promise<Question[]> {
+    public async getQuestionsByQuizID(quizID: number): Promise<Question[]> {
         const sql = `SELECT * FROM question WHERE quizID = ?`;
-        return this.select<Question>(sql, [quizID]);
+        const rows = await this.select<any>(sql, [quizID]);
+        
+        return rows.map(row => ({
+            ...row,
+            options: row.options ? JSON.parse(row.options) : [],
+        }));
     }
 
-    public updateQuestion(questionID: number, type: string, text: string, correctAnswer: string, wrongAnswer1: string, wrongAnswer2: string, wrongAnswer3: string): Promise<boolean> {
-        const sql = `UPDATE question SET type = ?, text = ?, correctAnswer = ?, wrongAnswer1 = ?, wrongAnswer2 = ?, wrongAnswer3 = ? WHERE id = ?`;
-        return this.execute(sql, [type, text, correctAnswer, wrongAnswer1, wrongAnswer2, wrongAnswer3, questionID]);
+    public updateQuestion(questionID: number, type: string, text: string, correctAnswer: string, options: string[]): Promise<boolean> {
+        const sql = `UPDATE question SET type = ?, text = ?, correctAnswer = ?, options = ? WHERE id = ?`;
+        return this.execute(sql, [type, text, correctAnswer, JSON.stringify(options), questionID]);
     }
 
     public deleteQuestion(questionID: number): Promise<boolean> {

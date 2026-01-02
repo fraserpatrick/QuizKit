@@ -32,9 +32,9 @@ export default function QuestionEditor({route}: any) {
     const [text, setText] = useState(passedQuestion ? passedQuestion.text : '');
     const [type, setType] = useState(passedQuestion ? passedQuestion.type : '');
     const [answer, setAnswer] = useState(passedQuestion ? passedQuestion.correctAnswer : '');
-    const [wrongAnswer1, setWrongAnswer1] = useState(passedQuestion ? passedQuestion.wrongAnswer1 : '');
-    const [wrongAnswer2, setWrongAnswer2] = useState(passedQuestion ? passedQuestion.wrongAnswer2 : '');
-    const [wrongAnswer3, setWrongAnswer3] = useState(passedQuestion ? passedQuestion.wrongAnswer3 : '');
+    const [wrongAnswer1, setWrongAnswer1] = useState(passedQuestion ? passedQuestion.options[0] : '');
+    const [wrongAnswer2, setWrongAnswer2] = useState(passedQuestion ? passedQuestion.options[1] : '');
+    const [wrongAnswer3, setWrongAnswer3] = useState(passedQuestion ? passedQuestion.options[2] : '');
 
 
     const saveQuestion = async () => {
@@ -49,17 +49,14 @@ export default function QuestionEditor({route}: any) {
                 return;
             }
         }
-
-        const wa1 = type === 'Multiple Choice' ? wrongAnswer1 : null;
-        const wa2 = type === 'Multiple Choice' ? wrongAnswer2 : null;
-        const wa3 = type === 'Multiple Choice' ? wrongAnswer3 : null;
-
+        
+        const options = [answer.trim(), wrongAnswer1.trim(), wrongAnswer2.trim(), wrongAnswer3.trim()];
         try {
             if (!passedQuestion) {
-                await database.createQuestion(passedQuiz.id, type, text.trim(), answer.trim(), wa1, wa2, wa3);
+                await database.createQuestion(passedQuiz.id, type, text.trim(), answer.trim(), options);
                 alert('Question saved successfully.');
             } else {
-                await database.updateQuestion(passedQuestion.id, type, text.trim(), answer.trim(), wa1, wa2, wa3);
+                await database.updateQuestion(passedQuestion.id, type, text.trim(), answer.trim(), options);
                 alert('Question updated successfully.');
             }
 
