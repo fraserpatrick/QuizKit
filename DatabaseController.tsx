@@ -177,9 +177,11 @@ class DatabaseController {
         return this.execute(sql, [newUsername, oldUsername]);
     }
 
-    public updateUserStats(username: string, plays: number, answered: number, correct: number): Promise<boolean> {
-        const sql = `UPDATE user SET totalQuizPlays = ?, totalQuestionsAnswered = ?, totalQuestionsCorrect = ? WHERE username = ?`;
-        return this.execute(sql, [plays, answered, correct, username]);
+    public updateUserStats(username: string, answered: number, correct: number): Promise<boolean> {
+        const sql = `UPDATE user 
+                    SET totalQuizPlays = totalQuizPlays + 1, totalQuestionsAnswered = totalQuestionsAnswered + ?, totalQuestionsCorrect = totalQuestionsCorrect + ?
+                    WHERE username = ?;`;
+        return this.execute(sql, [answered, correct, username]);
     }
 
 

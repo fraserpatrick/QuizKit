@@ -43,7 +43,6 @@ export default function QuizPlayerSummary({ route }: any) {
             try {
                 await database.updateUserStats(
                     username!,
-                    user.totalQuizPlays + 1,
                     user.totalQuestionsAnswered + answers.length,
                     user.totalQuestionsCorrect + score
                 );
