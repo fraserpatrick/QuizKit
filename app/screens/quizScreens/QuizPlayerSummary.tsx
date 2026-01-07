@@ -1,60 +1,48 @@
-import { View, Text } from "react-native";
-import { useEffect, useState } from "react";
-import database, { User } from '@/DatabaseController';
+import { View, Text, Button } from "react-native";
+import { useEffect, useLayoutEffect, useState } from "react";
+import database from '@/DatabaseController';
 import { useAuth } from '@/app/AuthContext';
+import { useNavigation } from "@react-navigation/native";
 
 export default function QuizPlayerSummary({ route }: any) {
     const { questions, answers } = route.params;
     const { username } = useAuth();
+    const navigation = useNavigation();
 
-    const [user, setUser] = useState<User>();
-    const [score, setScore] = useState(0);
-    const [statsUpdated, setStatsUpdated] = useState(false);
-
-    useEffect(() => {
-        let total = 0;
-
-        questions.forEach((question: any, index: number) => {
-            if (question.correctAnswer === answers[index]) {
-                total++;
-            }
+    useLayoutEffect(() => {
+        navigation.setOptions({
+            title: 'Summary',
+            headerLeft: () => (
+                <Button title="< Back" onPress={navigation.goBack} />
+            ),
         });
+    }, [navigation]);
 
-        setScore(total);
-    }, [questions, answers]);
 
-    useEffect(() => {
-        const loadUser = async () => {
-            try {
-                const users = await database.getUserByUsername(username!);
-                setUser(users[0]);
-            } catch (error) {
-                console.error('Error loading user:', error);
-            }
-        };
-
-        loadUser();
-    }, [username]);
+    const [score, setScore] = useState(0);
 
     useEffect(() => {
-        if (!user || statsUpdated) return;
+        const calcScoreAndUpdateStats = async () => {
+            let total = 0;
 
-        const updateStats = async () => {
+            questions.forEach((question: any, index: number) => {
+                if ( question.correctAnswer.trim().toLowerCase() === answers[index].trim().toLowerCase()) {
+                    total++;
+                }
+            });
+
+            setScore(total);
+
             try {
-                await database.updateUserStats(
-                    username!,
-                    user.totalQuestionsAnswered + answers.length,
-                    user.totalQuestionsCorrect + score
-                );
-
-                setStatsUpdated(true);
+                await database.updateUserStats(username!, answers.length, total);
             } catch (error) {
                 console.error('Error updating stats:', error);
             }
-        };
+        }
+        
+        calcScoreAndUpdateStats();
+    }, [questions, answers]);
 
-        updateStats();
-    }, [user, score, answers.length, username, statsUpdated]);
 
     return (
         <View>
