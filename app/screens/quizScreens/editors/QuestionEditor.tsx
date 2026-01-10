@@ -44,8 +44,8 @@ export default function QuestionEditor({route}: any) {
         }
 
         if (type === 'Multiple Choice') {
-            if (!wrongAnswer1?.trim() || !wrongAnswer2?.trim() || !wrongAnswer3?.trim()) {
-                alert('Please provide all incorrect answers.');
+            if (!wrongAnswer1?.trim() && !wrongAnswer2?.trim() && !wrongAnswer3?.trim()) {
+                alert('Please provide at least 1 incorrect answer.');
                 return;
             }
         }

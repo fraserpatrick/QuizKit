@@ -2,7 +2,6 @@ import { useFocusEffect, useNavigation } from "@react-navigation/native";
 import { useCallback, useLayoutEffect, useState } from "react";
 import { View, Text, Button, Alert, Keyboard, TouchableWithoutFeedback, StyleSheet, TouchableOpacity, TextInput } from "react-native";
 import database, {Question} from '@/DatabaseController';
-import { SegmentedButtons } from "react-native-paper";
 
 export default function QuizPlayer({route}: any) {
     const navigation = useNavigation();
@@ -111,19 +110,21 @@ export default function QuizPlayer({route}: any) {
         return (
             <View>
                 {options.map(option => {
-                    const selected = value === option;
+                    if (option){
+                        const selected = value === option;
 
-                    return (
-                        <TouchableOpacity
-                            key={option}
-                            onPress={() => onChange(option)}
-                            style={[styles.choiceButton, selected && styles.choiceButtonSelected,]}
-                        >
-                            <Text style={[styles.choiceText, selected && styles.choiceTextSelected,]}>
-                                {option}
-                            </Text>
-                        </TouchableOpacity>
-                    );
+                        return (
+                            <TouchableOpacity
+                                key={option}
+                                onPress={() => onChange(option)}
+                                style={[styles.choiceButton, selected && styles.choiceButtonSelected,]}
+                            >
+                                <Text style={[styles.choiceText, selected && styles.choiceTextSelected,]}>
+                                    {option}
+                                </Text>
+                            </TouchableOpacity>
+                        );
+                    }
                 })}
             </View>
         );
