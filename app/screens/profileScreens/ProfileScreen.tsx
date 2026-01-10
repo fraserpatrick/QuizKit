@@ -74,7 +74,9 @@ export default function ProfileScreen({route}: any) {
 
     return (
         <View style={styles.container}>
-            <Text style={styles.usernameHeader}>{passedUsername}'s Profile</Text>
+            <View style={styles.usernameContainer}>
+                <Text style={styles.usernameHeader}>{passedUsername}'s Profile</Text>
+            </View>
             <View style={styles.statsContainer}>
                 <Text style={styles.containerHeader}>Game Statistics</Text>
                 <Text>Total Quizzes: {user.totalQuizPlays}</Text>
@@ -113,11 +115,13 @@ const styles = StyleSheet.create({
         flexGrow: 1,
         padding: 10,
     },
+    usernameContainer:{
+        flex: 0.07,
+        padding: 5,
+    },
     usernameHeader:{
         fontSize: 32,
         textAlign: 'center',
-        marginBottom: 10,
-        flex: 0.05,
     },
     statsContainer:{
         borderWidth: 2,
@@ -130,7 +134,7 @@ const styles = StyleSheet.create({
         borderWidth: 2,
         backgroundColor: '#e0e0e0ff',
         padding: 10,
-        flex: 0.6,
+        flex: 0.7,
     },
     containerHeader:{
         fontSize: 20,
