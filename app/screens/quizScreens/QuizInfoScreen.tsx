@@ -12,7 +12,7 @@ export default function QuizInfoScreen({route}: any) {
 
     useLayoutEffect(() => {
         navigation.setOptions({
-            title: 'Quiz info',
+            title: 'Quiz information',
             headerLeft: () => (
                 <Button title="< Back" onPress={navigation.goBack} />
             ),
@@ -29,11 +29,11 @@ export default function QuizInfoScreen({route}: any) {
 
 
     const navToPlayer = () => {
-        navigation.navigate('QuizPlayer' as never, { passedQuiz: passedQuiz } as never);
+        navigation.navigate('QuizPlayer', { passedQuiz: passedQuiz });
     }
 
     const navToEditor = () => {
-        navigation.navigate('QuizEditor' as never, { passedQuiz: passedQuiz } as never);
+        navigation.navigate('QuizEditor', { passedQuiz: passedQuiz });
     }
 
     const handleQuizDelete = () => Alert.alert(
@@ -60,17 +60,30 @@ export default function QuizInfoScreen({route}: any) {
     return (
         <View style={styles.container}>
             <View style={ownedByUser ? {flex: 0.74} : {flex: 0.9}}>
-                <Text style={styles.header}>Title: {passedQuiz.title}</Text>
+                <View style={styles.itemContainer}>
+                    <Text style={styles.quizTitle}>{passedQuiz.title}</Text>    
+                </View>            
                 {!ownedByUser && (
-                    <Text style={styles.header}>Owner:
-                        <TouchableOpacity onPress={() => {navigation.navigate('ProfileScreen' as never, { passedUsername: passedQuiz.owner } as never)}}>
-                            <Text style={styles.inlineButtonText}>{passedQuiz.owner}</Text>
+                    <View style={styles.itemContainer}>
+                        <Text style={styles.header}>Created by:</Text>
+                        <TouchableOpacity onPress={() => {navigation.navigate('ProfileScreen', { passedUsername: passedQuiz.owner })}}>
+                            <View style={styles.button}>
+                                <Text style={styles.buttonText}>{passedQuiz.owner}</Text>
+                            </View>
                         </TouchableOpacity>
-                    </Text>
+                    </View>
                 )}
-                <Text style={styles.header}>Description: {passedQuiz.description}</Text>
+                {passedQuiz.description && (
+                    <View style={styles.itemContainer}>
+                        <Text style={styles.header}>Description</Text>
+                        <Text>{passedQuiz.description}</Text>
+                    </View>
+                )}
                 {ownedByUser && (
-                    <Text style={styles.header}>Visibility: {passedQuiz.visibility}</Text>
+                    <View style={styles.itemContainer}>
+                        <Text style={styles.header}>Visibility</Text>
+                        <Text>{passedQuiz.visibility}</Text>
+                    </View>
                 )}
             </View>
             <View style={styles.buttonsContainer}>
@@ -104,13 +117,20 @@ const styles = StyleSheet.create({
         marginRight: 20,
         marginTop: 10,
     },
+    itemContainer:{
+        padding: 5,
+        backgroundColor: '#c9c9c9',
+        borderWidth: 1,
+        borderRadius: 5,
+        marginBottom: 10,
+    },
     buttonsContainer:{
         flex: 0.1,
         marginBottom: 0,
     },
     header:{
         fontSize: 24,
-        marginBottom: 10,
+        marginBottom: 5,
     },
     button:{
         alignItems: 'center',
@@ -131,4 +151,16 @@ const styles = StyleSheet.create({
         textDecorationLine: 'underline',
         textAlignVertical: 'center',
     },
+    quizTitle:{
+        fontSize: 28,
+        textAlign: 'center',
+    },
+    userButton:{
+        borderWidth: 2,
+        alignSelf: 'flex-end',
+        backgroundColor: '#7a7a7aff',
+        borderRadius: 10,
+        marginTop: 4,
+        marginBottom: 4,
+    }
 });

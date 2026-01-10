@@ -9,7 +9,7 @@ export default function QuizEditor({route}: any) {
 
     useLayoutEffect(() => {
         navigation.setOptions({
-            title: 'Quiz Editor',
+            title: `Editing: ${passedQuiz.title}`,
             headerLeft: () => (
                 <Button title="< Back" onPress={navigation.goBack} />
             )
@@ -48,11 +48,11 @@ export default function QuizEditor({route}: any) {
         );
 
     const handleCreateQuestions = () => {
-        navigation.navigate('QuestionEditor', { passedQuestion: null, passedQuiz: passedQuiz } as never);
+        navigation.navigate('QuestionEditor', { passedQuestion: null, passedQuiz: passedQuiz });
     };
 
     const handleOpenQuestion = (question: Question) => {
-        navigation.navigate('QuestionEditor', { passedQuestion: question, passedQuiz: passedQuiz } as never);
+        navigation.navigate('QuestionEditor', { passedQuestion: question, passedQuiz: passedQuiz });
     }
 
 
