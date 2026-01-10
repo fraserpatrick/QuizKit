@@ -1,12 +1,14 @@
-import { useNavigation } from "expo-router";
+import { useNavigation } from '@react-navigation/native';
 import { useLayoutEffect, useState } from "react";
-import { View, Text, Button, Keyboard, TextInput, TouchableOpacity, TouchableWithoutFeedback, StyleSheet } from "react-native";
+import { View, Text, Button, Keyboard, TextInput, TouchableOpacity, TouchableWithoutFeedback, StyleSheet, Alert } from "react-native";
 import { SegmentedButtons } from "react-native-paper";
 import database from '@/DatabaseController'
+import {useAuth} from '@/app/AuthContext'
 
 export default function QuizInfoEditor({route}: any) {
     const {passedQuiz} = route.params;
     const navigation = useNavigation();
+    const {username} = useAuth();
 
 
     useLayoutEffect(() => {
@@ -19,16 +21,48 @@ export default function QuizInfoEditor({route}: any) {
     }, []);
 
 
-    const [title, setTitle] = useState(passedQuiz.title);
-    const [description, setDescription] = useState(passedQuiz.description);
-    const [visibility, setVisibility] = useState(passedQuiz.visibility);
+    const [title, setTitle] = useState(passedQuiz ? passedQuiz.title : '');
+    const [description, setDescription] = useState(passedQuiz ? passedQuiz.description : '');
+    const [visibility, setVisibility] = useState(passedQuiz ? passedQuiz.visibility : 'Private');
 
-    const handleQuizSave = async () => {
+    const handleQuizSave = () => {
         if (!title?.trim()){
-            alert('Please fill in title.');
+            alert('Please enter a quiz title.');
             return;
         }
 
+        if (passedQuiz){
+            Alert.alert('Update quiz?', 'Are you sure you want to update this quiz?', [
+                {text: 'No, go back', style: 'cancel',},
+                {text: 'Yes, update quiz', onPress: updateQuiz , style: 'default',},
+            ]);
+        }
+        else{
+            Alert.alert('Create quiz?', 'Are you sure you want to create this quiz?', [
+                {text: 'No, go back', style: 'cancel',},
+                {text: 'Yes, create quiz', onPress: createQuiz , style: 'default',},
+            ]);
+        }
+    }
+
+    const createQuiz = async () => {
+        try {
+            const newQuiz = await database.createQuiz(title.trim(), username!, visibility, description.trim());
+            alert('Creating quiz with title: ' + title.trim());
+            console.log('Creating quiz with title: ' + title.trim());
+
+            navigation.reset({index: 1, routes: [
+                {name: 'Home' as never} as never,
+                {name: 'QuizEditor' as never, params: { passedQuiz: newQuiz } as never,} as never,
+            ],} as never);
+        }
+        catch (error) {
+            console.error('Error creating quiz: ', error);
+            alert('Failed to create quiz.');
+        }
+    }
+
+    const updateQuiz = async () => {
         try {
             const updatedQuiz = await database.updateQuiz(passedQuiz.id, title.trim(), visibility, description.trim());
             alert('Quiz saved successfully.');
@@ -74,7 +108,9 @@ export default function QuizInfoEditor({route}: any) {
                 <View style={styles.buttonsContainer}>
                     <TouchableOpacity onPress={handleQuizSave} >
                         <View style={styles.button}>
-                            <Text style={styles.buttonText}>Save quiz changes</Text>
+                            <Text style={styles.buttonText}>
+                                {passedQuiz ? 'Save quiz changes' : 'Create new quiz'}
+                            </Text>
                         </View>
                     </TouchableOpacity>
                 </View>

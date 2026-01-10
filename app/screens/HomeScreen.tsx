@@ -58,7 +58,7 @@ export default function HomeScreen() {
 
 
     const handleCreateQuiz = () => {
-        navigation.navigate('QuizCreationScreen' as never);
+        navigation.navigate('QuizInfoEditor', {passedQuiz: null});
     }
 
     const handleOpenQuiz = (quiz: Quiz) => {
