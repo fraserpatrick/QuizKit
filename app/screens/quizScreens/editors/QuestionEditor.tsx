@@ -32,9 +32,9 @@ export default function QuestionEditor({route}: any) {
     const [text, setText] = useState(passedQuestion ? passedQuestion.text : '');
     const [type, setType] = useState(passedQuestion ? passedQuestion.type : '');
     const [answer, setAnswer] = useState(passedQuestion ? passedQuestion.correctAnswer : '');
-    const [wrongAnswer1, setWrongAnswer1] = useState(passedQuestion ? passedQuestion.options[0] : '');
-    const [wrongAnswer2, setWrongAnswer2] = useState(passedQuestion ? passedQuestion.options[1] : '');
-    const [wrongAnswer3, setWrongAnswer3] = useState(passedQuestion ? passedQuestion.options[2] : '');
+    const [wrongAnswer1, setWrongAnswer1] = useState(passedQuestion ? passedQuestion.options[1] : '');
+    const [wrongAnswer2, setWrongAnswer2] = useState(passedQuestion ? passedQuestion.options[2] : '');
+    const [wrongAnswer3, setWrongAnswer3] = useState(passedQuestion ? passedQuestion.options[3] : '');
 
 
     const saveQuestion = async () => {
