@@ -62,7 +62,7 @@ export default function HomeScreen() {
     }
 
     const handleOpenQuiz = (quiz: Quiz) => {
-        navigation.navigate('QuizInfoScreen' as never, { passedQuiz: quiz } as never);
+        navigation.navigate('QuizInfoScreen', { passedQuiz: quiz });
     };
 
     useEffect(() => {

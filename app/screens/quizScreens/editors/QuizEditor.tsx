@@ -37,15 +37,15 @@ export default function QuizEditor({route}: any) {
     type ItemProps = {
             question: Question;
             onPress: () => void;
-        };
+    };
     
-        const Item = ({ question, onPress }: ItemProps) => (
-            <TouchableOpacity onPress={onPress} style={styles.questionItem}>
-                <View>
-                    <Text style={styles.buttonText}>{question.text}</Text>
-                </View>
-            </TouchableOpacity>
-        );
+    const Item = ({ question, onPress }: ItemProps) => (
+        <TouchableOpacity onPress={onPress} style={styles.questionItem}>
+            <View>
+                <Text style={styles.buttonText}>{question.text}</Text>
+            </View>
+        </TouchableOpacity>
+    );
 
     const handleCreateQuestions = () => {
         navigation.navigate('QuestionEditor', { passedQuestion: null, passedQuiz: passedQuiz });
