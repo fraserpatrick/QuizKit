@@ -10,16 +10,21 @@ export default function ProfileScreen({route}: any) {
     const passedUsername = route?.params?.passedUsername ?? username;
 
     useLayoutEffect(() => {
-        navigation.setOptions({
+        const options: any = {
             title: 'Profile',
             headerLeft: () => (
                 <Button title="< Back" onPress={navigation.goBack} />
             ),
-            headerRight: () => (
+        };
+
+        if (username === passedUsername) {
+            options.headerRight = () => (
                 <Button title="Logout" onPress={handleLogout} />
-            )
-        });
-    }, []);
+            );
+        }
+
+        navigation.setOptions(options);
+    }, [navigation, username, passedUsername]);
 
     const handleLogout = () => Alert.alert(
         'Logout', 'Are you sure you want to logout?', [
