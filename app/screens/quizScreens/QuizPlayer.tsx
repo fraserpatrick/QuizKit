@@ -2,9 +2,11 @@ import { useFocusEffect, useNavigation } from "@react-navigation/native";
 import { useCallback, useLayoutEffect, useState } from "react";
 import { View, Text, Button, Alert, Keyboard, TouchableWithoutFeedback, StyleSheet, TouchableOpacity, TextInput } from "react-native";
 import database, {Question} from '@/DatabaseController';
+import { useAuth } from "@/app/AuthContext";
 
 export default function QuizPlayer({route}: any) {
     const navigation = useNavigation();
+    const { username } = useAuth();
     const {passedQuiz} = route.params;
     const [quizStarted, setQuizStarted] = useState(false);
     const [currentQuestion, setCurrentQuestion] = useState(0);
@@ -96,13 +98,38 @@ export default function QuizPlayer({route}: any) {
         setAnswer(answers[currentQuestion - 1] ?? '');
     }
 
-    const finishQuiz = () => {
-        const finalAnswers = [...answers, answer];
-        navigation.reset({index: 2, routes: [
-            {name: 'Home' as never},
-            {name: 'QuizInfoScreen' as never, params: { passedQuiz: passedQuiz }},
-            {name: 'QuizPlayerSummary' as never, params: { passedQuiz: passedQuiz, questions: questions, answers: finalAnswers }}
-        ],} as never);
+    const calcScore = (questions: Question[], answers: string[]) => {
+        let total = 0;
+
+        questions.forEach((question: any, index: number) => {
+            if ( question.correctAnswer.trim().toLowerCase() === answers[index].trim().toLowerCase()) {
+                total++;
+            }
+        });
+
+        return total;
+    }
+
+    const finishQuiz = async () => {
+        const finalAnswers = [...answers];
+        finalAnswers[currentQuestion] = answer;
+
+        const score = calcScore(questions, finalAnswers);
+
+        try {
+            await database.updateUserStats(username!,questions.length,score);
+        } catch (error) {
+            console.error('Failed to update stats', error);
+        }
+
+        navigation.reset({
+            index: 2,
+            routes: [
+                {name: 'Home' as never},
+                {name: 'QuizInfoScreen' as never, params: { passedQuiz: passedQuiz }},
+                {name: 'QuizPlayerSummary' as never, params: { passedQuiz: passedQuiz, questions: questions, answers: finalAnswers, score: score }}
+            ],
+        } as never);
     }
 
 

@@ -1,12 +1,11 @@
 import { View, Text, Button, StyleSheet, TouchableOpacity } from "react-native";
-import { useEffect, useLayoutEffect, useState } from "react";
-import database from '@/DatabaseController';
-import { useAuth } from '@/app/AuthContext';
+import { useLayoutEffect } from "react";
 import { useNavigation } from "@react-navigation/native";
+import { AnimatedCircularProgress } from 'react-native-circular-progress';
 
 export default function QuizPlayerSummary({ route }: any) {
-    const { passedQuiz, questions, answers } = route.params;
-    const { username } = useAuth();
+    const { passedQuiz, questions, answers, score } = route.params;
+    const percentage = (score/questions.length)*100;
     const navigation = useNavigation();
 
     useLayoutEffect(() => {
@@ -17,33 +16,6 @@ export default function QuizPlayerSummary({ route }: any) {
             ),
         });
     }, [navigation]);
-
-
-    const [score, setScore] = useState(0);
-    const [percentage, setPercentage] = useState(0);
-
-    useEffect(() => {
-        const calcScoreAndUpdateStats = async () => {
-            let total = 0;
-
-            questions.forEach((question: any, index: number) => {
-                if ( question.correctAnswer.trim().toLowerCase() === answers[index].trim().toLowerCase()) {
-                    total++;
-                }
-            });
-
-            setScore(total);
-            setPercentage((total/questions.length)*100);
-
-            try {
-                await database.updateUserStats(username!, answers.length, total);
-            } catch (error) {
-                console.error('Error updating stats:', error);
-            }
-        }
-        
-        calcScoreAndUpdateStats();
-    }, [questions, answers]);
 
 
     const handlePlayAgain = () => {
@@ -57,13 +29,27 @@ export default function QuizPlayerSummary({ route }: any) {
 
     return (
         <View style={styles.container}>
-            <View style={styles.mainContainer}>
-                <Text>
-                    Score: {score}/{questions.length}
-                </Text>
-                <Text>
-                    {percentage}%
-                </Text>
+            <View style={styles.resultsContainer}>
+                <AnimatedCircularProgress
+                    size={170}
+                    width={25}
+                    fill={percentage}
+                    tintColor="#00c400"
+                    backgroundColor="#ff0000"
+                    rotation={0}
+                    lineCap="round">
+                    {() => (<>
+                        <Text style={styles.resultsText}>
+                            {percentage.toFixed(0)}%
+                        </Text>
+                        <Text style={styles.resultsText}>
+                            {score}/{questions.length}
+                        </Text>
+                    </>)}
+                </AnimatedCircularProgress>
+            </View>
+            <View style={styles.questionsContainer}>
+                
             </View>
             <View style={styles.buttonsContainer}>
                 <TouchableOpacity onPress={handlePlayAgain} >
@@ -83,8 +69,16 @@ const styles = StyleSheet.create({
         marginRight: 20,
         marginTop: 10,
     },
-    mainContainer:{
-        flex: 0.8,
+    resultsContainer:{
+        flex: 0.3,
+        alignContent: 'center',
+        alignItems: 'center'
+    },
+    resultsText:{
+        fontSize: 24,
+    },
+    questionsContainer:{
+        flex: 0.5,
     },
     buttonsContainer:{
         flex: 0.2,
