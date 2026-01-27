@@ -1,13 +1,14 @@
-import { View, Text, Button, StyleSheet, TouchableOpacity } from "react-native";
+import { View, Text, Button, StyleSheet, TouchableOpacity, FlatList } from "react-native";
 import { useLayoutEffect } from "react";
 import { useNavigation } from "@react-navigation/native";
 import { AnimatedCircularProgress } from 'react-native-circular-progress';
+import {Question} from '@/DatabaseController';
 
 export default function QuizPlayerSummary({ route }: any) {
-    const { passedQuiz, questions, answers, score } = route.params;
+    const { passedQuiz, questions, score } = route.params;
     const percentage = (score/questions.length)*100;
     const navigation = useNavigation();
-
+    
     useLayoutEffect(() => {
         navigation.setOptions({
             title: 'Results Summary',
@@ -25,6 +26,19 @@ export default function QuizPlayerSummary({ route }: any) {
             {name: 'QuizPlayer' as never, params: { passedQuiz: passedQuiz }}
         ],} as never);
     }
+
+    type ItemProps = {
+        question: Question
+        onPress: () => void;
+    };
+
+    const Item = ({ question, onPress }: ItemProps) => (
+        <TouchableOpacity onPress={onPress} style={styles.questionItem}>
+            <View>
+                <Text style={styles.buttonText}>{question.text}</Text>
+            </View>
+        </TouchableOpacity>
+    );
 
 
     return (
@@ -49,7 +63,16 @@ export default function QuizPlayerSummary({ route }: any) {
                 </AnimatedCircularProgress>
             </View>
             <View style={styles.questionsContainer}>
-                
+                <FlatList
+                    data={questions}
+                    keyExtractor={(item) => String(item.id)}
+                    renderItem={({ item }) => (
+                        <Item
+                            question={item}
+                            onPress={() => navigation.navigate('QuestionReview', {question: item})}
+                        />
+                    )}
+                />
             </View>
             <View style={styles.buttonsContainer}>
                 <TouchableOpacity onPress={handlePlayAgain} >
@@ -79,6 +102,14 @@ const styles = StyleSheet.create({
     },
     questionsContainer:{
         flex: 0.5,
+    },
+    questionItem:{
+        alignItems: 'center',
+        backgroundColor: '#7a7a7aff',
+        borderWidth: 1,
+        marginTop: 2,
+        marginLeft: 20,
+        marginRight: 20,
     },
     buttonsContainer:{
         flex: 0.2,
