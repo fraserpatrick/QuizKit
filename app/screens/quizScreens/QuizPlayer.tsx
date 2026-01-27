@@ -113,23 +113,26 @@ export default function QuizPlayer({route}: any) {
     }
 
     const finishQuiz = async () => {
-        saveAnswer(currentQuestion, answer);
-        const score = calcScore(questions);
+        const updatedQuestions = [...questions];
+
+        updatedQuestions[currentQuestion] = {
+            ...updatedQuestions[currentQuestion],
+            userAnswer: answer,
+        };
+
+        const score = calcScore(updatedQuestions);
 
         try {
-            await database.updateUserStats(username!,questions.length,score);
+            await database.updateUserStats(username!,updatedQuestions.length,score);
         } catch (error) {
             console.error('Failed to update stats', error);
         }
 
-        navigation.reset({
-            index: 2,
-            routes: [
-                {name: 'Home' as never},
-                {name: 'QuizInfoScreen' as never, params: { passedQuiz: passedQuiz }},
-                {name: 'QuizPlayerSummary' as never, params: { passedQuiz: passedQuiz, questions: questions, score: score }}
-            ],
-        } as never);
+        navigation.reset({index: 2, routes: [
+            {name: 'Home'},
+            {name: 'QuizInfoScreen', params: { passedQuiz: passedQuiz }},
+            {name: 'QuizPlayerSummary', params: { passedQuiz: passedQuiz, questions: updatedQuestions, score: score }}
+        ],} as never);
     }
 
 
