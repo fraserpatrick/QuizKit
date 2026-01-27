@@ -120,4 +120,10 @@ const styles = StyleSheet.create({
         marginLeft: 20,
         marginRight: 20,
     },
+    buttonText:{
+        textAlign: 'center',
+        padding: 10,
+        color: 'white',
+        fontSize: 20,
+    },
 });
