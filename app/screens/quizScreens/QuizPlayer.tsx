@@ -1,5 +1,5 @@
 import { useFocusEffect, useNavigation } from "@react-navigation/native";
-import { useCallback, useLayoutEffect, useState } from "react";
+import { useCallback, useEffect, useLayoutEffect, useState } from "react";
 import { View, Text, Button, Alert, Keyboard, TouchableWithoutFeedback, StyleSheet, TouchableOpacity, TextInput } from "react-native";
 import database, {Question} from '@/DatabaseController';
 import { useAuth } from "@/app/AuthContext";
@@ -25,7 +25,6 @@ export default function QuizPlayer({route}: any) {
 
 
     const [answer, setAnswer] = useState('');
-    const [answers, setAnswers] = useState<string[]>([]);
 
     const loadQuestions = async () => {
         try {
@@ -41,6 +40,10 @@ export default function QuizPlayer({route}: any) {
             loadQuestions();
         }, [passedQuiz.id])
     );
+
+    useEffect(() => {
+        setAnswer(questions[currentQuestion]?.userAnswer ?? '');
+    }, [currentQuestion, questions]);
 
 
     const handleExit = () => {
@@ -76,33 +79,32 @@ export default function QuizPlayer({route}: any) {
         setQuizStarted(true);
     }
 
-    const handleNextQuestion = () => {
-        setAnswers(prev => {
+    const saveAnswer = (quesiton: number, answer: string) => {
+        setQuestions(prev => {
             const updated = [...prev];
-            updated[currentQuestion] = answer;
+            updated[quesiton] = {
+                ...updated[quesiton],
+                userAnswer: answer
+            };
             return updated;
         });
+    };
 
+    const handleNextQuestion = () => {
+        saveAnswer(currentQuestion, answer);
         setCurrentQuestion(prev => prev + 1);
-        setAnswer(answers[currentQuestion + 1] ?? '');
     }
 
     const handlePrevQuestion = () => {
-        setAnswers(prev => {
-            const updated = [...prev];
-            updated[currentQuestion] = answer;
-            return updated;
-        });
-
+        saveAnswer(currentQuestion, answer);
         setCurrentQuestion(prev => prev - 1);
-        setAnswer(answers[currentQuestion - 1] ?? '');
     }
 
-    const calcScore = (questions: Question[], answers: string[]) => {
+    const calcScore = (questions: Question[]) => {
         let total = 0;
 
-        questions.forEach((question: any, index: number) => {
-            if ( question.correctAnswer.trim().toLowerCase() === answers[index].trim().toLowerCase()) {
+        questions.forEach((question: any) => {
+            if ( question.userAnswer && question.correctAnswer.trim().toLowerCase() === question.userAnswer.trim().toLowerCase()) {
                 total++;
             }
         });
@@ -111,10 +113,8 @@ export default function QuizPlayer({route}: any) {
     }
 
     const finishQuiz = async () => {
-        const finalAnswers = [...answers];
-        finalAnswers[currentQuestion] = answer;
-
-        const score = calcScore(questions, finalAnswers);
+        saveAnswer(currentQuestion, answer);
+        const score = calcScore(questions);
 
         try {
             await database.updateUserStats(username!,questions.length,score);
@@ -127,7 +127,7 @@ export default function QuizPlayer({route}: any) {
             routes: [
                 {name: 'Home' as never},
                 {name: 'QuizInfoScreen' as never, params: { passedQuiz: passedQuiz }},
-                {name: 'QuizPlayerSummary' as never, params: { passedQuiz: passedQuiz, questions: questions, answers: finalAnswers, score: score }}
+                {name: 'QuizPlayerSummary' as never, params: { passedQuiz: passedQuiz, questions: questions, score: score }}
             ],
         } as never);
     }

@@ -26,6 +26,7 @@ export interface Question {
     text: string;
     correctAnswer: string;
     options: string[];
+    userAnswer?: string;
 }
 
 class DatabaseController {
