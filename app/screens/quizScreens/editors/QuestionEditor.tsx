@@ -42,15 +42,16 @@ export default function QuestionEditor({route}: any) {
             alert('Please fill in all fields.');
             return;
         }
+        let options = [''];
 
         if (type === 'Multiple Choice') {
             if (!wrongAnswer1?.trim() && !wrongAnswer2?.trim() && !wrongAnswer3?.trim()) {
                 alert('Please provide at least 1 incorrect answer.');
                 return;
             }
+            options = [answer.trim(), wrongAnswer1.trim(), wrongAnswer2.trim(), wrongAnswer3.trim()];
         }
         
-        const options = [answer.trim(), wrongAnswer1.trim(), wrongAnswer2.trim(), wrongAnswer3.trim()];
         try {
             if (!passedQuestion) {
                 await database.createQuestion(passedQuiz.id, type, text.trim(), answer.trim(), options);
