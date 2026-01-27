@@ -3,7 +3,8 @@ import React, { useCallback, useEffect, useLayoutEffect, useState } from 'react'
 import { FlatList, Text, TouchableOpacity, View, StyleSheet, Button } from 'react-native';
 import database, { Quiz } from "@/DatabaseController";
 import { SegmentedButtons } from 'react-native-paper';
-import { useAuth } from "../AuthContext";
+import { useAuth } from "@/app/AuthContext";
+import PrimaryButton from "../components/Button"; 
 
 export default function HomeScreen() {
     const navigation = useNavigation();
@@ -75,11 +76,7 @@ export default function HomeScreen() {
 
     return (
         <View style={styles.container}>
-            <TouchableOpacity onPress={handleCreateQuiz} >
-                <View style={styles.button}>
-                    <Text style={styles.buttonText}>Create Quiz</Text>
-                </View>
-            </TouchableOpacity>
+            <PrimaryButton label="Create Quiz" onPress={handleCreateQuiz}/>
             <View style={styles.quizContainer}>
                 <SegmentedButtons
                     value={selector}
