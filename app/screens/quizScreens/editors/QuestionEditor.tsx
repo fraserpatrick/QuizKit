@@ -1,9 +1,10 @@
-import { View, Text, StyleSheet, TextInput, TouchableWithoutFeedback, Keyboard, TouchableOpacity, Alert, Button } from "react-native";
+import { View, Text, StyleSheet, TextInput, TouchableWithoutFeedback, Keyboard, Alert, Button } from "react-native";
 import database from "@/DatabaseController";
 import React, { useLayoutEffect, useState } from "react";
 import { useNavigation } from "@react-navigation/native";
 import { SelectList } from 'react-native-dropdown-select-list';
 import { SegmentedButtons } from "react-native-paper";
+import PrimaryButton from "@/app/components/Button";
 
 export default function QuestionEditor({route}: any) {
     const {passedQuestion, passedQuiz} = route.params;
@@ -151,19 +152,9 @@ export default function QuestionEditor({route}: any) {
                 </View>
 
                 <View style={passedQuestion ? {flex: 0.2} : {flex: 0.1}}>
-                    <TouchableOpacity onPress={saveQuestion} >
-                        <View style={styles.button}>
-                            <Text style={styles.buttonText}>
-                                {passedQuestion ? 'Update Question' : 'Create Question'}
-                            </Text>
-                        </View>
-                    </TouchableOpacity>
+                    <PrimaryButton label={passedQuestion ? 'Update Question' : 'Create Question'} onPress={saveQuestion}/>
                     {passedQuestion && (
-                        <TouchableOpacity onPress={handleDeleteQuestion} >
-                            <View style={styles.button}>
-                                <Text style={styles.buttonText}>Delete Question</Text>
-                            </View>
-                        </TouchableOpacity>
+                        <PrimaryButton label="Delete Question" onPress={handleDeleteQuestion}/>
                     )}
                 </View>
             </View>
@@ -178,20 +169,6 @@ const styles = StyleSheet.create({
         marginLeft: 20,
         marginRight: 20,
         marginTop: 10,
-    },
-    button:{
-        alignItems: 'center',
-        backgroundColor: '#7a7a7aff',
-        borderRadius: 10,
-        marginTop: 4,
-        marginBottom: 4,
-        borderWidth: 2,
-    },
-    buttonText:{
-        textAlign: 'center',
-        padding: 10,
-        color: 'white',
-        fontSize: 20,
     },
     inputHeader:{
         fontSize: 20,

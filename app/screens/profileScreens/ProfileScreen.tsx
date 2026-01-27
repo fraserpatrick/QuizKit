@@ -3,6 +3,7 @@ import { useAuth } from '@/app/AuthContext';
 import database, { Quiz, User } from '@/DatabaseController';
 import { useState, useEffect, useLayoutEffect } from 'react';
 import { useNavigation } from '@react-navigation/native';
+import PrimaryButton from '@/app/components/Button';
 
 export default function ProfileScreen({route}: any) {
     const { username, logout } = useAuth();
@@ -72,10 +73,6 @@ export default function ProfileScreen({route}: any) {
         </TouchableOpacity>
     );
 
-    const handleOpenQuiz = (quiz: Quiz) => {
-        navigation.navigate('QuizInfoScreen' as never, { passedQuiz: quiz } as never);
-    };
-
 
     return (
         <View style={styles.container}>
@@ -96,18 +93,14 @@ export default function ProfileScreen({route}: any) {
                     renderItem={({ item }) => (
                         <Item
                             quiz={item}
-                            onPress={() => handleOpenQuiz(item)}
+                            onPress={() => navigation.navigate('QuizInfoScreen', { passedQuiz: item })}
                         />
                     )}
                 />
             </View>
             {ownProfile && (
                 <View style={styles.buttonContainer}>
-                    <TouchableOpacity onPress={() => navigation.navigate('ProfileEditor' as never)} >
-                        <View style={styles.button}>
-                            <Text style={styles.buttonText}>Edit Profile</Text>
-                        </View>
-                    </TouchableOpacity>
+                    <PrimaryButton label="Edit Profile" onPress={() => navigation.navigate('ProfileEditor')}/>
                 </View>
             )}
         </View>
@@ -163,19 +156,5 @@ const styles = StyleSheet.create({
     },
     buttonContainer:{
         flex: 0.1,
-    },
-    button:{
-        alignItems: 'center',
-        backgroundColor: '#7a7a7aff',
-        borderRadius: 10,
-        marginTop: 4,
-        marginBottom: 4,
-        borderWidth: 2,
-    },
-    buttonText:{
-        textAlign: 'center',
-        padding: 10,
-        color: 'white',
-        fontSize: 20,
     },
 });

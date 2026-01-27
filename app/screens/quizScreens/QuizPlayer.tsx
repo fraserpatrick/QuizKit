@@ -3,6 +3,7 @@ import { useCallback, useEffect, useLayoutEffect, useState } from "react";
 import { View, Text, Button, Alert, Keyboard, TouchableWithoutFeedback, StyleSheet, TouchableOpacity, TextInput } from "react-native";
 import database, {Question} from '@/DatabaseController';
 import { useAuth } from "@/app/AuthContext";
+import PrimaryButton from "@/app/components/Button";
 
 export default function QuizPlayer({route}: any) {
     const navigation = useNavigation();
@@ -69,7 +70,7 @@ export default function QuizPlayer({route}: any) {
             'Are you ready to start this quiz?',
             [
                 { text: 'Not yet', style: 'cancel' },
-                { text: 'Yes, start playing', onPress: startQuiz }
+                { text: 'Yes, start playing', onPress:startQuiz }
             ]
         );
     };
@@ -103,7 +104,7 @@ export default function QuizPlayer({route}: any) {
     const calcScore = (questions: Question[]) => {
         let total = 0;
 
-        questions.forEach((question: any) => {
+        questions.forEach((question: Question) => {
             if ( question.userAnswer && question.correctAnswer.trim().toLowerCase() === question.userAnswer.trim().toLowerCase()) {
                 total++;
             }
@@ -122,14 +123,11 @@ export default function QuizPlayer({route}: any) {
             console.error('Failed to update stats', error);
         }
 
-        navigation.reset({
-            index: 2,
-            routes: [
-                {name: 'Home' as never},
-                {name: 'QuizInfoScreen' as never, params: { passedQuiz: passedQuiz }},
-                {name: 'QuizPlayerSummary' as never, params: { passedQuiz: passedQuiz, questions: questions, score: score }}
-            ],
-        } as never);
+        navigation.reset({index: 2, routes: [
+            {name: 'Home'},
+            {name: 'QuizInfoScreen', params: { passedQuiz: passedQuiz }},
+            {name: 'QuizPlayerSummary', params: { passedQuiz: passedQuiz, questions: questions, score: score }}
+        ],} as never);
     }
 
 
@@ -203,35 +201,19 @@ export default function QuizPlayer({route}: any) {
                     </View>
                     <View style={styles.buttonsContainer}>
                         {currentQuestion < questions.length -1 ? (
-                            <TouchableOpacity onPress={handleNextQuestion} >
-                                <View style={styles.button}>
-                                    <Text style={styles.buttonText}>Next Question</Text>
-                                </View>
-                            </TouchableOpacity>
+                            <PrimaryButton label="Next Question" onPress={handleNextQuestion}/>
                         ):(
-                            <TouchableOpacity onPress={finishQuiz} >
-                                <View style={styles.button}>
-                                    <Text style={styles.buttonText}>Finish Quiz</Text>
-                                </View>
-                            </TouchableOpacity>
+                            <PrimaryButton label="Finish Quiz" onPress={finishQuiz}/>
                         )}
                         {currentQuestion !== 0 && (
-                            <TouchableOpacity  onPress={handlePrevQuestion}>
-                                <View style={styles.button}>
-                                    <Text style={styles.buttonText}>Previous Question</Text>
-                                </View>
-                            </TouchableOpacity>
+                            <PrimaryButton label="Previous Question" onPress={handlePrevQuestion}/>
                         )}
                     </View>
                 </View>
             </TouchableWithoutFeedback>
         ) : (
             <View style={styles.container}>
-                <TouchableOpacity onPress={handleQuizStart} >
-                    <View style={styles.button}>
-                        <Text style={styles.buttonText}>Start Quiz</Text>
-                    </View>
-                </TouchableOpacity>
+                <PrimaryButton label="Start Quiz" onPress={handleQuizStart}/>
                 <Text style={styles.questionHeader}>Number of questions: {questions.length}</Text>
             </View>
         )}
@@ -265,20 +247,6 @@ const styles = StyleSheet.create({
         margin: 10,
     },
     questionHeader:{
-        fontSize: 20,
-    },
-    button:{
-        alignItems: 'center',
-        backgroundColor: '#7a7a7aff',
-        borderRadius: 10,
-        marginTop: 4,
-        marginBottom: 4,
-        borderWidth: 2,
-    },
-    buttonText:{
-        textAlign: 'center',
-        padding: 10,
-        color: 'white',
         fontSize: 20,
     },
     input:{

@@ -2,6 +2,7 @@ import { useFocusEffect, useNavigation } from '@react-navigation/native';
 import { Text, TouchableOpacity, View, StyleSheet, FlatList, Button } from 'react-native';
 import database, { Question } from '@/DatabaseController';
 import { useState, useCallback, useLayoutEffect } from 'react';
+import PrimaryButton from '@/app/components/Button';
 
 export default function QuizEditor({route}: any) {
     const {passedQuiz} = route.params;
@@ -71,11 +72,7 @@ export default function QuizEditor({route}: any) {
                 />
             </View>
             <View style={styles.buttonsContainer}>
-                <TouchableOpacity onPress={handleCreateQuestions} >
-                    <View style={styles.button}>
-                        <Text style={styles.buttonText}>Create new question</Text>
-                    </View>
-                </TouchableOpacity>
+                <PrimaryButton label="Create new question" onPress={handleCreateQuestions}/>
             </View>
         </View>
     );
@@ -94,14 +91,6 @@ const styles = StyleSheet.create({
     },
     buttonsContainer:{
         flex: 0.1,
-    },
-    button:{
-        alignItems: 'center',
-        backgroundColor: '#7a7a7aff',
-        borderRadius: 10,
-        marginTop: 4,
-        marginBottom: 4,
-        borderWidth: 2,
     },
     buttonText:{
         textAlign: 'center',

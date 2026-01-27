@@ -4,7 +4,7 @@ import { FlatList, Text, TouchableOpacity, View, StyleSheet, Button } from 'reac
 import database, { Quiz } from "@/DatabaseController";
 import { SegmentedButtons } from 'react-native-paper';
 import { useAuth } from "@/app/AuthContext";
-import PrimaryButton from "../components/Button"; 
+import PrimaryButton from "@/app/components/Button"; 
 
 export default function HomeScreen() {
     const navigation = useNavigation();
@@ -111,20 +111,6 @@ const styles = StyleSheet.create({
     quizContainer:{
         flex: 1,
         marginTop: 30,
-    },
-    button:{
-        alignItems: 'center',
-        backgroundColor: '#7a7a7aff',
-        borderRadius: 10,
-        marginTop: 4,
-        marginBottom: 4,
-        borderWidth: 2,
-    },
-    buttonText:{
-        textAlign: 'center',
-        padding: 10,
-        color: 'white',
-        fontSize: 20,
     },
     quizItem:{
         alignItems: 'center',
