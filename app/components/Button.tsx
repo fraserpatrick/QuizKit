@@ -1,7 +1,12 @@
 import React from "react";
 import { TouchableOpacity, View, Text, StyleSheet } from "react-native";
 
-const PrimaryButton = (label: string, onPress: any ) => {
+interface ButtonProps {
+    label: string;
+    onPress: () => void;
+}
+
+const PrimaryButton: React.FC<ButtonProps>= ({label, onPress}) => {
     return (
         <TouchableOpacity onPress={onPress}>
             <View style={styles.button}>
