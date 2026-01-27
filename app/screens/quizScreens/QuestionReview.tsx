@@ -8,7 +8,7 @@ export default function QuizPlayerSummary({ route }: any) {
     
     useLayoutEffect(() => {
         navigation.setOptions({
-            title: 'Results Summary',
+            title: 'Question Summary',
             headerLeft: () => (
                 <Button title="< Back" onPress={() => navigation.goBack()} />
             ),
@@ -18,7 +18,18 @@ export default function QuizPlayerSummary({ route }: any) {
 
     return(
         <View style={styles.container}>
-            <Text> {question.text}</Text>
+            <View style={styles.questionContainer}>
+                <Text style={styles.questionHeader}> {question.text}</Text>
+            </View>
+            <View style={styles.answerContainer}>
+                <Text> Your Answer </Text>
+                <Text> {question.userAnswer} </Text>
+                <Text> Correct Answer </Text>
+                <Text> {question.correctAnswer} </Text>
+            </View>
+            <View style={styles.feedbackContainer}>
+                <Text> RANDOM FEEDBACK </Text>
+            </View>
         </View>
     )
 };
@@ -29,5 +40,17 @@ const styles = StyleSheet.create ({
         marginLeft: 20,
         marginRight: 20,
         marginTop: 10,
+    },
+    questionContainer:{
+        flex: 0.2,
+    },
+    questionHeader:{
+        fontSize: 20,
+    },
+    answerContainer:{
+        flex: 0.2,
+    },
+    feedbackContainer:{
+        flex: 0.4,
     },
 });

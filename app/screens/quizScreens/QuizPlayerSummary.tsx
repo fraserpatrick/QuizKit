@@ -27,15 +27,19 @@ export default function QuizPlayerSummary({ route }: any) {
         ],} as never);
     }
 
+    const correct = (question: Question) => {
+        return (question.correctAnswer.trim().toLowerCase() === question.userAnswer?.trim().toLowerCase())
+    }
+
     type ItemProps = {
         question: Question
         onPress: () => void;
     };
 
     const Item = ({ question, onPress }: ItemProps) => (
-        <TouchableOpacity onPress={onPress} style={styles.questionItem}>
+        <TouchableOpacity onPress={onPress} style={[styles.questionItem, correct(question) && styles.correctItem]}>
             <View>
-                <Text style={styles.buttonText}>{question.text}</Text>
+                <Text style={styles.buttonText}>{question.text}?</Text>
             </View>
         </TouchableOpacity>
     );
@@ -105,11 +109,14 @@ const styles = StyleSheet.create({
     },
     questionItem:{
         alignItems: 'center',
-        backgroundColor: '#7a7a7aff',
+        backgroundColor: 'rgb(219, 0, 0)',
         borderWidth: 1,
         marginTop: 2,
         marginLeft: 20,
         marginRight: 20,
+    },
+    correctItem:{
+        backgroundColor: '#00c400ff',
     },
     buttonsContainer:{
         flex: 0.2,
