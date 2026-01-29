@@ -1,21 +1,24 @@
-const baseURL = "https://devweb2025.cis.strath.ac.uk/~nxb22128/QuizKit_Backend/public/";
+import {apiFetch} from '@/api/apiConnection';
 
-export const getUsers = async () => {
-    try {
-        const response = await fetch(`${baseURL}/users`, {
-            method: "GET",
-            headers: {"Content-Type": "application/json"},
-        });
 
-        if (!response.ok) {
-            throw new Error(`HTTP Error: ${response.status}`);
-        }
+export const createUser = (email: string, username: string) => {
+    apiFetch("users", "POST", {email, username});
+}
 
-        const data = await response.json();
-        return data;
-    }
-    catch (error) {
-        console.error("Error getting users", error);
-        throw error;
-    }
+
+export const getUsers = (params = {}) => {
+    apiFetch("users", "GET", null, params);
+}
+
+export const getUser = (search: string) => {
+    getUsers(search);
+}
+
+
+export const updateUsername = (email: string, newUsername: string) => {
+    apiFetch("users/updateUsername", "PUT", {email, newUsername});
+}
+
+export const updateStats = (username: string, answered: number, correct: number) => {
+    apiFetch("users/updateStats", "PUT", {username, answered, correct});
 }
