@@ -10,8 +10,12 @@ export const getUsers = (params = {}) => {
     return apiFetch("users", "GET", null, params);
 }
 
-export const getUser = (search: string) => {
-    return getUsers(search);
+export const getUserByUsername = (search: string) => {
+    return getUsers({username: search});
+}
+
+export const getUserByEmail = (search: string) => {
+    return getUsers({email: search});
 }
 
 
