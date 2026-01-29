@@ -4,6 +4,7 @@ import { useNavigation } from '@react-navigation/native';
 import { useAuth } from '@/app/AuthContext';
 import database, { Quiz, User, Question } from '@/DatabaseController';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
+import { getUsers } from '@/api/users';
 
 export default function ProfileEditor() {
     const { username, user, changeUsername, changePassword } = useAuth();
@@ -18,6 +19,13 @@ export default function ProfileEditor() {
         });
     }, []);
 
+
+    const [users, setUsers] = useState([]);
+    useEffect(() => {
+        getUsers()
+            .then(setUsers)
+            .catch(console.error);
+    }, []);
 
     const [TEMPquizzes, TEMPsetQuizzes] = useState<Quiz[]>([]);
     const [TEMPusers, TEMPsetUsers] = useState<User[]>([]);
@@ -223,6 +231,7 @@ export default function ProfileEditor() {
                     <Text>TEMP BUTTONS</Text>
                     <Button title="Reset Database" onPress={resetDatabase} />
                     <Button title="List Database" onPress={listDatabase} />
+                    <Button title="List users" onPress={() => console.log(users)} />
                 </View>
             </View>
         </TouchableWithoutFeedback>
