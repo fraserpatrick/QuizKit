@@ -1,4 +1,4 @@
-const baseURL = "https://devweb2025.cis.strath.ac.uk/~nxb22128/QuizKit_Backend/public/";
+const baseURL = "https://devweb2025.cis.strath.ac.uk/~nxb22128/QuizKit_Backend/public";
 
 export const apiFetch = async (endPoint, method = "GET", body = null, params = {}) => {
     try {

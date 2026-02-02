@@ -1,9 +1,9 @@
 import { View, Text, StyleSheet, TextInput, TouchableWithoutFeedback, Keyboard, TouchableOpacity, Alert, Button } from "react-native";
-import database from "@/DatabaseController";
 import React, { useLayoutEffect, useState } from "react";
 import { useNavigation } from "@react-navigation/native";
 import { SelectList } from 'react-native-dropdown-select-list';
 import { SegmentedButtons } from "react-native-paper";
+import { createQuestion, deleteQuestion, updateQuestion } from "@/api/questions";
 
 export default function QuestionEditor({route}: any) {
     const {passedQuestion, passedQuiz} = route.params;
@@ -54,10 +54,10 @@ export default function QuestionEditor({route}: any) {
         
         try {
             if (!passedQuestion) {
-                await database.createQuestion(passedQuiz.id, type, text.trim(), answer.trim(), options);
+                await createQuestion(passedQuiz.id, text.trim(), type, answer.trim(), options);
                 alert('Question saved successfully.');
             } else {
-                await database.updateQuestion(passedQuestion.id, type, text.trim(), answer.trim(), options);
+                await updateQuestion(passedQuestion.id, text.trim(), type, answer.trim(), options);
                 alert('Question updated successfully.');
             }
 
@@ -68,15 +68,16 @@ export default function QuestionEditor({route}: any) {
         }
     };
 
-    const handleDeleteQuestion = () => Alert.alert(
+    const deleteQuestionAlert = () => Alert.alert(
         'Delete Question', 'Are you sure you want to delete this question?', [
             {text: 'No, keep it', style: 'cancel',},
-            {text: 'Yes, delete it', onPress: () => deleteQuestion(), style: 'destructive',},
+            {text: 'Yes, delete it', onPress: () => handleDeleteQuestion(), style: 'destructive',},
     ]);
 
-    const deleteQuestion = async () => {
+    const handleDeleteQuestion = () => {
+        console.log('Deleting question with id: ' + passedQuestion.id);
         try {
-            await database.deleteQuestion(passedQuestion.id);
+            deleteQuestion(passedQuestion.id);
             alert('Question deleted successfully.');
             navigation.goBack();
         }
@@ -159,7 +160,7 @@ export default function QuestionEditor({route}: any) {
                         </View>
                     </TouchableOpacity>
                     {passedQuestion && (
-                        <TouchableOpacity onPress={handleDeleteQuestion} >
+                        <TouchableOpacity onPress={deleteQuestionAlert} >
                             <View style={styles.button}>
                                 <Text style={styles.buttonText}>Delete Question</Text>
                             </View>

@@ -23,6 +23,6 @@ export const updateQuiz = (id: number, title: string, visibility: string, descri
 }
 
 
-export const deleteQuiz = (id: number) => {
-    return apiFetch("quizzes/delete", "DELETE", null, {id});
+export const deleteQuiz = (id: string) => {
+    return apiFetch("quizzes", "DELETE", null, {id});
 }

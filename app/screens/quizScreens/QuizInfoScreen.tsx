@@ -1,8 +1,8 @@
 import { useNavigation } from '@react-navigation/native';
 import { Alert, Button, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
-import database from '@/DatabaseController';
 import { useAuth } from '@/app/AuthContext';
 import { useLayoutEffect } from 'react';
+import { deleteQuiz } from '@/api/quizzes';
 
 export default function QuizInfoScreen({route}: any) {
     const navigation = useNavigation();
@@ -36,16 +36,16 @@ export default function QuizInfoScreen({route}: any) {
         navigation.navigate('QuizEditor', { passedQuiz: passedQuiz });
     }
 
-    const handleQuizDelete = () => Alert.alert(
+    const quizDeleteAlert = () => Alert.alert(
         'Delete Quiz', 'Are you sure you want to delete this quiz?', [
             {text: 'No, keep it', style: 'cancel',},
-            {text: 'Yes, delete it', onPress: () => deleteQuiz(), style: 'destructive',},
+            {text: 'Yes, delete it', onPress: () => handleDeleteQuiz(), style: 'destructive',},
     ]);
 
-    const deleteQuiz = () => {
+    const handleDeleteQuiz = () => {
         console.log('Deleting quiz with id: ' + passedQuiz.id);
         try{
-            database.deleteQuiz(passedQuiz.id);
+            deleteQuiz(passedQuiz.id);
             alert('Deleted quiz : ' + passedQuiz.title);
         }
         catch(error){
@@ -98,7 +98,7 @@ export default function QuizInfoScreen({route}: any) {
                             <Text style={styles.buttonText}>Edit questions</Text>
                         </View>
                     </TouchableOpacity>
-                    <TouchableOpacity onPress={handleQuizDelete} >
+                    <TouchableOpacity onPress={quizDeleteAlert} >
                         <View style={styles.button}>
                             <Text style={styles.buttonText}>Delete quiz</Text>
                         </View>

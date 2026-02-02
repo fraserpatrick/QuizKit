@@ -1,8 +1,9 @@
 import { useFocusEffect, useNavigation } from "@react-navigation/native";
 import { useCallback, useEffect, useLayoutEffect, useState } from "react";
 import { View, Text, Button, Alert, Keyboard, TouchableWithoutFeedback, StyleSheet, TouchableOpacity, TextInput } from "react-native";
-import database, {Question} from '@/DatabaseController';
+import {Question} from '@/DatabaseController';
 import { useAuth } from "@/app/AuthContext";
+import { getQuizQuestions } from "@/api/questions";
 
 export default function QuizPlayer({route}: any) {
     const navigation = useNavigation();
@@ -28,7 +29,7 @@ export default function QuizPlayer({route}: any) {
 
     const loadQuestions = async () => {
         try {
-            const questions = await database.getQuestionsByQuizID(passedQuiz.id!);
+            const questions = await getQuizQuestions(passedQuiz.id!);
             setQuestions(questions);
         } catch (error) {
             console.error('Error loading data:', error);
