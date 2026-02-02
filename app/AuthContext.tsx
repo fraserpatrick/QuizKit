@@ -9,7 +9,7 @@ import {
 } from 'firebase/auth';
 import React, { ReactNode, createContext, useContext, useEffect, useState } from 'react';
 import { auth } from './firebase';
-import database from '@/DatabaseController';
+import { getUserByEmail } from '@/api/users';
 
 interface AuthContextType {
     user: User | null;
@@ -43,10 +43,8 @@ export const AuthProvider = ({children} : AuthProviderProps) => {
         }
 
         try {
-            const users = await database.getUser(firebaseUser.email);
-            if (users.length > 0) {
-                setUsername(users[0].username);
-            }
+            const result = await getUserByEmail(firebaseUser.email);
+            setUsername(result.username);
         } catch (error) {
             console.error('Failed to load username:', error);
             setUsername(null);

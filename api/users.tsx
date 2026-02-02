@@ -6,16 +6,18 @@ export const createUser = (email: string, username: string) => {
 }
 
 
-export const getUsers = (params = {}) => {
+export const getUsers = async (params = {}) => {
     return apiFetch("users", "GET", null, params);
 }
 
-export const getUserByUsername = (search: string) => {
-    return getUsers({username: search});
+export const getUserByUsername = async (search: string) => {
+    const result = await getUsers({username: search});
+    return result[0] ?? null;
 }
 
-export const getUserByEmail = (search: string) => {
-    return getUsers({email: search});
+export const getUserByEmail = async (search: string) => {
+    const result = await getUsers({email: search});
+    return result[0] ?? null;
 }
 
 
