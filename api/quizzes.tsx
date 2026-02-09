@@ -22,6 +22,10 @@ export const updateQuiz = (id: number, title: string, visibility: string, descri
     return apiFetch("quizzes/update", "PUT", {id, title, visibility, description});
 }
 
+export const updateQuizToNewUsername = (oldUsername: string, newUsername: string) => {
+    return apiFetch("quizzes/update/username", "PUT", {oldUsername, newUsername});
+}
+
 
 export const deleteQuiz = (id: string) => {
     return apiFetch("quizzes", "DELETE", null, {id});

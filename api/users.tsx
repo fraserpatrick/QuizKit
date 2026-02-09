@@ -12,7 +12,7 @@ export const getUsers = async (params = {}) => {
 
 export const getUserByUsername = async (search: string) => {
     const result = await getUsers({username: search});
-    return result[0] ?? null;
+    return result[0] ?? [];
 }
 
 export const getUserByEmail = async (search: string) => {

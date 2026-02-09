@@ -4,6 +4,7 @@ import { useNavigation } from '@react-navigation/native';
 import { useAuth } from '@/app/AuthContext';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { updateUsername, getUserByUsername } from '@/api/users';
+import { updateQuizToNewUsername } from '@/api/quizzes';
 
 export default function ProfileEditor() {
     const { username, user, changeUsername, changePassword } = useAuth();
@@ -60,7 +61,7 @@ export default function ProfileEditor() {
 
             try {
                 await updateUsername(user!.email!, usernameInput.trim().toLowerCase());
-                //await database.updateQuizToNewUsername(username!, usernameInput.trim().toLowerCase());
+                updateQuizToNewUsername(username!, usernameInput.trim().toLowerCase());
                 changeUsername(usernameInput.trim().toLowerCase());
                 alert('Username updated successfully.');
                 navigation.goBack();
