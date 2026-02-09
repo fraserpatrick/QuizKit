@@ -32,9 +32,23 @@ export default function QuestionEditor({route}: any) {
     const [text, setText] = useState(passedQuestion ? passedQuestion.text : '');
     const [type, setType] = useState(passedQuestion ? passedQuestion.type : '');
     const [answer, setAnswer] = useState(passedQuestion ? passedQuestion.correctAnswer : '');
-    const [wrongAnswer1, setWrongAnswer1] = useState(passedQuestion ? passedQuestion.options[1] : '');
-    const [wrongAnswer2, setWrongAnswer2] = useState(passedQuestion ? passedQuestion.options[2] : '');
-    const [wrongAnswer3, setWrongAnswer3] = useState(passedQuestion ? passedQuestion.options[3] : '');
+
+    let options: string[] = [''];
+    if (passedQuestion?.type === 'Multiple Choice' && passedQuestion?.options) {
+        try {
+            const parsed: unknown = JSON.parse(passedQuestion.options);
+            if (Array.isArray(parsed) && parsed.every(item => typeof item === 'string')) {
+                options = parsed;
+            } 
+        } catch (error) {
+            console.error('Invalid JSON:', error);
+        }
+    }
+
+    const [wrongAnswer1, setWrongAnswer1] = useState(options[1] || '');
+    const [wrongAnswer2, setWrongAnswer2] = useState(options[2] || '');
+    const [wrongAnswer3, setWrongAnswer3] = useState(options[3] || '');
+
 
 
     const saveQuestion = async () => {
@@ -45,18 +59,19 @@ export default function QuestionEditor({route}: any) {
         let options = [''];
 
         if (type === 'Multiple Choice') {
-            if (!wrongAnswer1?.trim() && !wrongAnswer2?.trim() && !wrongAnswer3?.trim()) {
+            options = [answer.trim(), wrongAnswer1.trim(), wrongAnswer2.trim(), wrongAnswer3.trim()].filter(opt => opt !== '');
+            if (options.length < 2) {
                 alert('Please provide at least 1 incorrect answer.');
                 return;
             }
-            options = [answer.trim(), wrongAnswer1.trim(), wrongAnswer2.trim(), wrongAnswer3.trim()];
         }
-        
+
         try {
             if (!passedQuestion) {
                 await createQuestion(passedQuiz.id, text.trim(), type, answer.trim(), options);
                 alert('Question saved successfully.');
             } else {
+                console.log(answer);
                 await updateQuestion(passedQuestion.id, text.trim(), type, answer.trim(), options);
                 alert('Question updated successfully.');
             }
