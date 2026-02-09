@@ -3,6 +3,7 @@ import { Alert, Button, StyleSheet, Text, TouchableOpacity, View } from 'react-n
 import { useAuth } from '@/app/AuthContext';
 import { useLayoutEffect } from 'react';
 import { deleteQuiz } from '@/api/quizzes';
+import { deleteQuestions } from '@/api/questions';
 
 export default function QuizInfoScreen({route}: any) {
     const navigation = useNavigation();
@@ -46,6 +47,7 @@ export default function QuizInfoScreen({route}: any) {
         console.log('Deleting quiz with id: ' + passedQuiz.id);
         try{
             deleteQuiz(passedQuiz.id);
+            deleteQuestions(passedQuiz.id);
             alert('Deleted quiz : ' + passedQuiz.title);
         }
         catch(error){

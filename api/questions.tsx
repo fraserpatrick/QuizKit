@@ -23,3 +23,7 @@ export const updateQuestion = (questionID: number, text: string, type: string, c
 export const deleteQuestion = (questionID: string) => {
     return apiFetch("questions", "DELETE", null, {questionID});
 }
+
+export const deleteQuestions = (quizID: string) => {
+    return apiFetch("questions", "DELETE", null, {quizID})
+}

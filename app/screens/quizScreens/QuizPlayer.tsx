@@ -4,6 +4,7 @@ import { View, Text, Button, Alert, Keyboard, TouchableWithoutFeedback, StyleShe
 import {Question} from '@/DatabaseController';
 import { useAuth } from "@/app/AuthContext";
 import { getQuizQuestions } from "@/api/questions";
+import { updateStats } from "@/api/users";
 
 export default function QuizPlayer({route}: any) {
     const navigation = useNavigation();
@@ -124,7 +125,7 @@ export default function QuizPlayer({route}: any) {
         const score = calcScore(updatedQuestions);
 
         try {
-            await database.updateUserStats(username!,updatedQuestions.length,score);
+            await updateStats(username!,updatedQuestions.length,score);
         } catch (error) {
             console.error('Failed to update stats', error);
         }
