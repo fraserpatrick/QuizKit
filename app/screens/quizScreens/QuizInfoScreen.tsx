@@ -82,7 +82,7 @@ export default function QuizInfoScreen({route}: any) {
                 <PrimaryButton label="Play quiz" onPress={() => navigation.navigate('QuizPlayer', { passedQuiz: passedQuiz })}/>
                 {ownedByUser && (<>
                     <PrimaryButton label="Edit questions" onPress={() => navigation.navigate('QuizEditor', { passedQuiz: passedQuiz })}/>
-                    <PrimaryButton label="Delete quiz" onPress={handleQuizDelete}/>
+                    <PrimaryButton label="Delete quiz" onPress={quizDeleteAlert}/>
                 </>)}
             </View>
         </View>

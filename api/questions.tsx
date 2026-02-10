@@ -1,8 +1,8 @@
 import { apiFetch } from "@/api/apiConnection";
 
 
-export const createQuestion = (quizID: number, text: string, type: string, correctAnswer: string, options: string[]) => {
-    return apiFetch("questions", "POST", {quizID, text, type, correctAnswer, options});
+export const createQuestion = (quizID: number, text: string, type: string, correctAnswer: string, options: string[], feedback: string) => {
+    return apiFetch("questions", "POST", {quizID, text, type, correctAnswer, options, feedback});
 }
 
 
@@ -15,8 +15,8 @@ export const getQuizQuestions = (quizID: number) => {
 }
 
 
-export const updateQuestion = (questionID: number, text: string, type: string, correctAnswer: string, options: string[]) => {
-    return apiFetch("questions/update", "PUT", {questionID, text, type, correctAnswer, options});
+export const updateQuestion = (questionID: number, text: string, type: string, correctAnswer: string, options: string[], feedback: string) => {
+    return apiFetch("questions/update", "PUT", {questionID, text, type, correctAnswer, options, feedback});
 }
 
 

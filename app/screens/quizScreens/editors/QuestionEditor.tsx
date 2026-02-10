@@ -1,4 +1,4 @@
-import { View, Text, StyleSheet, TextInput, TouchableWithoutFeedback, Keyboard, Alert, Button } from "react-native";
+import { View, Text, StyleSheet, TextInput, TouchableWithoutFeedback, Keyboard, Alert, Button, ScrollView } from "react-native";
 import React, { useLayoutEffect, useState } from "react";
 import { useNavigation } from "@react-navigation/native";
 import { SelectList } from 'react-native-dropdown-select-list';
@@ -33,6 +33,7 @@ export default function QuestionEditor({route}: any) {
     const [text, setText] = useState(passedQuestion ? passedQuestion.text : '');
     const [type, setType] = useState(passedQuestion ? passedQuestion.type : '');
     const [answer, setAnswer] = useState(passedQuestion ? passedQuestion.correctAnswer : '');
+    const [feedback, setFeedback] = useState(passedQuestion ? passedQuestion.feedback : '');
 
     let options: string[] = [''];
     if (passedQuestion?.type === 'Multiple Choice' && passedQuestion?.options) {
@@ -57,6 +58,7 @@ export default function QuestionEditor({route}: any) {
             alert('Please fill in all fields.');
             return;
         }
+
         let options = [''];
 
         if (type === 'Multiple Choice') {
@@ -69,11 +71,11 @@ export default function QuestionEditor({route}: any) {
 
         try {
             if (!passedQuestion) {
-                await createQuestion(passedQuiz.id, text.trim(), type, answer.trim(), options);
+                await createQuestion(passedQuiz.id, text.trim(), type, answer.trim(), options, feedback?.trim());
                 alert('Question saved successfully.');
             } else {
                 console.log(answer);
-                await updateQuestion(passedQuestion.id, text.trim(), type, answer.trim(), options);
+                await updateQuestion(passedQuestion.id, text.trim(), type, answer.trim(), options, feedback?.trim());
                 alert('Question updated successfully.');
             }
 
@@ -107,7 +109,7 @@ export default function QuestionEditor({route}: any) {
     return (
         <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
             <View style={styles.container}>
-                <View style={passedQuestion ? {flex: 0.8} : {flex: 0.9}}>
+                <ScrollView style={passedQuestion ? {flex: 0.7} : {flex: 0.8}}>
                     <Text style={styles.inputHeader}>Question Text:</Text>
                     <TextInput
                         style={styles.input}
@@ -165,12 +167,21 @@ export default function QuestionEditor({route}: any) {
                             ]}
                         />
                     </>)}
-                </View>
 
-                <View style={passedQuestion ? {flex: 0.2} : {flex: 0.1}}>
+                    <Text style={styles.inputHeader}>Feedback:</Text>
+                    <TextInput
+                        style={styles.bigInput}
+                        value={feedback}
+                        onChangeText={setFeedback}
+                        multiline
+                        textAlignVertical="top"
+                    />
+                </ScrollView>
+
+                <View style={passedQuestion ? {flex: 0.25} : {flex: 0.15}}>
                     <PrimaryButton label={passedQuestion ? 'Update Question' : 'Create Question'} onPress={saveQuestion}/>
                     {passedQuestion && (
-                        <PrimaryButton label="Delete Question" onPress={handleDeleteQuestion}/>
+                        <PrimaryButton label="Delete Question" onPress={deleteQuestionAlert}/>
                     )}
                 </View>
             </View>
@@ -188,6 +199,8 @@ const styles = StyleSheet.create({
     },
     inputHeader:{
         fontSize: 20,
+        marginBottom: 5,
+        marginTop: 10,
     },
     input:{
         width: '100%',
@@ -197,5 +210,15 @@ const styles = StyleSheet.create({
         borderColor: '#000000ff',
         borderRadius: 10,
         backgroundColor: '#ffffffff',
+    },
+    bigInput:{
+        width: '100%',
+        padding: 10,
+        marginBottom: 10,
+        borderWidth: 1,
+        borderColor: '#000000ff',
+        borderRadius: 10,
+        backgroundColor: '#ffffffff',
+        height: 150,
     },
 });
