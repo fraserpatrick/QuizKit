@@ -26,6 +26,7 @@ export interface Question {
     text: string;
     correctAnswer: string;
     options: string[];
+    feedback: string;
     userAnswer?: string;
 }
 
@@ -47,20 +48,6 @@ class DatabaseController {
             `);
         } catch (error) {
             console.error('Quiz table initialization error:', error);
-        }
-        try {
-            await db.execAsync(`
-                CREATE TABLE IF NOT EXISTS user (
-                    id INTEGER PRIMARY KEY AUTOINCREMENT,
-                    email TEXT NOT NULL,
-                    username TEXT NOT NULL,
-                    totalQuizPlays INTEGER DEFAULT 0,
-                    totalQuestionsAnswered INTEGER DEFAULT 0,
-                    totalQuestionsCorrect INTEGER DEFAULT 0
-                );
-            `);
-        } catch (error) {
-            console.error('User table initialization error:', error);
         }
         try {
             await db.execAsync(`
@@ -144,43 +131,6 @@ class DatabaseController {
     }
 
 
-    public createUser(email: string, username: string): Promise<boolean> {
-        const insertSQL = `INSERT INTO user (email, username) VALUES (?, ?)`;
-        return this.execute(insertSQL, [email, username])
-    }
-
-    public getUser(email: string): Promise<User[]> {
-        const sql = `SELECT * FROM user WHERE email = ?`;
-        return this.select<User>(sql, [email]);
-    }
-
-    public getUserByUsername(username: string): Promise<User[]> {
-        const sql = `SELECT * FROM user WHERE username = ?`;
-        return this.select<User>(sql, [username]);
-    }
-
-    public getUsers(): Promise<User[]> {
-        const sql = `SELECT * FROM user`;
-        return this.select<User>(sql);
-    }
-
-    public updateUsername(email: string, newUsername: string): Promise<boolean> {
-        const sql = `UPDATE user SET username = ? WHERE email = ?`;
-        return this.execute(sql, [newUsername, email]);
-    }
-
-    public updateQuizToNewUsername(oldUsername: string, newUsername: string): Promise<boolean> {
-        const sql = `UPDATE quiz SET owner = ? WHERE owner = ?`;
-        return this.execute(sql, [newUsername, oldUsername]);
-    }
-
-    public updateUserStats(username: string, answered: number, correct: number): Promise<boolean> {
-        const sql = `UPDATE user 
-                    SET totalQuizPlays = totalQuizPlays + 1, totalQuestionsAnswered = totalQuestionsAnswered + ?, totalQuestionsCorrect = totalQuestionsCorrect + ?
-                    WHERE username = ?;`;
-        return this.execute(sql, [answered, correct, username]);
-    }
-
 
     public createQuestion(quizID: number, type: string, text: string, correctAnswer: string, options: string[]): Promise<boolean> {
         const insertSQL = `INSERT INTO question (quizID, type, text, correctAnswer, options) VALUES (?, ?, ?, ?, ?)`;
@@ -220,10 +170,8 @@ class DatabaseController {
 
     public async databaseReset(): Promise<boolean>{
         const dropQuizTable = `DROP TABLE IF EXISTS quiz;`;
-        const dropUserTable = `DROP TABLE IF EXISTS user;`;
         const dropQuestionTable = `DROP TABLE IF EXISTS question;`;
         await this.execute(dropQuestionTable);
-        await this.execute(dropUserTable);
         return this.execute(dropQuizTable);
     }
 }
