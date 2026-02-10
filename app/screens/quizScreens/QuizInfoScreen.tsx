@@ -1,9 +1,11 @@
 import { useNavigation } from '@react-navigation/native';
-import { Alert, Button, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
-import { useAuth } from '@/app/AuthContext';
+import { Alert, Button, StyleSheet, Text, View } from 'react-native';
 import { useLayoutEffect } from 'react';
+import PrimaryButton from '@/app/components/Button';
+import { useAuth } from '@/app/AuthContext';
 import { deleteQuiz } from '@/api/quizzes';
 import { deleteQuestions } from '@/api/questions';
+
 
 export default function QuizInfoScreen({route}: any) {
     const navigation = useNavigation();
@@ -28,14 +30,6 @@ export default function QuizInfoScreen({route}: any) {
         });
     }, []);
 
-
-    const navToPlayer = () => {
-        navigation.navigate('QuizPlayer', { passedQuiz: passedQuiz });
-    }
-
-    const navToEditor = () => {
-        navigation.navigate('QuizEditor', { passedQuiz: passedQuiz });
-    }
 
     const quizDeleteAlert = () => Alert.alert(
         'Delete Quiz', 'Are you sure you want to delete this quiz?', [
@@ -68,11 +62,7 @@ export default function QuizInfoScreen({route}: any) {
                 {!ownedByUser && (
                     <View style={styles.itemContainer}>
                         <Text style={styles.header}>Created by:</Text>
-                        <TouchableOpacity onPress={() => {navigation.navigate('ProfileScreen', { passedUsername: passedQuiz.owner })}}>
-                            <View style={styles.button}>
-                                <Text style={styles.buttonText}>{passedQuiz.owner}</Text>
-                            </View>
-                        </TouchableOpacity>
+                        <PrimaryButton label={passedQuiz.owner} onPress={() => navigation.navigate('ProfileScreen', { passedUsername: passedQuiz.owner })}/>
                     </View>
                 )}
                 {passedQuiz.description && (
@@ -89,22 +79,10 @@ export default function QuizInfoScreen({route}: any) {
                 )}
             </View>
             <View style={styles.buttonsContainer}>
-                <TouchableOpacity onPress={navToPlayer} >
-                    <View style={styles.button}>
-                        <Text style={styles.buttonText}>Play quiz</Text>
-                    </View>
-                </TouchableOpacity>
+                <PrimaryButton label="Play quiz" onPress={() => navigation.navigate('QuizPlayer', { passedQuiz: passedQuiz })}/>
                 {ownedByUser && (<>
-                    <TouchableOpacity onPress={navToEditor} >
-                        <View style={styles.button}>
-                            <Text style={styles.buttonText}>Edit questions</Text>
-                        </View>
-                    </TouchableOpacity>
-                    <TouchableOpacity onPress={quizDeleteAlert} >
-                        <View style={styles.button}>
-                            <Text style={styles.buttonText}>Delete quiz</Text>
-                        </View>
-                    </TouchableOpacity>
+                    <PrimaryButton label="Edit questions" onPress={() => navigation.navigate('QuizEditor', { passedQuiz: passedQuiz })}/>
+                    <PrimaryButton label="Delete quiz" onPress={handleQuizDelete}/>
                 </>)}
             </View>
         </View>
@@ -133,20 +111,6 @@ const styles = StyleSheet.create({
     header:{
         fontSize: 24,
         marginBottom: 5,
-    },
-    button:{
-        alignItems: 'center',
-        backgroundColor: '#7a7a7aff',
-        borderRadius: 10,
-        marginTop: 4,
-        marginBottom: 4,
-        borderWidth: 2,
-    },
-    buttonText:{
-        textAlign: 'center',
-        padding: 10,
-        color: 'white',
-        fontSize: 20,
     },
     inlineButtonText:{
         fontSize: 24,

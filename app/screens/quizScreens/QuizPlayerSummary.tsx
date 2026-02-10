@@ -3,6 +3,7 @@ import { useLayoutEffect } from "react";
 import { useNavigation } from "@react-navigation/native";
 import { AnimatedCircularProgress } from 'react-native-circular-progress';
 import {Question} from '@/DatabaseController';
+import PrimaryButton from "@/app/components/Button";
 
 export default function QuizPlayerSummary({ route }: any) {
     const { passedQuiz, questions, score } = route.params;
@@ -21,9 +22,9 @@ export default function QuizPlayerSummary({ route }: any) {
 
     const handlePlayAgain = () => {
         navigation.reset({index: 2, routes: [
-            {name: 'Home' as never},
-            {name: 'QuizInfoScreen' as never, params: { passedQuiz: passedQuiz }},
-            {name: 'QuizPlayer' as never, params: { passedQuiz: passedQuiz }}
+            {name: 'Home'},
+            {name: 'QuizInfoScreen', params: { passedQuiz: passedQuiz }},
+            {name: 'QuizPlayer', params: { passedQuiz: passedQuiz }}
         ],} as never);
     }
 
@@ -79,11 +80,7 @@ export default function QuizPlayerSummary({ route }: any) {
                 />
             </View>
             <View style={styles.buttonsContainer}>
-                <TouchableOpacity onPress={handlePlayAgain} >
-                    <View style={styles.button}>
-                        <Text style={styles.buttonText}>Play Again</Text>
-                    </View>
-                </TouchableOpacity>
+                <PrimaryButton label="Play Again" onPress={handlePlayAgain}/>
             </View>
         </View>
     );
@@ -120,14 +117,6 @@ const styles = StyleSheet.create({
     },
     buttonsContainer:{
         flex: 0.2,
-    },
-    button:{
-        alignItems: 'center',
-        backgroundColor: '#7a7a7aff',
-        borderRadius: 10,
-        marginTop: 4,
-        marginBottom: 4,
-        borderWidth: 2,
     },
     buttonText:{
         textAlign: 'center',

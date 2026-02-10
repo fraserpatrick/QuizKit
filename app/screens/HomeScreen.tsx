@@ -4,6 +4,7 @@ import { FlatList, Text, TouchableOpacity, View, StyleSheet, Button } from 'reac
 import { Quiz } from "@/DatabaseController";
 import { SegmentedButtons } from 'react-native-paper';
 import { useAuth } from "@/app/AuthContext";
+import PrimaryButton from "@/app/components/Button"; 
 import { getOwnedQuizzes, getSharedQuizzes } from "@/api/quizzes";
 
 export default function HomeScreen() {
@@ -75,11 +76,7 @@ export default function HomeScreen() {
 
     return (
         <View style={styles.container}>
-            <TouchableOpacity onPress={handleCreateQuiz} >
-                <View style={styles.button}>
-                    <Text style={styles.buttonText}>Create Quiz</Text>
-                </View>
-            </TouchableOpacity>
+            <PrimaryButton label="Create Quiz" onPress={handleCreateQuiz}/>
             <View style={styles.quizContainer}>
                 <SegmentedButtons
                     value={selector}
@@ -115,20 +112,6 @@ const styles = StyleSheet.create({
         flex: 1,
         marginTop: 30,
     },
-    button:{
-        alignItems: 'center',
-        backgroundColor: '#7a7a7aff',
-        borderRadius: 10,
-        marginTop: 4,
-        marginBottom: 4,
-        borderWidth: 2,
-    },
-    buttonText:{
-        textAlign: 'center',
-        padding: 10,
-        color: 'white',
-        fontSize: 20,
-    },
     quizItem:{
         alignItems: 'center',
         backgroundColor: '#7a7a7aff',
@@ -136,5 +119,11 @@ const styles = StyleSheet.create({
         marginTop: 2,
         marginLeft: 20,
         marginRight: 20,
+    },
+    buttonText:{
+        textAlign: 'center',
+        padding: 10,
+        color: 'white',
+        fontSize: 20,
     },
 });

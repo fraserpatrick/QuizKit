@@ -1,8 +1,9 @@
 import { useNavigation } from '@react-navigation/native';
 import { useLayoutEffect, useState } from "react";
-import { View, Text, Button, Keyboard, TextInput, TouchableOpacity, TouchableWithoutFeedback, StyleSheet, Alert } from "react-native";
+import { View, Text, Button, Keyboard, TextInput, TouchableWithoutFeedback, StyleSheet, Alert } from "react-native";
 import { SegmentedButtons } from "react-native-paper";
 import {useAuth} from '@/app/AuthContext'
+import PrimaryButton from '@/app/components/Button';
 import { updateQuiz, createQuiz } from '@/api/quizzes';
 
 export default function QuizInfoEditor({route}: any) {
@@ -106,13 +107,7 @@ export default function QuizInfoEditor({route}: any) {
                     />
                 </View>
                 <View style={styles.buttonsContainer}>
-                    <TouchableOpacity onPress={handleQuizSave} >
-                        <View style={styles.button}>
-                            <Text style={styles.buttonText}>
-                                {passedQuiz ? 'Save quiz changes' : 'Create new quiz'}
-                            </Text>
-                        </View>
-                    </TouchableOpacity>
+                    <PrimaryButton label={passedQuiz ? 'Save quiz changes' : 'Create new quiz'} onPress={handleQuizSave}/>
                 </View>
             </View>
         </TouchableWithoutFeedback>
@@ -134,20 +129,6 @@ const styles = StyleSheet.create({
         flex: 0.1,
     },
     inputHeader:{
-        fontSize: 20,
-    },
-    button:{
-        alignItems: 'center',
-        backgroundColor: '#7a7a7aff',
-        borderRadius: 10,
-        marginTop: 4,
-        marginBottom: 4,
-        borderWidth: 2,
-    },
-    buttonText:{
-        textAlign: 'center',
-        padding: 10,
-        color: 'white',
         fontSize: 20,
     },
     input:{

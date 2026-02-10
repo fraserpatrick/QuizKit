@@ -3,6 +3,7 @@ import { View, Text, Button, TouchableOpacity, TextInput, StyleSheet, Keyboard, 
 import { useNavigation } from '@react-navigation/native';
 import { useAuth } from '@/app/AuthContext';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
+import PrimaryButton from '@/app/components/Button';
 import { updateUsername, getUserByUsername } from '@/api/users';
 import { updateQuizToNewUsername } from '@/api/quizzes';
 
@@ -137,11 +138,7 @@ export default function ProfileEditor() {
                         />
                     </TouchableOpacity>
                 </View>
-                <TouchableOpacity onPress={handleProfileSave}>
-                    <View style={styles.button}>
-                        <Text style={styles.buttonText}>Save Profile Changes</Text>
-                    </View>
-                </TouchableOpacity>
+                <PrimaryButton label="Save Profile Changes" onPress={handleProfileSave}/>
             </View>
         </TouchableWithoutFeedback>
     );
@@ -163,20 +160,6 @@ const styles = StyleSheet.create({
         borderColor: '#000000ff',
         borderRadius: 10,
         backgroundColor: '#ffffffff',
-    },
-    button:{
-        alignItems: 'center',
-        backgroundColor: '#7a7a7aff',
-        borderRadius: 10,
-        marginTop: 4,
-        marginBottom: 4,
-        borderWidth: 2,
-    },
-    buttonText:{
-        textAlign: 'center',
-        padding: 10,
-        color: 'white',
-        fontSize: 20,
     },
     passwordInput:{
         flex: 1,
