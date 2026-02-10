@@ -15,8 +15,8 @@ export interface User {
     email: string;
     username: string;
     totalQuizPlays?: number;
-    totalQuestionsAnswered?: number;
-    totalQuestionsCorrect?: number;
+    totalAnswers?: number;
+    totalCorrect?: number;
 }
 
 export interface Question {

@@ -1,9 +1,11 @@
 import { useNavigation } from '@react-navigation/native';
 import { Alert, Button, StyleSheet, Text, View } from 'react-native';
-import database from '@/DatabaseController';
-import { useAuth } from '@/app/AuthContext';
 import { useLayoutEffect } from 'react';
 import PrimaryButton from '@/app/components/Button';
+import { useAuth } from '@/app/AuthContext';
+import { deleteQuiz } from '@/api/quizzes';
+import { deleteQuestions } from '@/api/questions';
+
 
 export default function QuizInfoScreen({route}: any) {
     const navigation = useNavigation();
@@ -29,16 +31,17 @@ export default function QuizInfoScreen({route}: any) {
     }, []);
 
 
-    const handleQuizDelete = () => Alert.alert(
+    const quizDeleteAlert = () => Alert.alert(
         'Delete Quiz', 'Are you sure you want to delete this quiz?', [
             {text: 'No, keep it', style: 'cancel',},
-            {text: 'Yes, delete it', onPress: () => deleteQuiz(), style: 'destructive',},
+            {text: 'Yes, delete it', onPress: () => handleDeleteQuiz(), style: 'destructive',},
     ]);
 
-    const deleteQuiz = () => {
+    const handleDeleteQuiz = () => {
         console.log('Deleting quiz with id: ' + passedQuiz.id);
         try{
-            database.deleteQuiz(passedQuiz.id);
+            deleteQuiz(passedQuiz.id);
+            deleteQuestions(passedQuiz.id);
             alert('Deleted quiz : ' + passedQuiz.title);
         }
         catch(error){

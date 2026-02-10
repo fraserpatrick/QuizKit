@@ -1,10 +1,10 @@
 import { View, Text, StyleSheet, TextInput, TouchableWithoutFeedback, Keyboard, Alert, Button } from "react-native";
-import database from "@/DatabaseController";
 import React, { useLayoutEffect, useState } from "react";
 import { useNavigation } from "@react-navigation/native";
 import { SelectList } from 'react-native-dropdown-select-list';
 import { SegmentedButtons } from "react-native-paper";
 import PrimaryButton from "@/app/components/Button";
+import { createQuestion, deleteQuestion, updateQuestion } from "@/api/questions";
 
 export default function QuestionEditor({route}: any) {
     const {passedQuestion, passedQuiz} = route.params;
@@ -33,9 +33,23 @@ export default function QuestionEditor({route}: any) {
     const [text, setText] = useState(passedQuestion ? passedQuestion.text : '');
     const [type, setType] = useState(passedQuestion ? passedQuestion.type : '');
     const [answer, setAnswer] = useState(passedQuestion ? passedQuestion.correctAnswer : '');
-    const [wrongAnswer1, setWrongAnswer1] = useState(passedQuestion ? passedQuestion.options[1] : '');
-    const [wrongAnswer2, setWrongAnswer2] = useState(passedQuestion ? passedQuestion.options[2] : '');
-    const [wrongAnswer3, setWrongAnswer3] = useState(passedQuestion ? passedQuestion.options[3] : '');
+
+    let options: string[] = [''];
+    if (passedQuestion?.type === 'Multiple Choice' && passedQuestion?.options) {
+        try {
+            const parsed: unknown = JSON.parse(passedQuestion.options);
+            if (Array.isArray(parsed) && parsed.every(item => typeof item === 'string')) {
+                options = parsed;
+            } 
+        } catch (error) {
+            console.error('Invalid JSON:', error);
+        }
+    }
+
+    const [wrongAnswer1, setWrongAnswer1] = useState(options[1] || '');
+    const [wrongAnswer2, setWrongAnswer2] = useState(options[2] || '');
+    const [wrongAnswer3, setWrongAnswer3] = useState(options[3] || '');
+
 
 
     const saveQuestion = async () => {
@@ -46,19 +60,20 @@ export default function QuestionEditor({route}: any) {
         let options = [''];
 
         if (type === 'Multiple Choice') {
-            if (!wrongAnswer1?.trim() && !wrongAnswer2?.trim() && !wrongAnswer3?.trim()) {
+            options = [answer.trim(), wrongAnswer1.trim(), wrongAnswer2.trim(), wrongAnswer3.trim()].filter(opt => opt !== '');
+            if (options.length < 2) {
                 alert('Please provide at least 1 incorrect answer.');
                 return;
             }
-            options = [answer.trim(), wrongAnswer1.trim(), wrongAnswer2.trim(), wrongAnswer3.trim()];
         }
-        
+
         try {
             if (!passedQuestion) {
-                await database.createQuestion(passedQuiz.id, type, text.trim(), answer.trim(), options);
+                await createQuestion(passedQuiz.id, text.trim(), type, answer.trim(), options);
                 alert('Question saved successfully.');
             } else {
-                await database.updateQuestion(passedQuestion.id, type, text.trim(), answer.trim(), options);
+                console.log(answer);
+                await updateQuestion(passedQuestion.id, text.trim(), type, answer.trim(), options);
                 alert('Question updated successfully.');
             }
 
@@ -69,15 +84,16 @@ export default function QuestionEditor({route}: any) {
         }
     };
 
-    const handleDeleteQuestion = () => Alert.alert(
+    const deleteQuestionAlert = () => Alert.alert(
         'Delete Question', 'Are you sure you want to delete this question?', [
             {text: 'No, keep it', style: 'cancel',},
-            {text: 'Yes, delete it', onPress: () => deleteQuestion(), style: 'destructive',},
+            {text: 'Yes, delete it', onPress: () => handleDeleteQuestion(), style: 'destructive',},
     ]);
 
-    const deleteQuestion = async () => {
+    const handleDeleteQuestion = () => {
+        console.log('Deleting question with id: ' + passedQuestion.id);
         try {
-            await database.deleteQuestion(passedQuestion.id);
+            deleteQuestion(passedQuestion.id);
             alert('Question deleted successfully.');
             navigation.goBack();
         }

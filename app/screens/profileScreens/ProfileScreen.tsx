@@ -1,9 +1,11 @@
 import { Text, View, TouchableOpacity, StyleSheet, FlatList, Alert, Button } from 'react-native';
 import { useAuth } from '@/app/AuthContext';
-import database, { Quiz, User } from '@/DatabaseController';
+import { Quiz, User } from '@/DatabaseController';
 import { useState, useEffect, useLayoutEffect } from 'react';
 import { useNavigation } from '@react-navigation/native';
 import PrimaryButton from '@/app/components/Button';
+import { getOwnedQuizzes } from '@/api/quizzes';
+import { getUserByUsername } from '@/api/users';
 
 export default function ProfileScreen({route}: any) {
     const { username, logout } = useAuth();
@@ -35,14 +37,14 @@ export default function ProfileScreen({route}: any) {
     );
 
     const [quizzes, setQuizzes] = useState<Quiz[]>([]);
-    const [user, setUser] = useState<User>({email: '', username: '', totalQuizPlays: 0, totalQuestionsAnswered: 0, totalQuestionsCorrect: 0});
+    const [user, setUser] = useState<User>({email: '', username: '', totalQuizPlays: 0, totalAnswers: 0, totalCorrect: 0});
     const ownProfile = passedUsername === username;
 
 
     useEffect(() => {
         const loadQuizzes = async () => {
             try {
-                setQuizzes(await database.getUsersQuizzes(passedUsername));
+                setQuizzes(await getOwnedQuizzes(passedUsername));
             } catch (error) {
                 console.error('Error loading quizzes:', error);
             }
@@ -50,8 +52,8 @@ export default function ProfileScreen({route}: any) {
 
         const loadUser = async () => {
             try {
-                const users = await database.getUserByUsername(passedUsername);
-                setUser(users[0]);
+                const result = await getUserByUsername(passedUsername);
+                setUser(result);
             } catch (error) {
                 console.error('Error loading user:', error);
             }
@@ -82,8 +84,8 @@ export default function ProfileScreen({route}: any) {
             <View style={styles.statsContainer}>
                 <Text style={styles.containerHeader}>Game Statistics</Text>
                 <Text>Total Quizzes: {user.totalQuizPlays}</Text>
-                <Text>Total Questions Answered: {user.totalQuestionsAnswered}</Text>
-                <Text>Total Questions Correct: {user.totalQuestionsCorrect}</Text>
+                <Text>Total Questions Answered: {user.totalAnswers}</Text>
+                <Text>Total Questions Correct: {user.totalCorrect}</Text>
             </View>
             <View style={styles.quizContainer}>
                 <Text style={styles.containerHeader}>Owned Quizzes</Text>

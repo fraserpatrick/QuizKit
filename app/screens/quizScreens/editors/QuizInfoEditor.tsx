@@ -2,9 +2,9 @@ import { useNavigation } from '@react-navigation/native';
 import { useLayoutEffect, useState } from "react";
 import { View, Text, Button, Keyboard, TextInput, TouchableWithoutFeedback, StyleSheet, Alert } from "react-native";
 import { SegmentedButtons } from "react-native-paper";
-import database from '@/DatabaseController'
 import {useAuth} from '@/app/AuthContext'
 import PrimaryButton from '@/app/components/Button';
+import { updateQuiz, createQuiz } from '@/api/quizzes';
 
 export default function QuizInfoEditor({route}: any) {
     const {passedQuiz} = route.params;
@@ -35,20 +35,20 @@ export default function QuizInfoEditor({route}: any) {
         if (passedQuiz){
             Alert.alert('Update quiz?', 'Are you sure you want to update this quiz?', [
                 {text: 'No, go back', style: 'cancel',},
-                {text: 'Yes, update quiz', onPress: updateQuiz , style: 'default',},
+                {text: 'Yes, update quiz', onPress: handleUpdateQuiz , style: 'default',},
             ]);
         }
         else{
             Alert.alert('Create quiz?', 'Are you sure you want to create this quiz?', [
                 {text: 'No, go back', style: 'cancel',},
-                {text: 'Yes, create quiz', onPress: createQuiz , style: 'default',},
+                {text: 'Yes, create quiz', onPress: handleCreateQuiz , style: 'default',},
             ]);
         }
     }
 
-    const createQuiz = async () => {
+    const handleCreateQuiz = async () => {
         try {
-            const newQuiz = await database.createQuiz(title.trim(), username!, visibility, description.trim());
+            const newQuiz = await createQuiz(title.trim(), username!, visibility, description.trim());
             alert('Creating quiz with title: ' + title.trim());
             console.log('Creating quiz with title: ' + title.trim());
 
@@ -63,9 +63,9 @@ export default function QuizInfoEditor({route}: any) {
         }
     }
 
-    const updateQuiz = async () => {
+    const handleUpdateQuiz = async () => {
         try {
-            const updatedQuiz = await database.updateQuiz(passedQuiz.id, title.trim(), visibility, description.trim());
+            const updatedQuiz = await updateQuiz(passedQuiz.id, title.trim(), visibility, description.trim());
             alert('Quiz saved successfully.');
             navigation.reset({index: 1, routes: [
                 {name: 'Home' as never},

@@ -2,8 +2,8 @@ import { useState } from "react";
 import { Text, StyleSheet, TouchableWithoutFeedback, Keyboard, View, TextInput, TouchableOpacity } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import { useAuth } from "@/app/AuthContext";
-import database from "@/DatabaseController";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
+import { createUser } from "@/api/users";
 
 export default function SignUpScreen() {
     const navigation = useNavigation();
@@ -56,7 +56,7 @@ export default function SignUpScreen() {
             setPassword2('');
         }
         try {
-            await database.createUser(email.trim().toLowerCase(), username.trim().toLowerCase());
+            await createUser(email.trim().toLowerCase(), username.trim().toLowerCase());
         }
         catch (error) {
             console.error('Sign up failed:', error);

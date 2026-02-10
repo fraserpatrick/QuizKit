@@ -1,10 +1,11 @@
-import React, { useEffect, useLayoutEffect, useState } from 'react';
+import React, { useLayoutEffect, useState } from 'react';
 import { View, Text, Button, TouchableOpacity, TextInput, StyleSheet, Keyboard, TouchableWithoutFeedback } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { useAuth } from '@/app/AuthContext';
-import database, { Quiz, User, Question } from '@/DatabaseController';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import PrimaryButton from '@/app/components/Button';
+import { updateUsername, getUserByUsername } from '@/api/users';
+import { updateQuizToNewUsername } from '@/api/quizzes';
 
 export default function ProfileEditor() {
     const { username, user, changeUsername, changePassword } = useAuth();
@@ -18,83 +19,6 @@ export default function ProfileEditor() {
             ),
         });
     }, []);
-
-
-    const [TEMPquizzes, TEMPsetQuizzes] = useState<Quiz[]>([]);
-    const [TEMPusers, TEMPsetUsers] = useState<User[]>([]);
-    const [TEMPquestions, TEMPsetQuestions] = useState<Question[]>([]);
-
-    useEffect(() => {
-        const loadQuizzes = async () => {
-            try {
-                TEMPsetQuizzes(await database.getQuizzes());
-            } catch (error) {
-                console.error('Error loading quizzes:', error);
-            }
-        };
-        const loadUsers = async () => {
-            try {
-                TEMPsetUsers(await database.getUsers());
-            } catch (error) {
-                console.error('Error loading users:', error);
-            }
-        };
-        const loadQuestions = async () => {
-            try {
-                TEMPsetQuestions(await database.getQuestions());
-            } catch (error) {
-                console.error('Error loading questions:', error);
-            }
-        };
-
-        loadQuizzes();
-        loadUsers();
-        loadQuestions();
-    }, []);
-
-
-    const listDatabase = async () => {
-        if (TEMPquizzes.length === 0) {
-            console.log("No quizzes found");
-        } else {
-            console.log("Quizzes:");
-            TEMPquizzes.forEach((quiz) => {
-                console.log("ID:" + quiz.id + "  Title: " + quiz.title + "   Owner: " + quiz.owner + "   Visibility: " + quiz.visibility);
-            });
-        }
-        if (TEMPusers.length === 0) {
-            console.log("No users found");
-        } else {
-            console.log("Users:");
-            TEMPusers.forEach((user) => {
-                console.log("ID:" + user.id + "  Email: " + user.email + "   Username: " + user.username + "   TotalQuizPlays: " + user.totalQuizPlays + "   TotalQuestionsAnswered: " + user.totalQuestionsAnswered + "   TotalQuestionsCorrect: " + user.totalQuestionsCorrect);
-            });
-        }
-        if (TEMPquestions.length === 0) {
-            console.log("No questions found");
-        } else {
-            console.log("Questions:");
-            TEMPquestions.forEach((question) => {
-                console.log("ID:" + question.id + "  QuizID: " + question.quizID + "   Type: " + question.type + "   Text: " + question.text + "   CorrectAnswer: " + question.correctAnswer + "   options: " + question.options);
-            });
-        }
-    };
-
-    const resetDatabase = async () => {
-        try {
-            await database.databaseReset();
-            TEMPsetQuizzes([]);
-            TEMPsetUsers([]);
-            TEMPsetQuestions([]);
-            alert('Database has been reset.');
-            console.log('Database reset successfully.');
-        } catch (error) {
-            console.error('Error resetting database:', error);
-            alert('Failed to reset database.');
-        }
-    };
-
-
 
 
     const [usernameInput, setUsernameInput] = useState(username!);
@@ -130,15 +54,15 @@ export default function ProfileEditor() {
         }
 
         if (usernameInput.trim().toLowerCase() !== username) {
-            const existingUsers = await database.getUserByUsername(usernameInput.trim().toLowerCase());
+            const existingUsers = await getUserByUsername(usernameInput.trim().toLowerCase());
             if (existingUsers.length > 0) {
                 alert('Username is already taken.');
                 return;
             }
 
             try {
-                await database.updateUsername(user!.email!, usernameInput.trim().toLowerCase());
-                await database.updateQuizToNewUsername(username!, usernameInput.trim().toLowerCase());
+                await updateUsername(user!.email!, usernameInput.trim().toLowerCase());
+                updateQuizToNewUsername(username!, usernameInput.trim().toLowerCase());
                 changeUsername(usernameInput.trim().toLowerCase());
                 alert('Username updated successfully.');
                 navigation.goBack();
@@ -215,12 +139,6 @@ export default function ProfileEditor() {
                     </TouchableOpacity>
                 </View>
                 <PrimaryButton label="Save Profile Changes" onPress={handleProfileSave}/>
-
-                <View>
-                    <Text>TEMP BUTTONS</Text>
-                    <Button title="Reset Database" onPress={resetDatabase} />
-                    <Button title="List Database" onPress={listDatabase} />
-                </View>
             </View>
         </TouchableWithoutFeedback>
     );

@@ -1,9 +1,11 @@
 import { useFocusEffect, useNavigation } from "@react-navigation/native";
 import { useCallback, useEffect, useLayoutEffect, useState } from "react";
 import { View, Text, Button, Alert, Keyboard, TouchableWithoutFeedback, StyleSheet, TouchableOpacity, TextInput } from "react-native";
-import database, {Question} from '@/DatabaseController';
+import {Question} from '@/DatabaseController';
 import { useAuth } from "@/app/AuthContext";
 import PrimaryButton from "@/app/components/Button";
+import { getQuizQuestions } from "@/api/questions";
+import { updateStats } from "@/api/users";
 
 export default function QuizPlayer({route}: any) {
     const navigation = useNavigation();
@@ -29,7 +31,7 @@ export default function QuizPlayer({route}: any) {
 
     const loadQuestions = async () => {
         try {
-            const questions = await database.getQuestionsByQuizID(passedQuiz.id!);
+            const questions = await getQuizQuestions(passedQuiz.id!);
             setQuestions(questions);
         } catch (error) {
             console.error('Error loading data:', error);
@@ -114,11 +116,17 @@ export default function QuizPlayer({route}: any) {
     }
 
     const finishQuiz = async () => {
-        saveAnswer(currentQuestion, answer);
-        const score = calcScore(questions);
+        const updatedQuestions = [...questions];
+
+        updatedQuestions[currentQuestion] = {
+            ...updatedQuestions[currentQuestion],
+            userAnswer: answer,
+        };
+
+        const score = calcScore(updatedQuestions);
 
         try {
-            await database.updateUserStats(username!,questions.length,score);
+            await updateStats(username!,updatedQuestions.length,score);
         } catch (error) {
             console.error('Failed to update stats', error);
         }
@@ -126,7 +134,7 @@ export default function QuizPlayer({route}: any) {
         navigation.reset({index: 2, routes: [
             {name: 'Home'},
             {name: 'QuizInfoScreen', params: { passedQuiz: passedQuiz }},
-            {name: 'QuizPlayerSummary', params: { passedQuiz: passedQuiz, questions: questions, score: score }}
+            {name: 'QuizPlayerSummary', params: { passedQuiz: passedQuiz, questions: updatedQuestions, score: score }}
         ],} as never);
     }
 
