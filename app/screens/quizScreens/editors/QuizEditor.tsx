@@ -1,7 +1,8 @@
 import { useFocusEffect, useNavigation } from '@react-navigation/native';
 import { Text, TouchableOpacity, View, StyleSheet, FlatList, Button } from 'react-native';
-import database, { Question } from '@/DatabaseController';
+import { Question } from '@/DatabaseController';
 import { useState, useCallback, useLayoutEffect } from 'react';
+import { getQuizQuestions } from '@/api/questions';
 
 export default function QuizEditor({route}: any) {
     const {passedQuiz} = route.params;
@@ -20,9 +21,7 @@ export default function QuizEditor({route}: any) {
 
     const loadQuestions = async () => {
             try {
-                const questions = await database.getQuestionsByQuizID(passedQuiz.id!);
-                setQuestions(questions);
-                
+                setQuestions(await getQuizQuestions(passedQuiz.id!));
             } catch (error) {
                 console.error('Error loading data:', error);
             }

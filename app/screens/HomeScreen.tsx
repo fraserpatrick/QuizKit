@@ -1,9 +1,10 @@
 import { useFocusEffect, useNavigation } from "@react-navigation/native";
 import React, { useCallback, useEffect, useLayoutEffect, useState } from 'react';
 import { FlatList, Text, TouchableOpacity, View, StyleSheet, Button } from 'react-native';
-import database, { Quiz } from "@/DatabaseController";
+import { Quiz } from "@/DatabaseController";
 import { SegmentedButtons } from 'react-native-paper';
-import { useAuth } from "../AuthContext";
+import { useAuth } from "@/app/AuthContext";
+import { getOwnedQuizzes, getSharedQuizzes } from "@/api/quizzes";
 
 export default function HomeScreen() {
     const navigation = useNavigation();
@@ -25,10 +26,9 @@ export default function HomeScreen() {
 
     const loadQuizzes = async () => {
         try {
-            const myQuizzes = await database.getUsersQuizzes(username!);
+            const myQuizzes = await getOwnedQuizzes(username!);
             setMyQuizzes(myQuizzes);
-            
-            const sharedQuizzes = await database.getSharedQuizzes(username!);
+            const sharedQuizzes = await getSharedQuizzes(username!);
             setSharedQuizzes(sharedQuizzes);
         } catch (error) {
             console.error('Error loading data:', error);
