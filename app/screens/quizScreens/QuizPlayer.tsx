@@ -140,7 +140,7 @@ export default function QuizPlayer({route}: any) {
 
 
     const MultipleChoiceInput = ({options, value, onChange,}: {options: string[]; value: string; onChange: (val: string) => void;}) => {
-        if (options) {
+        if (options && !(options.length === 2 && options[0] === "True" && options[1] === "False")) {
             try {
                 const parsed: unknown = JSON.parse(options.toString());
                 if (Array.isArray(parsed) && parsed.every(item => typeof item === 'string')) {
