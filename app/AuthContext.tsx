@@ -44,6 +44,11 @@ export const AuthProvider = ({children} : AuthProviderProps) => {
 
         try {
             const result = await getUserByEmail(firebaseUser.email);
+            if (!result) {
+                setUsername(null);
+                return;
+            }
+            
             setUsername(result.username);
         } catch (error) {
             console.error('Failed to load username:', error);

@@ -44,19 +44,16 @@ export default function SignUpScreen() {
         }
 
         try {
-            const newUser = await signUp(email.trim().toLowerCase(), password1.trim());
+            const newEmail = email.trim().toLowerCase();
+            const newUsername = username.trim().toLowerCase();
+            const newPassword = password1.trim();
+
+
+            const newUser = await signUp(newEmail, newPassword);
             console.log('User account created & signed in!', newUser.email);
-            changeUsername(username.trim().toLowerCase());
-        }
-        catch (error) {
-            console.error('Sign up failed:', error);
-            alert('Sign up failed. Please try again.');
-            setEmail('');
-            setPassword1('');
-            setPassword2('');
-        }
-        try {
-            await createUser(email.trim().toLowerCase(), username.trim().toLowerCase());
+
+            await createUser(newEmail, newUsername);
+            await changeUsername(newUsername);
         }
         catch (error) {
             console.error('Sign up failed:', error);
