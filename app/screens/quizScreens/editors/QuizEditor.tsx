@@ -1,9 +1,10 @@
 import { useFocusEffect, useNavigation } from '@react-navigation/native';
-import { Text, TouchableOpacity, View, StyleSheet, FlatList, Button } from 'react-native';
+import { View, StyleSheet, FlatList, Button } from 'react-native';
 import { Question } from '@/DatabaseController';
 import { useState, useCallback, useLayoutEffect } from 'react';
 import PrimaryButton from '@/app/components/Button';
 import { getQuizQuestions } from '@/api/questions';
+import { QuestionItem } from '@/app/components/QuizAndQuestionItem';
 
 export default function QuizEditor({route}: any) {
     const {passedQuiz} = route.params;
@@ -34,18 +35,6 @@ export default function QuizEditor({route}: any) {
         }, [passedQuiz.id])
     );
 
-    type ItemProps = {
-            question: Question;
-            onPress: () => void;
-    };
-    
-    const Item = ({ question, onPress }: ItemProps) => (
-        <TouchableOpacity onPress={onPress} style={styles.questionItem}>
-            <View>
-                <Text style={styles.buttonText}>{question.text}</Text>
-            </View>
-        </TouchableOpacity>
-    );
 
     const handleCreateQuestions = () => {
         navigation.navigate('QuestionEditor', { passedQuestion: null, passedQuiz: passedQuiz });
@@ -63,7 +52,7 @@ export default function QuizEditor({route}: any) {
                     data={questions}
                     keyExtractor={(item) => String(item.id)}
                     renderItem={({ item }) => (
-                        <Item
+                        <QuestionItem
                             question={item}
                             onPress={() => handleOpenQuestion(item)}
                         />
@@ -90,19 +79,5 @@ const styles = StyleSheet.create({
     },
     buttonsContainer:{
         flex: 0.1,
-    },
-    buttonText:{
-        textAlign: 'center',
-        padding: 10,
-        color: 'white',
-        fontSize: 20,
-    },
-    questionItem:{
-        alignItems: 'center',
-        backgroundColor: '#7a7a7aff',
-        borderWidth: 1,
-        marginTop: 2,
-        marginLeft: 20,
-        marginRight: 20,
     },
 });

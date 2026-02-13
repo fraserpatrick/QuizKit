@@ -1,11 +1,12 @@
 import { useFocusEffect, useNavigation } from "@react-navigation/native";
 import React, { useCallback, useEffect, useLayoutEffect, useState } from 'react';
-import { FlatList, Text, TouchableOpacity, View, StyleSheet, Button } from 'react-native';
+import { FlatList, View, StyleSheet, Button } from 'react-native';
 import { Quiz } from "@/DatabaseController";
 import { SegmentedButtons } from 'react-native-paper';
 import { useAuth } from "@/app/AuthContext";
 import PrimaryButton from "@/app/components/Button"; 
 import { getOwnedQuizzes, getSharedQuizzes } from "@/api/quizzes";
+import { QuizItem } from "../components/QuizAndQuestionItem";
 
 export default function HomeScreen() {
     const navigation = useNavigation();
@@ -44,19 +45,6 @@ export default function HomeScreen() {
     );
 
 
-    type ItemProps = {
-        quiz: Quiz;
-        onPress: () => void;
-    };
-
-    const Item = ({ quiz, onPress }: ItemProps) => (
-        <TouchableOpacity onPress={onPress} style={styles.quizItem}>
-            <View>
-                <Text style={styles.buttonText}>{quiz.title}</Text>
-            </View>
-        </TouchableOpacity>
-    );
-
 
     const handleCreateQuiz = () => {
         navigation.navigate('QuizInfoEditor', {passedQuiz: null});
@@ -89,7 +77,7 @@ export default function HomeScreen() {
                     data={quizzes}
                     keyExtractor={(item) => String(item.id)}
                     renderItem={({ item }) => (
-                        <Item
+                        <QuizItem
                             quiz={item}
                             onPress={() => handleOpenQuiz(item)}
                         />

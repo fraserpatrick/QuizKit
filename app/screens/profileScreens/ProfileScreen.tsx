@@ -1,4 +1,4 @@
-import { Text, View, TouchableOpacity, StyleSheet, FlatList, Alert, Button } from 'react-native';
+import { Text, View, StyleSheet, FlatList, Alert, Button } from 'react-native';
 import { useAuth } from '@/app/AuthContext';
 import { Quiz, User } from '@/DatabaseController';
 import { useState, useEffect, useLayoutEffect } from 'react';
@@ -6,6 +6,7 @@ import { useNavigation } from '@react-navigation/native';
 import PrimaryButton from '@/app/components/Button';
 import { getOwnedQuizzes } from '@/api/quizzes';
 import { getUserByUsername } from '@/api/users';
+import { SmallQuizItem } from '@/app/components/QuizAndQuestionItem';
 
 export default function ProfileScreen({route}: any) {
     const { username, logout } = useAuth();
@@ -62,18 +63,6 @@ export default function ProfileScreen({route}: any) {
         loadUser();
     }, []);
 
-    type ItemProps = {
-            quiz: Quiz;
-            onPress: () => void;
-        };
-    
-    const Item = ({ quiz, onPress }: ItemProps) => (
-        <TouchableOpacity onPress={onPress} style={styles.quizItem}>
-            <View>
-                <Text style={styles.quizText}>{quiz.title}</Text>
-            </View>
-        </TouchableOpacity>
-    );
 
 
     return (
@@ -93,7 +82,7 @@ export default function ProfileScreen({route}: any) {
                     data={quizzes}
                     keyExtractor={(item) => String(item.id)}
                     renderItem={({ item }) => (
-                        <Item
+                        <SmallQuizItem
                             quiz={item}
                             onPress={() => navigation.navigate('QuizInfoScreen', { passedQuiz: item })}
                         />
@@ -141,20 +130,6 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         textAlign: 'center',
         marginBottom: 10,
-    },
-    quizItem:{
-        alignItems: 'center',
-        backgroundColor: '#7a7a7aff',
-        borderWidth: 1,
-        marginTop: 2,
-        marginLeft: 20,
-        marginRight: 20,
-    },
-    quizText:{
-        textAlign: 'center',
-        padding: 5,
-        color: 'white',
-        fontSize: 16,
     },
     buttonContainer:{
         flex: 0.1,
