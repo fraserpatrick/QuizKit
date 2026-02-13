@@ -14,21 +14,35 @@ export default function QuizPlayerSummary({ route }: any) {
             ),
         });
     }, [navigation]);
-    
+    const feedback = question.feedback || "No feedback provided.";
+    const correct = question.correctAnswer == question.userAnswer;
+
 
     return(
         <View style={styles.container}>
             <View style={styles.questionContainer}>
-                <Text style={styles.questionHeader}> {question.text}</Text>
+                <Text style={styles.questionHeader}> {question.text}?</Text>
             </View>
             <View style={styles.answerContainer}>
-                <Text> Your Answer </Text>
-                <Text> {question.userAnswer} </Text>
-                <Text> Correct Answer </Text>
-                <Text> {question.correctAnswer} </Text>
+                <View style={styles.innerAnswerContainer}>
+                    <Text style={styles.answerHeader}> Your Answer </Text>
+                    <Text> {question.userAnswer} </Text>
+                </View>
+                {!correct && (
+                    <View style={styles.innerAnswerContainer}>
+                        <Text style={styles.answerHeader}> Correct Answer </Text>
+                        <Text> {question.correctAnswer} </Text>
+                    </View>
+                )}
+                {correct && (
+                    <View style={styles.innerAnswerContainer}>
+                        <Text style={styles.answerHeader}> Correct! </Text>
+                    </View>
+                )}
             </View>
             <View style={styles.feedbackContainer}>
-                <Text> RANDOM FEEDBACK </Text>
+                    <Text style={styles.answerHeader}> Feedback </Text>
+                <Text> {feedback} </Text>
             </View>
         </View>
     )
@@ -42,15 +56,29 @@ const styles = StyleSheet.create ({
         marginTop: 10,
     },
     questionContainer:{
-        flex: 0.2,
+        flex: 0.15,
+        borderWidth: 1,
+        padding: 10,
+        margin: 10
     },
     questionHeader:{
         fontSize: 20,
     },
     answerContainer:{
         flex: 0.2,
+        borderWidth: 1,
+        margin: 10,
+    },
+    innerAnswerContainer:{
+        padding: 10,
+    },
+    answerHeader:{
+        fontSize: 20,
     },
     feedbackContainer:{
         flex: 0.4,
+        borderWidth: 1,
+        padding: 10,
+        margin: 10
     },
 });
