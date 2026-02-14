@@ -5,13 +5,13 @@ import { SegmentedButtons } from "react-native-paper";
 import {useAuth} from '@/app/AuthContext'
 import PrimaryButton from '@/app/components/Button';
 import { updateQuiz, createQuiz } from '@/api/quizzes';
-import { sounds } from '@/app/hooks/sounds';
+import { useSounds } from '@/app/hooks/useSounds';
 
 export default function QuizInfoEditor({route}: any) {
     const {passedQuiz} = route.params;
     const navigation = useNavigation();
     const {username} = useAuth();
-    const {playNotification} = sounds();
+    const {playNotification} = useSounds();
 
 
     useLayoutEffect(() => {

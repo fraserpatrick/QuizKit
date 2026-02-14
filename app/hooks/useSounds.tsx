@@ -1,7 +1,7 @@
 import { useEffect, useRef } from 'react';
 import { AudioPlayer, createAudioPlayer } from 'expo-audio';
 
-export const sounds = () => {
+export const useSounds = () => {
     const notification = useRef<AudioPlayer | null>(null);
 
     useEffect(() => {

@@ -5,7 +5,7 @@ import PrimaryButton from '@/app/components/Button';
 import { useAuth } from '@/app/AuthContext';
 import { deleteQuiz } from '@/api/quizzes';
 import { deleteQuestions } from '@/api/questions';
-import { sounds } from '@/app/hooks/sounds';
+import { useSounds } from '@/app/hooks/useSounds';
 
 
 export default function QuizInfoScreen({route}: any) {
@@ -13,7 +13,7 @@ export default function QuizInfoScreen({route}: any) {
     const {passedQuiz} = route.params;
     const { username } = useAuth();
     const ownedByUser = passedQuiz.owner === username;
-    const {playNotification} = sounds();
+    const {playNotification} = useSounds();
     
     useLayoutEffect(() => {
         navigation.setOptions({

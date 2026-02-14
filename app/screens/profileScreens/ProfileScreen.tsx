@@ -7,13 +7,13 @@ import PrimaryButton from '@/app/components/Button';
 import { getOwnedQuizzes } from '@/api/quizzes';
 import { getUserByUsername } from '@/api/users';
 import { SmallQuizItem } from '@/app/components/QuizAndQuestionItem';
-import { sounds } from '@/app/hooks/sounds';
+import { useSounds } from '@/app/hooks/useSounds';
 
 export default function ProfileScreen({route}: any) {
     const { username, logout } = useAuth();
     const navigation = useNavigation();
     const passedUsername = route?.params?.passedUsername ?? username;
-    const {playNotification} = sounds();
+    const {playNotification} = useSounds();
 
     useLayoutEffect(() => {
         const options: any = {

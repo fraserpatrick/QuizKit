@@ -5,12 +5,12 @@ import { SelectList } from 'react-native-dropdown-select-list';
 import { SegmentedButtons } from "react-native-paper";
 import PrimaryButton from "@/app/components/Button";
 import { createQuestion, deleteQuestion, updateQuestion } from "@/api/questions";
-import { sounds } from "@/app/hooks/sounds";
+import { useSounds } from "@/app/hooks/useSounds";
 
 export default function QuestionEditor({route}: any) {
     const {passedQuestion, passedQuiz} = route.params;
     const navigation = useNavigation();
-    const {playNotification} = sounds();
+    const {playNotification} = useSounds();
 
     useLayoutEffect(() => {
         navigation.setOptions({

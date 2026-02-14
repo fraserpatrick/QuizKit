@@ -6,7 +6,7 @@ import { useAuth } from "@/app/AuthContext";
 import PrimaryButton from "@/app/components/Button";
 import { getQuizQuestions } from "@/api/questions";
 import { updateStats } from "@/api/users";
-import {sounds} from "@/app/hooks/sounds";
+import { useSounds } from "@/app/hooks/useSounds";
 
 export default function QuizPlayer({route}: any) {
     const navigation = useNavigation();
@@ -15,7 +15,7 @@ export default function QuizPlayer({route}: any) {
     const [quizStarted, setQuizStarted] = useState(false);
     const [currentQuestion, setCurrentQuestion] = useState(0);
     const [questions, setQuestions] = useState<Question[]>([]);
-    const {playNotification} = sounds();
+    const {playNotification} = useSounds();
 
     useLayoutEffect(() => {
         navigation.setOptions({
