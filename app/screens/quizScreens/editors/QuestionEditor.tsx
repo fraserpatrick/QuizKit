@@ -76,7 +76,6 @@ export default function QuestionEditor({route}: any) {
                 await createQuestion(passedQuiz.id, text.trim(), type, answer.trim(), options, feedback?.trim());
                 alert('Question saved successfully.');
             } else {
-                console.log(answer);
                 await updateQuestion(passedQuestion.id, text.trim(), type, answer.trim(), options, feedback?.trim());
                 alert('Question updated successfully.');
             }
