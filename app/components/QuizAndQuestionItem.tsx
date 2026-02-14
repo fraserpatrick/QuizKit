@@ -20,6 +20,14 @@ export const QuestionItem = ({ question, onPress }: QuestionProps) => (
     </TouchableOpacity>
 );
 
+export const VariableQuestionItem = ({ question, onPress, correct }: QuestionProps & { correct: boolean }) => (
+    <TouchableOpacity onPress={onPress} style={[styles.item, correct ? styles.correctItem : styles.incorrectItem]}>
+        <View>
+            <Text style={styles.buttonText}>{question.text}</Text>
+        </View>
+    </TouchableOpacity>
+);
+
 export const QuizItem = ({ quiz, onPress }: QuizProps) => (
     <TouchableOpacity onPress={onPress} style={styles.item}>
         <View>
@@ -57,5 +65,11 @@ const styles = StyleSheet.create({
         marginTop: 2,
         marginLeft: 20,
         marginRight: 20,
+    },
+    correctItem:{
+        backgroundColor: '#00c400ff',
+    },
+    incorrectItem:{
+        backgroundColor: '#db0000',
     },
 });

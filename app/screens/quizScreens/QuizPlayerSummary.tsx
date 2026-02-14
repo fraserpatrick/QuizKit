@@ -4,6 +4,7 @@ import { useNavigation } from "@react-navigation/native";
 import { AnimatedCircularProgress } from 'react-native-circular-progress';
 import {Question} from '@/DatabaseController';
 import PrimaryButton from "@/app/components/Button";
+import { VariableQuestionItem } from "@/app/components/QuizAndQuestionItem";
 
 export default function QuizPlayerSummary({ route }: any) {
     const { passedQuiz, questions, score } = route.params;
@@ -32,18 +33,6 @@ export default function QuizPlayerSummary({ route }: any) {
         return (question.correctAnswer.trim().toLowerCase() === question.userAnswer?.trim().toLowerCase())
     }
 
-    type ItemProps = {
-        question: Question
-        onPress: () => void;
-    };
-
-    const Item = ({ question, onPress }: ItemProps) => (
-        <TouchableOpacity onPress={onPress} style={[styles.questionItem, correct(question) && styles.correctItem]}>
-            <View>
-                <Text style={styles.buttonText}>{question.text}?</Text>
-            </View>
-        </TouchableOpacity>
-    );
 
 
     return (
@@ -72,9 +61,10 @@ export default function QuizPlayerSummary({ route }: any) {
                     data={questions}
                     keyExtractor={(item) => String(item.id)}
                     renderItem={({ item }) => (
-                        <Item
+                        <VariableQuestionItem
                             question={item}
                             onPress={() => navigation.navigate('QuestionReview', {question: item})}
+                            correct={correct(item)}
                         />
                     )}
                 />
@@ -106,7 +96,7 @@ const styles = StyleSheet.create({
     },
     questionItem:{
         alignItems: 'center',
-        backgroundColor: 'rgb(219, 0, 0)',
+        backgroundColor: '#db0000',
         borderWidth: 1,
         marginTop: 2,
         marginLeft: 20,
