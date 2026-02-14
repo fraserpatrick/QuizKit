@@ -5,11 +5,13 @@ import { SegmentedButtons } from "react-native-paper";
 import {useAuth} from '@/app/AuthContext'
 import PrimaryButton from '@/app/components/Button';
 import { updateQuiz, createQuiz } from '@/api/quizzes';
+import { sounds } from '@/app/hooks/sounds';
 
 export default function QuizInfoEditor({route}: any) {
     const {passedQuiz} = route.params;
     const navigation = useNavigation();
     const {username} = useAuth();
+    const {playNotification} = sounds();
 
 
     useLayoutEffect(() => {
@@ -31,7 +33,7 @@ export default function QuizInfoEditor({route}: any) {
             alert('Please enter a quiz title.');
             return;
         }
-
+        playNotification();
         if (passedQuiz){
             Alert.alert('Update quiz?', 'Are you sure you want to update this quiz?', [
                 {text: 'No, go back', style: 'cancel',},

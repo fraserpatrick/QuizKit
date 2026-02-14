@@ -53,6 +53,7 @@ export default function QuizPlayer({route}: any) {
 
     const handleExit = () => {
         if (quizStarted){
+            playNotification();
             Alert.alert( 'Exit Player', 'Are you ready to exit this quiz?', [
                 {text: 'No, keep playing', style: 'cancel',},
                 {text: 'Yes, exit quiz', onPress: () => navigation.goBack(), style: 'destructive',},

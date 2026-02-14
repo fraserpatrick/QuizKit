@@ -7,11 +7,13 @@ import PrimaryButton from '@/app/components/Button';
 import { getOwnedQuizzes } from '@/api/quizzes';
 import { getUserByUsername } from '@/api/users';
 import { SmallQuizItem } from '@/app/components/QuizAndQuestionItem';
+import { sounds } from '@/app/hooks/sounds';
 
 export default function ProfileScreen({route}: any) {
     const { username, logout } = useAuth();
     const navigation = useNavigation();
     const passedUsername = route?.params?.passedUsername ?? username;
+    const {playNotification} = sounds();
 
     useLayoutEffect(() => {
         const options: any = {
@@ -30,12 +32,15 @@ export default function ProfileScreen({route}: any) {
         navigation.setOptions(options);
     }, [navigation, username, passedUsername]);
 
-    const handleLogout = () => Alert.alert(
-        'Logout', 'Are you sure you want to logout?', [
-            {text: 'No, stay logged in', style: 'cancel',},
-            {text: 'Yes, logout', onPress: () => logout(), style: 'destructive',},
-        ]
-    );
+    const handleLogout = () => {
+        playNotification();
+        Alert.alert(
+            'Logout', 'Are you sure you want to logout?', [
+                {text: 'No, stay logged in', style: 'cancel',},
+                {text: 'Yes, logout', onPress: () => logout(), style: 'destructive',},
+            ]
+        );
+    ;}
 
     const [quizzes, setQuizzes] = useState<Quiz[]>([]);
     const [user, setUser] = useState<User>({email: '', username: '', totalQuizPlays: 0, totalAnswers: 0, totalCorrect: 0});

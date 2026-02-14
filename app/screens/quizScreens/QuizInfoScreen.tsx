@@ -5,6 +5,7 @@ import PrimaryButton from '@/app/components/Button';
 import { useAuth } from '@/app/AuthContext';
 import { deleteQuiz } from '@/api/quizzes';
 import { deleteQuestions } from '@/api/questions';
+import { sounds } from '@/app/hooks/sounds';
 
 
 export default function QuizInfoScreen({route}: any) {
@@ -12,7 +13,8 @@ export default function QuizInfoScreen({route}: any) {
     const {passedQuiz} = route.params;
     const { username } = useAuth();
     const ownedByUser = passedQuiz.owner === username;
-
+    const {playNotification} = sounds();
+    
     useLayoutEffect(() => {
         navigation.setOptions({
             title: 'Quiz information',
@@ -31,11 +33,14 @@ export default function QuizInfoScreen({route}: any) {
     }, []);
 
 
-    const quizDeleteAlert = () => Alert.alert(
-        'Delete Quiz', 'Are you sure you want to delete this quiz?', [
-            {text: 'No, keep it', style: 'cancel',},
-            {text: 'Yes, delete it', onPress: () => handleDeleteQuiz(), style: 'destructive',},
-    ]);
+    const quizDeleteAlert = () => {
+        playNotification();
+        Alert.alert(
+            'Delete Quiz', 'Are you sure you want to delete this quiz?', [
+                {text: 'No, keep it', style: 'cancel',},
+                {text: 'Yes, delete it', onPress: () => handleDeleteQuiz(), style: 'destructive',},
+        ]);
+    };
 
     const handleDeleteQuiz = () => {
         console.log('Deleting quiz with id: ' + passedQuiz.id);

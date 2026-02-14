@@ -5,10 +5,12 @@ import { SelectList } from 'react-native-dropdown-select-list';
 import { SegmentedButtons } from "react-native-paper";
 import PrimaryButton from "@/app/components/Button";
 import { createQuestion, deleteQuestion, updateQuestion } from "@/api/questions";
+import { sounds } from "@/app/hooks/sounds";
 
 export default function QuestionEditor({route}: any) {
     const {passedQuestion, passedQuiz} = route.params;
     const navigation = useNavigation();
+    const {playNotification} = sounds();
 
     useLayoutEffect(() => {
         navigation.setOptions({
@@ -86,11 +88,15 @@ export default function QuestionEditor({route}: any) {
         }
     };
 
-    const deleteQuestionAlert = () => Alert.alert(
-        'Delete Question', 'Are you sure you want to delete this question?', [
-            {text: 'No, keep it', style: 'cancel',},
-            {text: 'Yes, delete it', onPress: () => handleDeleteQuestion(), style: 'destructive',},
-    ]);
+    const deleteQuestionAlert = () => { 
+        playNotification();
+        Alert.alert(
+            'Delete Question', 'Are you sure you want to delete this question?', [
+                {text: 'No, keep it', style: 'cancel',},
+                {text: 'Yes, delete it', onPress: () => handleDeleteQuestion(), style: 'destructive',},
+            ]
+        );
+}
 
     const handleDeleteQuestion = () => {
         console.log('Deleting question with id: ' + passedQuestion.id);
