@@ -13,6 +13,8 @@ export const useSounds = () => {
         click.current = createAudioPlayer(
             require('../../assets/sounds/mouse-click.mp3')
         );
+
+        click.current.volume = 0.1;
         fanfare.current = createAudioPlayer(
             require('../../assets/sounds/success-fanfare.mp3')
         );

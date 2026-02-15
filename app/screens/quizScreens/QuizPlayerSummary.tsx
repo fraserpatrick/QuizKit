@@ -1,15 +1,17 @@
 import { View, Text, Button, StyleSheet, TouchableOpacity, FlatList } from "react-native";
-import { useLayoutEffect } from "react";
+import { useEffect, useLayoutEffect } from "react";
 import { useNavigation } from "@react-navigation/native";
 import { AnimatedCircularProgress } from 'react-native-circular-progress';
 import {Question} from '@/DatabaseController';
 import PrimaryButton from "@/app/components/Button";
 import { VariableQuestionItem } from "@/app/components/QuizAndQuestionItem";
+import { useSounds } from "@/app/hooks/useSounds";
 
 export default function QuizPlayerSummary({ route }: any) {
     const { passedQuiz, questions, score } = route.params;
     const percentage = (score/questions.length)*100;
     const navigation = useNavigation();
+    const { playFanfare } = useSounds();
     
     useLayoutEffect(() => {
         navigation.setOptions({
@@ -33,7 +35,9 @@ export default function QuizPlayerSummary({ route }: any) {
         return (question.correctAnswer.trim().toLowerCase() === question.userAnswer?.trim().toLowerCase())
     }
 
-
+    useEffect(() => {
+        playFanfare();
+    }, []);
 
     return (
         <View style={styles.container}>
