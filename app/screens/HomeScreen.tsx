@@ -4,7 +4,7 @@ import { FlatList, View, StyleSheet, Button } from 'react-native';
 import { Quiz } from "@/DatabaseController";
 import { SegmentedButtons } from 'react-native-paper';
 import { useAuth } from "@/app/AuthContext";
-import PrimaryButton from "@/app/components/Button"; 
+import PrimaryButtonWithIcon from "@/app/components/Button"; 
 import { getOwnedQuizzes, getSharedQuizzes } from "@/api/quizzes";
 import { QuizItem } from "../components/QuizAndQuestionItem";
 
@@ -64,7 +64,7 @@ export default function HomeScreen() {
 
     return (
         <View style={styles.container}>
-            <PrimaryButton label="Create Quiz" onPress={handleCreateQuiz}/>
+            <PrimaryButtonWithIcon label="Create Quiz" onPress={handleCreateQuiz} icon="form"/>
             <View style={styles.quizContainer}>
                 <SegmentedButtons
                     value={selector}

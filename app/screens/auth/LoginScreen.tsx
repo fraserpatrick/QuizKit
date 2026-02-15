@@ -3,7 +3,7 @@ import React, { useState } from "react";
 import { StyleSheet, Image, Keyboard, Text, TextInput, TouchableOpacity, TouchableWithoutFeedback, View, Dimensions } from "react-native";
 import { useAuth } from "@/app/AuthContext";
 import { MaterialCommunityIcons } from '@expo/vector-icons';
-import PrimaryButton from "@/app/components/Button";
+import { PrimaryButton, PrimaryButtonWithIcon } from "@/app/components/Button";
 
 export default function LoginScreen() {
     const navigation = useNavigation();
@@ -78,8 +78,8 @@ export default function LoginScreen() {
                             />
                         </TouchableOpacity>
                     </View>
-                    <PrimaryButton label="Login" onPress={handleLogin} />
-                    <PrimaryButton label="Forgot Password?" onPress={handleForgotPassword} />
+                    <PrimaryButtonWithIcon label="Login" onPress={handleLogin} icon="login"/>
+                    <PrimaryButton label="Forgot Password?" onPress={handleForgotPassword}/>
                     <PrimaryButton label="Don't have an account?" onPress={handleCreateAccount} />
                 </View>
             </View>
