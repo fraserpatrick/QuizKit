@@ -4,6 +4,7 @@ import { useNavigation } from "@react-navigation/native";
 import { useAuth } from "@/app/AuthContext";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { createUser } from "@/api/users";
+import PrimaryButton from "@/app/components/Button";
 
 export default function SignUpScreen() {
     const navigation = useNavigation();
@@ -129,16 +130,8 @@ export default function SignUpScreen() {
                                 />
                             </TouchableOpacity>
                         </View>
-                        <TouchableOpacity onPress={handleSignUp} >
-                            <View style={styles.button}>
-                                <Text style={styles.buttonText}>Create account</Text>
-                            </View>
-                        </TouchableOpacity>
-                        <TouchableOpacity onPress={handleNavigateToLogin} >
-                            <View style={styles.button}>
-                                <Text style={styles.buttonText}>I already have an account</Text>
-                            </View>
-                        </TouchableOpacity>
+                        <PrimaryButton label="Create account" onPress={handleSignUp} />
+                        <PrimaryButton label="I already have an account" onPress={handleNavigateToLogin} />
                     </View>
                 </View>
             </View>
@@ -148,18 +141,6 @@ export default function SignUpScreen() {
 
 
 const styles = StyleSheet.create({
-    button:{
-        alignItems: 'center',
-        backgroundColor: '#7a7a7aff',
-        borderRadius: 10,
-        marginTop: 4,
-        marginBottom: 4,
-    },
-    buttonText:{
-        textAlign: 'center',
-        padding: 10,
-        color: 'white',
-    },
     container:{
         flexGrow: 1,
         justifyContent: 'center',

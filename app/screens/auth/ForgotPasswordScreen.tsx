@@ -2,6 +2,7 @@ import { useNavigation } from "expo-router";
 import { useState } from "react";
 import { Image, Text, StyleSheet, TouchableWithoutFeedback, Keyboard, View, TextInput, TouchableOpacity, Dimensions } from "react-native";
 import { useAuth } from "@/app/AuthContext";
+import PrimaryButton from "@/app/components/Button";
 
 export default function ForgotPasswordScreen() {
     const navigation = useNavigation();
@@ -37,7 +38,7 @@ export default function ForgotPasswordScreen() {
         <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
             <View style={styles.container}>
                 <View style={styles.imageContainer}>
-                    <Image source={require('./../../../assets/images/icon.png')} style={styles.image} />
+                    <Image source={require('@/assets/images/icon.png')} style={styles.image} />
                 </View>
                 <View style={styles.inputContainer}>
                     <Text style={styles.inputHeader}>Email:</Text>
@@ -47,16 +48,8 @@ export default function ForgotPasswordScreen() {
                         onChangeText={setEmail}
                         returnKeyType="done"
                     />
-                    <TouchableOpacity onPress={handleForgot} >
-                        <View style={styles.button}>
-                            <Text style={styles.buttonText}>Send reset password email</Text>
-                        </View>
-                    </TouchableOpacity>
-                    <TouchableOpacity onPress={handleNavigateToLogin} >
-                        <View style={styles.button}>
-                            <Text style={styles.buttonText}>Back to login</Text>
-                        </View>
-                    </TouchableOpacity>
+                    <PrimaryButton label="Send reset password email" onPress={handleForgot} />
+                    <PrimaryButton label="Back to login" onPress={handleNavigateToLogin} />
                 </View>
             </View>
         </TouchableWithoutFeedback>
@@ -66,18 +59,6 @@ export default function ForgotPasswordScreen() {
 
 const { width } = Dimensions.get('window');
 const styles = StyleSheet.create({
-    button:{
-        alignItems: 'center',
-        backgroundColor: '#7a7a7aff',
-        borderRadius: 10,
-        marginTop: 4,
-        marginBottom: 4,
-    },
-    buttonText:{
-        textAlign: 'center',
-        padding: 10,
-        color: 'white',
-    },
     container:{
         flexGrow: 1,
         justifyContent: 'center',
