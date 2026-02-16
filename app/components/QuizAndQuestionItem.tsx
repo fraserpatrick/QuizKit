@@ -1,5 +1,8 @@
 import { Question, Quiz } from "@/DatabaseController";
 import { TouchableOpacity, View, Text, StyleSheet } from "react-native";
+import { useSounds } from "../hooks/useSounds";
+
+const {playClick} = useSounds();
 
 type QuizProps = {
     quiz: Quiz;
@@ -13,7 +16,7 @@ type QuestionProps = {
 
 
 export const QuestionItem = ({ question, onPress }: QuestionProps) => (
-    <TouchableOpacity onPress={onPress} style={styles.item}>
+    <TouchableOpacity onPress={() => { playClick(); onPress(); }} style={styles.item}>
         <View>
             <Text style={styles.buttonText}>{question.text}</Text>
         </View>
@@ -21,7 +24,7 @@ export const QuestionItem = ({ question, onPress }: QuestionProps) => (
 );
 
 export const VariableQuestionItem = ({ question, onPress, correct }: QuestionProps & { correct: boolean }) => (
-    <TouchableOpacity onPress={onPress} style={[styles.item, correct ? styles.correctItem : styles.incorrectItem]}>
+    <TouchableOpacity onPress={() => { playClick(); onPress(); }} style={[styles.item, correct ? styles.correctItem : styles.incorrectItem]}>
         <View>
             <Text style={styles.buttonText}>{question.text}</Text>
         </View>
@@ -29,7 +32,7 @@ export const VariableQuestionItem = ({ question, onPress, correct }: QuestionPro
 );
 
 export const QuizItem = ({ quiz, onPress }: QuizProps) => (
-    <TouchableOpacity onPress={onPress} style={styles.item}>
+    <TouchableOpacity onPress={() => { playClick(); onPress(); }} style={styles.item}>
         <View>
             <Text style={styles.buttonText}>{quiz.title}</Text>
         </View>
@@ -37,7 +40,7 @@ export const QuizItem = ({ quiz, onPress }: QuizProps) => (
 );
 
 export const SmallQuizItem = ({ quiz, onPress }: QuizProps) => (
-    <TouchableOpacity onPress={onPress} style={styles.item}>
+    <TouchableOpacity onPress={() => { playClick(); onPress(); }} style={styles.item}>
         <View>
             <Text style={styles.smallButtonText}>{quiz.title}</Text>
         </View>
