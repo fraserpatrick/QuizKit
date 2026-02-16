@@ -3,7 +3,7 @@ import React, { useLayoutEffect, useState } from "react";
 import { useNavigation } from "@react-navigation/native";
 import { SelectList } from 'react-native-dropdown-select-list';
 import { SegmentedButtons } from "react-native-paper";
-import PrimaryButton from "@/app/components/Button";
+import { PrimaryButtonWithIcon } from "@/app/components/Button";
 import { createQuestion, deleteQuestion, updateQuestion } from "@/api/questions";
 import { useSounds } from "@/app/hooks/useSounds";
 
@@ -184,9 +184,9 @@ export default function QuestionEditor({route}: any) {
                 </ScrollView>
 
                 <View style={passedQuestion ? {flex: 0.25} : {flex: 0.15}}>
-                    <PrimaryButton label={passedQuestion ? 'Update Question' : 'Create Question'} onPress={saveQuestion}/>
+                    <PrimaryButtonWithIcon label={passedQuestion ? 'Update Question' : 'Create Question'} icon="save" onPress={saveQuestion}/>
                     {passedQuestion && (
-                        <PrimaryButton label="Delete Question" onPress={deleteQuestionAlert}/>
+                        <PrimaryButtonWithIcon label="Delete Question" icon="delete" onPress={deleteQuestionAlert}/>
                     )}
                 </View>
             </View>

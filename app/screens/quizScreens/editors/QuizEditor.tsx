@@ -2,7 +2,7 @@ import { useFocusEffect, useNavigation } from '@react-navigation/native';
 import { View, StyleSheet, FlatList, Button } from 'react-native';
 import { Question } from '@/DatabaseController';
 import { useState, useCallback, useLayoutEffect } from 'react';
-import PrimaryButton from '@/app/components/Button';
+import PrimaryButtonWithIcon from '@/app/components/Button';
 import { getQuizQuestions } from '@/api/questions';
 import { QuestionItem } from '@/app/components/QuizAndQuestionItem';
 
@@ -60,7 +60,7 @@ export default function QuizEditor({route}: any) {
                 />
             </View>
             <View style={styles.buttonsContainer}>
-                <PrimaryButton label="Create new question" onPress={handleCreateQuestions}/>
+                <PrimaryButtonWithIcon label="Create new question" icon="plus" onPress={handleCreateQuestions}/>
             </View>
         </View>
     );

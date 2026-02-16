@@ -1,4 +1,4 @@
-import { View, Text, Button, StyleSheet, TouchableOpacity, FlatList } from "react-native";
+import { View, Text, Button, StyleSheet, FlatList } from "react-native";
 import { useEffect, useLayoutEffect } from "react";
 import { useNavigation } from "@react-navigation/native";
 import { AnimatedCircularProgress } from 'react-native-circular-progress';

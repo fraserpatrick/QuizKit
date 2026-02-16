@@ -3,7 +3,7 @@ import { useAuth } from '@/app/AuthContext';
 import { Quiz, User } from '@/DatabaseController';
 import { useState, useEffect, useLayoutEffect } from 'react';
 import { useNavigation } from '@react-navigation/native';
-import PrimaryButton from '@/app/components/Button';
+import PrimaryButtonWithIcon from '@/app/components/Button';
 import { getOwnedQuizzes } from '@/api/quizzes';
 import { getUserByUsername } from '@/api/users';
 import { SmallQuizItem } from '@/app/components/QuizAndQuestionItem';
@@ -96,7 +96,7 @@ export default function ProfileScreen({route}: any) {
             </View>
             {ownProfile && (
                 <View style={styles.buttonContainer}>
-                    <PrimaryButton label="Edit Profile" onPress={() => navigation.navigate('ProfileEditor')}/>
+                    <PrimaryButtonWithIcon label="Edit Profile" icon="edit" onPress={() => navigation.navigate('ProfileEditor')}/>
                 </View>
             )}
         </View>

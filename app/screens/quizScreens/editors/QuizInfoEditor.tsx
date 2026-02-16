@@ -3,7 +3,7 @@ import { useLayoutEffect, useState } from "react";
 import { View, Text, Button, Keyboard, TextInput, TouchableWithoutFeedback, StyleSheet, Alert } from "react-native";
 import { SegmentedButtons } from "react-native-paper";
 import {useAuth} from '@/app/AuthContext'
-import PrimaryButton from '@/app/components/Button';
+import PrimaryButtonWithIcon from '@/app/components/Button';
 import { updateQuiz, createQuiz } from '@/api/quizzes';
 import { useSounds } from '@/app/hooks/useSounds';
 
@@ -109,7 +109,7 @@ export default function QuizInfoEditor({route}: any) {
                     />
                 </View>
                 <View style={styles.buttonsContainer}>
-                    <PrimaryButton label={passedQuiz ? 'Save quiz changes' : 'Create new quiz'} onPress={handleQuizSave}/>
+                    <PrimaryButtonWithIcon label={passedQuiz ? 'Save quiz changes' : 'Create new quiz'} icon={passedQuiz ? 'save' : 'plus'} onPress={handleQuizSave}/>
                 </View>
             </View>
         </TouchableWithoutFeedback>

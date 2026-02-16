@@ -1,7 +1,7 @@
 import { useNavigation } from '@react-navigation/native';
 import { Alert, Button, StyleSheet, Text, View } from 'react-native';
 import { useLayoutEffect } from 'react';
-import PrimaryButton from '@/app/components/Button';
+import { PrimaryButtonWithIcon } from '@/app/components/Button';
 import { useAuth } from '@/app/AuthContext';
 import { deleteQuiz } from '@/api/quizzes';
 import { deleteQuestions } from '@/api/questions';
@@ -67,7 +67,7 @@ export default function QuizInfoScreen({route}: any) {
                 {!ownedByUser && (
                     <View style={styles.itemContainer}>
                         <Text style={styles.header}>Created by:</Text>
-                        <PrimaryButton label={passedQuiz.owner} onPress={() => navigation.navigate('ProfileScreen', { passedUsername: passedQuiz.owner })}/>
+                        <PrimaryButtonWithIcon label={passedQuiz.owner} icon="user" onPress={() => navigation.navigate('ProfileScreen', { passedUsername: passedQuiz.owner })}/>
                     </View>
                 )}
                 {passedQuiz.description && (
@@ -84,10 +84,10 @@ export default function QuizInfoScreen({route}: any) {
                 )}
             </View>
             <View style={styles.buttonsContainer}>
-                <PrimaryButton label="Play quiz" onPress={() => navigation.navigate('QuizPlayer', { passedQuiz: passedQuiz })}/>
+                <PrimaryButtonWithIcon label="Play quiz" icon="play-circle" onPress={() => navigation.navigate('QuizPlayer', { passedQuiz: passedQuiz })}/>
                 {ownedByUser && (<>
-                    <PrimaryButton label="Edit questions" onPress={() => navigation.navigate('QuizEditor', { passedQuiz: passedQuiz })}/>
-                    <PrimaryButton label="Delete quiz" onPress={quizDeleteAlert}/>
+                    <PrimaryButtonWithIcon label="Edit questions" icon="edit" onPress={() => navigation.navigate('QuizEditor', { passedQuiz: passedQuiz })}/>
+                    <PrimaryButtonWithIcon label="Delete quiz" icon="delete" onPress={quizDeleteAlert}/>
                 </>)}
             </View>
         </View>
