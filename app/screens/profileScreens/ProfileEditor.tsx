@@ -1,15 +1,17 @@
 import React, { useLayoutEffect, useState } from 'react';
-import { View, Text, Button, TouchableOpacity, TextInput, StyleSheet, Keyboard, TouchableWithoutFeedback } from 'react-native';
+import { View, Text, Button, TouchableOpacity, TextInput, StyleSheet, Keyboard, TouchableWithoutFeedback, Alert } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { useAuth } from '@/app/AuthContext';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import PrimaryButtonWithIcon from '@/app/components/Button';
 import { updateUsername, getUserByUsername } from '@/api/users';
 import { updateQuizToNewUsername } from '@/api/quizzes';
+import { useSounds } from '@/app/hooks/useSounds';
 
 export default function ProfileEditor() {
     const { username, user, changeUsername, changePassword } = useAuth();
     const navigation = useNavigation();
+    const {playNotification} = useSounds();
 
     useLayoutEffect(() => {
         navigation.setOptions({
@@ -59,39 +61,57 @@ export default function ProfileEditor() {
                 alert('Username is already taken.');
                 return;
             }
-
-            try {
-                await updateUsername(user!.email!, usernameInput.trim().toLowerCase());
-                updateQuizToNewUsername(username!, usernameInput.trim().toLowerCase());
-                changeUsername(usernameInput.trim().toLowerCase());
-                alert('Username updated successfully.');
-                navigation.goBack();
-            } catch (error) {
-                console.error('Error updating username:', error);
-                alert('Failed to update username.');
-            }
+            updateUsernameAlert();
         }
 
         if (passwordInput1.trim() !== '') {
-            try {
-                changePassword!(passwordInput1);
-                alert('Password updated successfully.');
-                navigation.goBack();
-            } catch (error) {
-                console.error('Error updating password:', error);
-                alert('Failed to update password.');
-            }
+            updatePasswordAlert();
         }
-
-        navigation.goBack();
     };
 
-    const toggleShowPassword1 = () => {
-        setShowPassword1(!showPassword1);
+
+    const updateUsernameAlert = () => {
+        playNotification();
+        Alert.alert(
+            'Update Username', `Are you sure you want to change your username to ${usernameInput.trim().toLowerCase()}?`, [
+                {text: 'No, don\'t  change', style: 'cancel',},
+                {text: 'Yes, change it', onPress: () => handleUpdateUsername(), style: 'default',},
+        ]);
     };
-    const toggleShowPassword2 = () => {
-        setShowPassword2(!showPassword2);
+
+    const updatePasswordAlert = () => {
+        playNotification();
+        Alert.alert(
+            'Update Password', 'Are you sure you want to change your password?', [
+                {text: 'No, don\'t  change', style: 'cancel',},
+                {text: 'Yes, change it', onPress: () => handleUpdatePassword(), style: 'default',},
+        ]);
     };
+
+
+    const handleUpdateUsername = async () => {
+        try {
+            await updateUsername(user!.email!, usernameInput.trim().toLowerCase());
+            updateQuizToNewUsername(username!, usernameInput.trim().toLowerCase());
+            changeUsername(usernameInput.trim().toLowerCase());
+            alert('Username updated successfully.');
+            navigation.goBack();
+        } catch (error) {
+            console.error('Error updating username:', error);
+            alert('Failed to update username.');
+        }
+    }
+
+    const handleUpdatePassword = () => {
+        try {
+            changePassword!(passwordInput1);
+            alert('Password updated successfully.');
+            navigation.goBack();
+        } catch (error) {
+            console.error('Error updating password:', error);
+            alert('Failed to update password.');
+        }
+    }
 
 
     return (
@@ -113,7 +133,7 @@ export default function ProfileEditor() {
                         secureTextEntry={!showPassword1}
                         returnKeyType="next"
                     />
-                    <TouchableOpacity style={styles.iconButton} onPress={toggleShowPassword1}>
+                    <TouchableOpacity style={styles.iconButton} onPress={() => setShowPassword1(!showPassword1)}>
                         <MaterialCommunityIcons
                             name={showPassword1 ? 'eye-off' : 'eye'}
                             size={24}
@@ -130,7 +150,7 @@ export default function ProfileEditor() {
                         secureTextEntry={!showPassword2}
                         returnKeyType="done"
                     />
-                    <TouchableOpacity style={styles.iconButton} onPress={toggleShowPassword2}>
+                    <TouchableOpacity style={styles.iconButton} onPress={() => setShowPassword2(!showPassword2)}>
                         <MaterialCommunityIcons
                             name={showPassword2 ? 'eye-off' : 'eye'}
                             size={24}
