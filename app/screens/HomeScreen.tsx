@@ -18,10 +18,6 @@ export default function HomeScreen() {
             headerRight: () => (
                 <Button title="Profile" onPress={() => navigation.navigate('ProfileScreen' as never)} />
             ),
-            headerStyle: {
-                backgroundColor: '#007BFF',
-            },
-            headerTintColor: '#fff',
             headerTitleStyle: {
                 fontWeight: 'bold',
             },
@@ -73,11 +69,11 @@ export default function HomeScreen() {
         <View style={styles.container}>
             <PrimaryButtonWithIcon label="Create Quiz" onPress={handleCreateQuiz} icon="form"/>
             <View style={styles.quizContainer}>
-                <SegmentedButtons
+                <SegmentedButtons theme={{ colors: { secondaryContainer: '#007BFF', onSecondaryContainer: '#FFFFFF' } }}
                     value={selector}
                     onValueChange={setSelector}
                     buttons={[
-                        { value: 'myQuizzes', label: 'My Quizzes'}, { value: 'sharedQuizzes', label: 'Shared Quizzes'},        
+                        { value: 'myQuizzes', label: 'My Quizzes', showSelectedCheck:true }, { value: 'sharedQuizzes', label: 'Shared Quizzes', showSelectedCheck:true},        
                     ]}
                 />
                 <FlatList

@@ -14,6 +14,8 @@ type QuestionProps = {
     question: Question;
     onPress: () => void;
 }
+const icon = "caret-right";
+const colour = "#ffffff";
 
 
 export const QuestionItem = ({ question, onPress }: QuestionProps) => (
@@ -21,9 +23,9 @@ export const QuestionItem = ({ question, onPress }: QuestionProps) => (
         <View style={styles.item}>
             <Text style={styles.buttonText}>{question.text}</Text>
             <AntDesign
-                name="caret-right"
+                name={icon}
                 size={24}
-                color="#ffffff"
+                color={colour}
                 style={styles.icon}
             />
         </View>
@@ -35,9 +37,9 @@ export const VariableQuestionItem = ({ question, onPress, correct }: QuestionPro
         <View style={[styles.item, correct ? styles.correctItem : styles.incorrectItem]}>
             <Text style={styles.buttonText}>{question.text}</Text>
             <AntDesign
-                name="caret-right"
+                name={icon}
                 size={24}
-                color="#ffffff"
+                color={colour}
                 style={styles.icon}
             />
         </View>
@@ -47,11 +49,11 @@ export const VariableQuestionItem = ({ question, onPress, correct }: QuestionPro
 export const QuizItem = ({ quiz, onPress }: QuizProps) => (
     <TouchableOpacity onPress={() => { playClick(); onPress(); }}>
         <View style={styles.item}>
-            <Text style={styles.buttonText}>{quiz.title}</Text>
+            <Text style={styles.buttonText} numberOfLines={1} ellipsizeMode="tail">{quiz.title}</Text>
             <AntDesign
-                name="caret-right"
+                name={icon}
                 size={24}
-                color="#ffffff"
+                color={colour}
                 style={styles.icon}
             />
         </View>
@@ -61,11 +63,11 @@ export const QuizItem = ({ quiz, onPress }: QuizProps) => (
 export const SmallQuizItem = ({ quiz, onPress }: QuizProps) => (
     <TouchableOpacity onPress={() => { playClick(); onPress(); }}>
         <View style={styles.item}>
-            <Text style={styles.smallButtonText}>{quiz.title}</Text>
+            <Text style={styles.smallButtonText} numberOfLines={1} ellipsizeMode="tail">{quiz.title}</Text>
             <AntDesign
-                name="caret-right"
-                size={24}
-                color="#ffffff"
+                name={icon}
+                size={20}
+                color={colour}
                 style={styles.icon}
             />
         </View>
@@ -74,36 +76,36 @@ export const SmallQuizItem = ({ quiz, onPress }: QuizProps) => (
 
 
 const styles = StyleSheet.create({
-    buttonText:{
-        textAlign: 'center',
-        padding: 10,
-        color: 'white',
-        fontSize: 20,
-    },
-    smallButtonText:{
-        textAlign: 'center',
-        padding: 5,
-        color: 'white',
-        fontSize: 16,
-    },
-    item:{
+    item: {
         flexDirection: 'row',
         alignItems: 'center',
-        justifyContent: 'center',
+        justifyContent: 'space-between',
         backgroundColor: '#FF6B00',
         borderWidth: 1,
-        marginTop: 2,
-        marginLeft: 20,
-        marginRight: 20,
+        marginTop: 4,
+        marginHorizontal: 20,
+        borderRadius: 5,
+        paddingHorizontal: 10,
+    },
+    buttonText: {
+        flex: 1, 
+        color: 'white',
+        fontSize: 16,
+        marginVertical: 10,
+    },
+    smallButtonText: {
+        flex: 1,
+        color: 'white',
+        fontSize: 16,
+        marginVertical: 5,
+    },
+    icon: {
+        marginLeft: 8,
     },
     correctItem:{
         backgroundColor: '#00c400ff',
     },
     incorrectItem:{
         backgroundColor: '#db0000',
-    },
-    icon: {
-        position: 'absolute',
-        right: 15,
     },
 });

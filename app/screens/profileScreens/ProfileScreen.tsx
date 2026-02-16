@@ -119,6 +119,7 @@ const styles = StyleSheet.create({
     },
     statsContainer:{
         borderWidth: 2,
+        borderRadius: 5,
         marginBottom: 10,
         padding: 10,
         backgroundColor: '#e0e0e0ff',
@@ -126,6 +127,7 @@ const styles = StyleSheet.create({
     },
     quizContainer:{
         borderWidth: 2,
+        borderRadius: 5,
         backgroundColor: '#e0e0e0ff',
         padding: 10,
         flex: 0.7,
