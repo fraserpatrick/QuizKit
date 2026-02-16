@@ -17,7 +17,14 @@ export default function HomeScreen() {
             title: 'QuizKit',
             headerRight: () => (
                 <Button title="Profile" onPress={() => navigation.navigate('ProfileScreen' as never)} />
-            )
+            ),
+            headerStyle: {
+                backgroundColor: '#007BFF',
+            },
+            headerTintColor: '#fff',
+            headerTitleStyle: {
+                fontWeight: 'bold',
+            },
         });
         }, []);
 

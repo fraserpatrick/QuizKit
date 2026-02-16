@@ -19,7 +19,11 @@ export default function QuizInfoEditor({route}: any) {
             title: 'Quiz info editor',
             headerLeft: () => (
                 <Button title="< Back" onPress={navigation.goBack} />
-            )
+            ),
+            headerStyle: {
+                backgroundColor: '#007BFF',
+            },
+            headerTintColor: '#fff',
         });
     }, []);
 
