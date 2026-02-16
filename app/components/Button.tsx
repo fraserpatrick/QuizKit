@@ -25,13 +25,12 @@ export const PrimaryButtonWithIcon: React.FC<ButtonProps> = ({label, onPress, ic
     return (
         <TouchableOpacity onPress={() => { playClick(); onPress(); }}>
             <View style={styles.button}>
-                <Text style={styles.buttonText}>{label}</Text>
                 <AntDesign
                     name={icon}
                     size={24}
                     color="#ffffff"
-                    style={styles.icon}
                 />
+                <Text style={styles.buttonText}>{label}</Text>
             </View>
         </TouchableOpacity>
     );
@@ -55,9 +54,5 @@ const styles = StyleSheet.create({
         padding: 10,
         color: 'white',
         fontSize: 20,
-    },
-    icon: {
-        position: 'absolute',
-        right: 15,
     },
 });

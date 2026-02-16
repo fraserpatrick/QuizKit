@@ -107,18 +107,4 @@ const styles = StyleSheet.create({
         flex: 1,
         marginTop: 30,
     },
-    quizItem:{
-        alignItems: 'center',
-        backgroundColor: '#7a7a7aff',
-        borderWidth: 1,
-        marginTop: 2,
-        marginLeft: 20,
-        marginRight: 20,
-    },
-    buttonText:{
-        textAlign: 'center',
-        padding: 10,
-        color: 'white',
-        fontSize: 20,
-    },
 });
