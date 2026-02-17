@@ -1,6 +1,6 @@
 import { useFocusEffect, useNavigation } from "@react-navigation/native";
 import React, { useCallback, useEffect, useLayoutEffect, useState } from 'react';
-import { FlatList, View, StyleSheet, Button } from 'react-native';
+import { FlatList, View, StyleSheet, Button, TextInput } from 'react-native';
 import { Quiz } from "@/DatabaseController";
 import { SegmentedButtons } from 'react-native-paper';
 import { useAuth } from "@/app/AuthContext";
@@ -65,6 +65,13 @@ export default function HomeScreen() {
         }
     }, [selector, myQuizzes, sharedQuizzes]);
 
+    const [search, setSearch] = useState('');
+
+    const searchedQuizzes = quizzes.filter((quiz) =>
+        quiz.title.toLowerCase().includes(search.toLowerCase())
+    );
+
+
     return (
         <View style={styles.container}>
             <PrimaryButtonWithIcon label="Create Quiz" onPress={handleCreateQuiz} icon="form"/>
@@ -77,8 +84,13 @@ export default function HomeScreen() {
                         { value: 'myQuizzes', label: 'My Quizzes', showSelectedCheck:true }, { value: 'sharedQuizzes', label: 'Shared Quizzes', showSelectedCheck:true},        
                     ]}
                 />
+                <TextInput
+                    style={styles.input}
+                    value={search}
+                    onChangeText={setSearch}
+                />
                 <FlatList
-                    data={quizzes}
+                    data={searchedQuizzes}
                     keyExtractor={(item) => String(item.id)}
                     renderItem={({ item }) => (
                         <QuizItem
@@ -103,5 +115,14 @@ const styles = StyleSheet.create({
     quizContainer:{
         flex: 1,
         marginTop: 30,
+    },
+    input:{
+        width: '100%',
+        padding: 10,
+        marginBottom: 10,
+        borderWidth: 1,
+        borderColor: '#000000ff',
+        borderRadius: 10,
+        backgroundColor: '#ffffffff',
     },
 });
