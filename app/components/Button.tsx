@@ -11,6 +11,16 @@ interface ButtonProps {
     icon?: string;
 }
 
+const iconItem = (iconName: string) => {
+    return (
+        <AntDesign
+            name={iconName}
+            size={24}
+            color="#ffffff"
+        />
+    );
+}
+
 export const PrimaryButton: React.FC<ButtonProps>= ({label, onPress}) => {
     return (
         <TouchableOpacity onPress={() => { playClick(); onPress(); }}>
@@ -25,12 +35,8 @@ export const PrimaryButtonWithIcon: React.FC<ButtonProps> = ({label, onPress, ic
     return (
         <TouchableOpacity onPress={() => { playClick(); onPress(); }}>
             <View style={styles.button}>
-                <AntDesign
-                    name={icon}
-                    size={24}
-                    color="#ffffff"
-                />
-                <Text style={styles.buttonText}>{label}</Text>
+                    {iconItem(icon)}
+                    <Text style={styles.buttonText}>{label}</Text>
             </View>
         </TouchableOpacity>
     );
@@ -41,11 +47,7 @@ export const PrimaryButtonWithIconRight: React.FC<ButtonProps> = ({label, onPres
         <TouchableOpacity onPress={() => { playClick(); onPress(); }}>
             <View style={styles.button}>
                 <Text style={styles.buttonText}>{label}</Text>
-                <AntDesign
-                    name={icon}
-                    size={24}
-                    color="#ffffff"
-                />
+                {iconItem(icon)}
             </View>
         </TouchableOpacity>
     );

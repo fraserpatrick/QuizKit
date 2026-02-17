@@ -14,20 +14,23 @@ type QuestionProps = {
     question: Question;
     onPress: () => void;
 }
-const icon = "caret-right";
-const colour = "#ffffff";
+
+const iconItem = (size: number = 24) => {
+    return (
+        <AntDesign
+            name="caret-right"
+            size={size}
+            color="#ffffff"
+        />
+    );
+}
 
 
 export const QuestionItem = ({ question, onPress }: QuestionProps) => (
     <TouchableOpacity onPress={() => { playClick(); onPress(); }}>
         <View style={styles.item}>
             <Text style={styles.buttonText}>{question.text}</Text>
-            <AntDesign
-                name={icon}
-                size={24}
-                color={colour}
-                style={styles.icon}
-            />
+            {iconItem()}
         </View>
     </TouchableOpacity>
 );
@@ -36,12 +39,7 @@ export const VariableQuestionItem = ({ question, onPress, correct }: QuestionPro
     <TouchableOpacity onPress={() => { playClick(); onPress(); }}>
         <View style={[styles.item, correct ? styles.correctItem : styles.incorrectItem]}>
             <Text style={styles.buttonText}>{question.text}</Text>
-            <AntDesign
-                name={icon}
-                size={24}
-                color={colour}
-                style={styles.icon}
-            />
+            {iconItem()}
         </View>
     </TouchableOpacity>
 );
@@ -50,12 +48,7 @@ export const QuizItem = ({ quiz, onPress }: QuizProps) => (
     <TouchableOpacity onPress={() => { playClick(); onPress(); }}>
         <View style={styles.item}>
             <Text style={styles.buttonText} numberOfLines={1} ellipsizeMode="tail">{quiz.title}</Text>
-            <AntDesign
-                name={icon}
-                size={24}
-                color={colour}
-                style={styles.icon}
-            />
+            {iconItem()}
         </View>
     </TouchableOpacity>
 );
@@ -64,12 +57,7 @@ export const SmallQuizItem = ({ quiz, onPress }: QuizProps) => (
     <TouchableOpacity onPress={() => { playClick(); onPress(); }}>
         <View style={styles.item}>
             <Text style={styles.smallButtonText} numberOfLines={1} ellipsizeMode="tail">{quiz.title}</Text>
-            <AntDesign
-                name={icon}
-                size={20}
-                color={colour}
-                style={styles.icon}
-            />
+            {iconItem(20)}
         </View>
     </TouchableOpacity>
 );
