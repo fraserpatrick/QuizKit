@@ -36,6 +36,21 @@ export const PrimaryButtonWithIcon: React.FC<ButtonProps> = ({label, onPress, ic
     );
 };
 
+export const PrimaryButtonWithIconRight: React.FC<ButtonProps> = ({label, onPress, icon}) => {
+    return (
+        <TouchableOpacity onPress={() => { playClick(); onPress(); }}>
+            <View style={styles.button}>
+                <Text style={styles.buttonText}>{label}</Text>
+                <AntDesign
+                    name={icon}
+                    size={24}
+                    color="#ffffff"
+                />
+            </View>
+        </TouchableOpacity>
+    );
+};
+
 export default PrimaryButtonWithIcon;
 
 const styles = StyleSheet.create({

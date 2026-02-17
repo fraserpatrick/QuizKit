@@ -3,7 +3,7 @@ import { useCallback, useEffect, useLayoutEffect, useState } from "react";
 import { View, Text, Button, Alert, Keyboard, TouchableWithoutFeedback, StyleSheet, TouchableOpacity, TextInput } from "react-native";
 import {Question} from '@/DatabaseController';
 import { useAuth } from "@/app/AuthContext";
-import PrimaryButton from "@/app/components/Button";
+import { PrimaryButtonWithIcon, PrimaryButtonWithIconRight } from "@/app/components/Button";
 import { getQuizQuestions } from "@/api/questions";
 import { updateStats } from "@/api/users";
 import { useSounds } from "@/app/hooks/useSounds";
@@ -223,19 +223,19 @@ export default function QuizPlayer({route}: any) {
                     </View>
                     <View style={styles.buttonsContainer}>
                         {currentQuestion < questions.length -1 ? (
-                            <PrimaryButton label="Next Question" onPress={handleNextQuestion}/>
+                            <PrimaryButtonWithIconRight label="Next Question" icon="forward" onPress={handleNextQuestion}/>
                         ):(
-                            <PrimaryButton label="Finish Quiz" onPress={finishQuiz}/>
+                            <PrimaryButtonWithIcon label="Finish Quiz" icon="check-circle" onPress={finishQuiz}/>
                         )}
                         {currentQuestion !== 0 && (
-                            <PrimaryButton label="Previous Question" onPress={handlePrevQuestion}/>
+                            <PrimaryButtonWithIcon label="Previous Question" icon="backward" onPress={handlePrevQuestion}/>
                         )}
                     </View>
                 </View>
             </TouchableWithoutFeedback>
         ) : (
             <View style={styles.container}>
-                <PrimaryButton label="Start Quiz" onPress={handleQuizStart}/>
+                <PrimaryButtonWithIcon label="Start Quiz" icon="play-circle" onPress={handleQuizStart}/>
                 <Text style={styles.questionHeader}>Number of questions: {questions.length}</Text>
             </View>
         )}
@@ -298,7 +298,7 @@ const styles = StyleSheet.create({
         backgroundColor: '#ffffff',
     },
     choiceButtonSelected: {
-        backgroundColor: '#7a7a7aff',
+        backgroundColor: '#FF6B00',
     },
     choiceText: {
         fontSize: 18,
