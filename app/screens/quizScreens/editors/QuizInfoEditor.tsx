@@ -104,11 +104,12 @@ export default function QuizInfoEditor({route}: any) {
                         textAlignVertical="top"
                     />
                     <Text style={styles.inputHeader}>Visibility:</Text>
-                    <SegmentedButtons
+                    <SegmentedButtons 
+                        theme={{ colors: { secondaryContainer: '#FF6B00', onSecondaryContainer: '#FFFFFF' } }}
                         value={visibility}
                         onValueChange={setVisibility}
                         buttons={[
-                            { value: 'Private', label: 'Private'}, { value: 'Public', label: 'Public'},        
+                            { value: 'Private', label: 'Private', showSelectedCheck:true}, { value: 'Public', label: 'Public', showSelectedCheck:true},        
                         ]}
                     />
                 </View>

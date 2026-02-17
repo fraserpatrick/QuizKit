@@ -69,7 +69,8 @@ export default function HomeScreen() {
         <View style={styles.container}>
             <PrimaryButtonWithIcon label="Create Quiz" onPress={handleCreateQuiz} icon="form"/>
             <View style={styles.quizContainer}>
-                <SegmentedButtons theme={{ colors: { secondaryContainer: '#007BFF', onSecondaryContainer: '#FFFFFF' } }}
+                <SegmentedButtons
+                    theme={{ colors: { secondaryContainer: '#007BFF', onSecondaryContainer: '#FFFFFF' } }}
                     value={selector}
                     onValueChange={setSelector}
                     buttons={[

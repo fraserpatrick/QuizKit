@@ -165,10 +165,11 @@ export default function QuestionEditor({route}: any) {
                     </>)}
                     {type === 'True or False' &&(<>
                         <SegmentedButtons
+                            theme={{ colors: { secondaryContainer: '#FF6B00', onSecondaryContainer: '#FFFFFF' } }}
                             value={answer}
                             onValueChange={setAnswer}
                             buttons={[
-                                { value: 'True', label: 'True'}, { value: 'False', label: 'False'},        
+                                { value: 'True', label: 'True', showSelectedCheck:true}, { value: 'False', label: 'False', showSelectedCheck:true},        
                             ]}
                         />
                     </>)}
