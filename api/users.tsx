@@ -25,6 +25,6 @@ export const updateUsername = (email: string, newUsername: string) => {
     return apiFetch("users/updateUsername", "PUT", {email, newUsername});
 }
 
-export const updateStats = (username: string, answered: number, correct: number) => {
-    return apiFetch("users/updateStats", "PUT", {username, answered, correct});
+export const updateStats = (username: string, answered: number, correct: number, points: number) => {
+    return apiFetch("users/updateStats", "PUT", {username, answered, correct, points});
 }

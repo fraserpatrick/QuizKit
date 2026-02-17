@@ -80,6 +80,7 @@ export default function ProfileScreen({route}: any) {
                 <Text>Total Quizzes: {user.totalQuizPlays}</Text>
                 <Text>Total Questions Answered: {user.totalAnswers}</Text>
                 <Text>Total Questions Correct: {user.totalCorrect}</Text>
+                <Text>Points: {user.points}</Text>
             </View>
             <View style={styles.quizContainer}>
                 <Text style={styles.containerHeader}>Owned Quizzes</Text>

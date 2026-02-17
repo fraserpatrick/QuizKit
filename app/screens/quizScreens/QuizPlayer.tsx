@@ -128,9 +128,10 @@ export default function QuizPlayer({route}: any) {
         };
 
         const score = calcScore(updatedQuestions);
+        const points = score * 10 + (score === questions.length ? 25 : 0);
 
         try {
-            await updateStats(username!,updatedQuestions.length,score);
+            await updateStats(username!,updatedQuestions.length,score,points);
         } catch (error) {
             console.error('Failed to update stats', error);
         }

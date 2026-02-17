@@ -17,6 +17,7 @@ export interface User {
     totalQuizPlays?: number;
     totalAnswers?: number;
     totalCorrect?: number;
+    points?: number;
 }
 
 export interface Question {
