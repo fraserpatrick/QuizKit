@@ -1,20 +1,25 @@
 import { useFocusEffect, useNavigation } from "@react-navigation/native";
 import React, { useCallback, useEffect, useLayoutEffect, useState } from 'react';
-import { FlatList, View, StyleSheet, Button, TextInput } from 'react-native';
+import { FlatList, View, StyleSheet, Button, TextInput, Alert } from 'react-native';
 import { Quiz } from "@/DatabaseController";
 import { SegmentedButtons } from 'react-native-paper';
 import { useAuth } from "@/app/AuthContext";
 import PrimaryButtonWithIcon from "@/app/components/Button"; 
 import { getOwnedQuizzes, getSharedQuizzes } from "@/api/quizzes";
-import { QuizItem } from "../components/QuizAndQuestionItem";
+import { QuizItem } from "@/app/components/QuizAndQuestionItem";
+import { useSounds } from "@/app/hooks/useSounds";
 
 export default function HomeScreen() {
     const navigation = useNavigation();
-    const {username} = useAuth();
+    const {username, logout} = useAuth();
+    const {playNotification} = useSounds();
 
     useLayoutEffect(() => {
         navigation.setOptions({
             title: 'QuizKit',
+            headerLeft: () => (
+                <Button title="Logout" onPress={handleLogout} />
+            ),
             headerRight: () => (
                 <Button title="Profile" onPress={() => navigation.navigate('ProfileScreen' as never)} />
             ),
@@ -46,6 +51,16 @@ export default function HomeScreen() {
             loadQuizzes();
         }, [username])
     );
+
+        const handleLogout = () => {
+            playNotification();
+            Alert.alert(
+                'Logout', 'Are you sure you want to logout?', [
+                    {text: 'No, stay logged in', style: 'cancel',},
+                    {text: 'Yes, logout', onPress: () => logout(), style: 'destructive',},
+                ]
+            );
+        ;}
 
 
 

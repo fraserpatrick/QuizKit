@@ -1,23 +1,20 @@
-import { Text, View, StyleSheet, FlatList, Alert, Button } from 'react-native';
+import { Text, View, StyleSheet, FlatList, Button } from 'react-native';
 import { useAuth } from '@/app/AuthContext';
 import { Quiz, User } from '@/DatabaseController';
 import { useState, useEffect, useLayoutEffect } from 'react';
 import { useNavigation } from '@react-navigation/native';
-import PrimaryButtonWithIcon from '@/app/components/Button';
 import { getOwnedQuizzes } from '@/api/quizzes';
 import { getUserByUsername } from '@/api/users';
 import { SmallQuizItem } from '@/app/components/QuizAndQuestionItem';
-import { useSounds } from '@/app/hooks/useSounds';
 
 export default function ProfileScreen({route}: any) {
-    const { username, logout } = useAuth();
+    const { username } = useAuth();
     const navigation = useNavigation();
     const passedUsername = route?.params?.passedUsername ?? username;
-    const {playNotification} = useSounds();
 
     useLayoutEffect(() => {
         const options: any = {
-            title: 'Profile',
+            title: passedUsername === username ? 'My Profile' : `${passedUsername}'s Profile`,
             headerLeft: () => (
                 <Button title="< Back" onPress={navigation.goBack} />
             ),
@@ -25,26 +22,16 @@ export default function ProfileScreen({route}: any) {
 
         if (username === passedUsername) {
             options.headerRight = () => (
-                <Button title="Logout" onPress={handleLogout} />
+                <Button title="Edit Profile" onPress={() => navigation.navigate('ProfileEditor')} />
             );
         }
 
         navigation.setOptions(options);
     }, [navigation, username, passedUsername]);
 
-    const handleLogout = () => {
-        playNotification();
-        Alert.alert(
-            'Logout', 'Are you sure you want to logout?', [
-                {text: 'No, stay logged in', style: 'cancel',},
-                {text: 'Yes, logout', onPress: () => logout(), style: 'destructive',},
-            ]
-        );
-    ;}
 
     const [quizzes, setQuizzes] = useState<Quiz[]>([]);
     const [user, setUser] = useState<User>({email: '', username: '', totalQuizPlays: 0, totalAnswers: 0, totalCorrect: 0});
-    const ownProfile = passedUsername === username;
 
 
     useEffect(() => {
@@ -72,15 +59,14 @@ export default function ProfileScreen({route}: any) {
 
     return (
         <View style={styles.container}>
-            <View style={styles.usernameContainer}>
-                <Text style={styles.usernameHeader}>{passedUsername}'s Profile</Text>
+            <View style={styles.pointsContainer}>
+                <Text>Points: {user.points}</Text>
             </View>
             <View style={styles.statsContainer}>
                 <Text style={styles.containerHeader}>Game Statistics</Text>
                 <Text>Total Quizzes: {user.totalQuizPlays}</Text>
                 <Text>Total Questions Answered: {user.totalAnswers}</Text>
                 <Text>Total Questions Correct: {user.totalCorrect}</Text>
-                <Text>Points: {user.points}</Text>
             </View>
             <View style={styles.quizContainer}>
                 <Text style={styles.containerHeader}>Owned Quizzes</Text>
@@ -95,11 +81,6 @@ export default function ProfileScreen({route}: any) {
                     )}
                 />
             </View>
-            {ownProfile && (
-                <View style={styles.buttonContainer}>
-                    <PrimaryButtonWithIcon label="Edit Profile" icon="edit" onPress={() => navigation.navigate('ProfileEditor')}/>
-                </View>
-            )}
         </View>
     );
 }
@@ -110,13 +91,13 @@ const styles = StyleSheet.create({
         flexGrow: 1,
         padding: 10,
     },
-    usernameContainer:{
-        flex: 0.07,
-        padding: 5,
-    },
-    usernameHeader:{
-        fontSize: 32,
-        textAlign: 'center',
+    pointsContainer:{
+        flex: 0.2,
+        borderWidth: 2,
+        borderRadius: 5,
+        marginBottom: 10,
+        padding: 10,
+        backgroundColor: '#e0e0e0ff',
     },
     statsContainer:{
         borderWidth: 2,
@@ -131,15 +112,12 @@ const styles = StyleSheet.create({
         borderRadius: 5,
         backgroundColor: '#e0e0e0ff',
         padding: 10,
-        flex: 0.7,
+        flex: 0.5,
     },
     containerHeader:{
         fontSize: 20,
         alignItems: 'center',
         textAlign: 'center',
         marginBottom: 10,
-    },
-    buttonContainer:{
-        flex: 0.1,
     },
 });
