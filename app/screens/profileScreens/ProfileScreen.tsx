@@ -1,4 +1,4 @@
-import { Text, View, StyleSheet, FlatList, Button } from 'react-native';
+import { Text, View, StyleSheet, FlatList, Button, Dimensions } from 'react-native';
 import { useAuth } from '@/app/AuthContext';
 import { Quiz, User } from '@/DatabaseController';
 import { useState, useEffect, useLayoutEffect } from 'react';
@@ -6,11 +6,13 @@ import { useNavigation } from '@react-navigation/native';
 import { getOwnedQuizzes } from '@/api/quizzes';
 import { getUserByUsername } from '@/api/users';
 import { SmallQuizItem } from '@/app/components/QuizAndQuestionItem';
+import * as Progress from 'react-native-progress';
 
 export default function ProfileScreen({route}: any) {
     const { username } = useAuth();
     const navigation = useNavigation();
     const passedUsername = route?.params?.passedUsername ?? username;
+    const screenWidth = Dimensions.get('window').width;
 
     useLayoutEffect(() => {
         const options: any = {
@@ -31,7 +33,7 @@ export default function ProfileScreen({route}: any) {
 
 
     const [quizzes, setQuizzes] = useState<Quiz[]>([]);
-    const [user, setUser] = useState<User>({email: '', username: '', totalQuizPlays: 0, totalAnswers: 0, totalCorrect: 0});
+    const [user, setUser] = useState<User>({email: '', username: '', totalQuizPlays: 0, totalAnswers: 0, totalCorrect: 0, points: 0});
 
 
     useEffect(() => {
@@ -54,13 +56,21 @@ export default function ProfileScreen({route}: any) {
         loadQuizzes();
         loadUser();
     }, []);
-
+    
+    const lowerBound = 40;
+    const upperBound = 80;
+    const progress = (user.points - lowerBound) / (upperBound - lowerBound);
 
 
     return (
         <View style={styles.container}>
             <View style={styles.pointsContainer}>
-                <Text>Points: {user.points}</Text>
+                <Progress.Bar progress={progress} width={screenWidth - 40} height={20} borderRadius={10} color="#FF6B00" borderColor="#000000" borderWidth={2} />
+                <View style={styles.pointsLabels}>
+                    <Text>{lowerBound}</Text>
+                    <Text>{user.points}</Text>
+                    <Text>{upperBound}</Text>
+                </View>
             </View>
             <View style={styles.statsContainer}>
                 <Text style={styles.containerHeader}>Game Statistics</Text>
@@ -88,7 +98,7 @@ export default function ProfileScreen({route}: any) {
 
 const styles = StyleSheet.create({
     container:{
-        flexGrow: 1,
+        flex: 1,
         padding: 10,
     },
     pointsContainer:{
@@ -98,6 +108,11 @@ const styles = StyleSheet.create({
         marginBottom: 10,
         padding: 10,
         backgroundColor: '#e0e0e0ff',
+    },
+    pointsLabels: {
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        marginTop: 5,
     },
     statsContainer:{
         borderWidth: 2,
