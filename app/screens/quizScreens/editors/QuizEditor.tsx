@@ -4,7 +4,7 @@ import { Question } from '@/DatabaseController';
 import { useState, useCallback, useLayoutEffect } from 'react';
 import PrimaryButtonWithIcon from '@/app/components/Button';
 import { getQuizQuestions } from '@/api/questions';
-import { QuestionItem } from '@/app/components/QuizAndQuestionItem';
+import { QuestionItem } from '@/app/components/Items';
 
 export default function QuizEditor({route}: any) {
     const {passedQuiz} = route.params;

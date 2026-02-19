@@ -3,8 +3,8 @@ import { useEffect, useLayoutEffect } from "react";
 import { useNavigation } from "@react-navigation/native";
 import { AnimatedCircularProgress } from 'react-native-circular-progress';
 import {Question} from '@/DatabaseController';
-import PrimaryButton, { PrimaryButtonWithIcon, PrimaryButtonWithIconRight } from "@/app/components/Button";
-import { VariableQuestionItem } from "@/app/components/QuizAndQuestionItem";
+import { PrimaryButtonWithIconRight } from "@/app/components/Button";
+import { VariableQuestionItem } from "@/app/components/Items";
 import { useSounds } from "@/app/hooks/useSounds";
 
 export default function QuizPlayerSummary({ route }: any) {

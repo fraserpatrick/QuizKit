@@ -20,6 +20,10 @@ export const getUserByEmail = async (search: string) => {
     return result[0] ?? null;
 }
 
+export const getLeaderboard = async () => {
+    return await apiFetch("users/leaderboard", "GET");
+}
+
 
 export const updateUsername = (email: string, newUsername: string) => {
     return apiFetch("users/updateUsername", "PUT", {email, newUsername});

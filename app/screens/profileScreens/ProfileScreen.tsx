@@ -5,7 +5,7 @@ import { useState, useEffect, useLayoutEffect } from 'react';
 import { useNavigation } from '@react-navigation/native';
 import { getOwnedQuizzes } from '@/api/quizzes';
 import { getUserByUsername } from '@/api/users';
-import { SmallQuizItem } from '@/app/components/QuizAndQuestionItem';
+import { SmallQuizItem } from '@/app/components/Items';
 import * as Progress from 'react-native-progress';
 
 export default function ProfileScreen({route}: any) {
