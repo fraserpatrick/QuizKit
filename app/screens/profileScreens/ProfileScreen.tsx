@@ -56,19 +56,70 @@ export default function ProfileScreen({route}: any) {
         loadQuizzes();
         loadUser();
     }, []);
+
+    const calculateBounds = (points: number) => {  
+        let level = 1;
+        let upperBound = 10;
+
+        while (points >= upperBound) {
+            level++;
+            if (level <= 5) {
+                upperBound *= 2;
+            } else {
+                upperBound = Math.floor(upperBound * 1.5);
+            }
+        }
+
+        let lowerBound = 0;
+        if (level === 1) {
+            lowerBound = 0;
+        } else if (level <= 5) {
+            lowerBound = upperBound / 2;
+        } else {
+            lowerBound = Math.floor(upperBound / 1.5);
+        }
+
+        return {
+            level,
+            lowerBound,
+            upperBound,
+        };
+    }
     
-    const lowerBound = 40;
-    const upperBound = 80;
-    const progress = (user.points - lowerBound) / (upperBound - lowerBound);
+    const { level, lowerBound, upperBound } = calculateBounds(user.points);
+    const progress = Math.min(Math.max((user.points - lowerBound) / (upperBound - lowerBound), 0),1);
+    const [textWidth, setTextWidth] = useState(0);
+    const barWidth = screenWidth - 40;
+    const calculatedLeft = progress * barWidth - textWidth - 6;
+    const clampedLeft = Math.min(Math.max(calculatedLeft, 4),barWidth - textWidth - 4);
 
 
     return (
         <View style={styles.container}>
+            <Text style={{ fontWeight: 'bold', marginBottom: 4 }}>
+                Level {level}
+            </Text>
+
             <View style={styles.pointsContainer}>
-                <Progress.Bar progress={progress} width={screenWidth - 40} height={20} borderRadius={10} color="#FF6B00" borderColor="#000000" borderWidth={2} />
+                <View style={styles.progressWrapper}>
+                    <Progress.Bar
+                        progress={progress}
+                        width={barWidth}
+                        height={24}
+                        borderRadius={12}
+                        color="#FF6B00"
+                        borderColor="#000000"
+                        borderWidth={2}
+                    />
+                    <Text
+                        onLayout={(e) => setTextWidth(e.nativeEvent.layout.width)}
+                        style={[styles.pointsInside,{left: clampedLeft,},]}
+                    >
+                        {user.points} points
+                    </Text>
+                </View>
                 <View style={styles.pointsLabels}>
                     <Text>{lowerBound}</Text>
-                    <Text>{user.points}</Text>
                     <Text>{upperBound}</Text>
                 </View>
             </View>
@@ -109,10 +160,19 @@ const styles = StyleSheet.create({
         padding: 10,
         backgroundColor: '#e0e0e0ff',
     },
+    progressWrapper: {
+        position: 'relative',
+        alignItems: 'center',
+    },
+    pointsInside: {
+        position: 'absolute',
+        top : 5,
+        fontWeight: 'bold',
+    },
     pointsLabels: {
         flexDirection: 'row',
         justifyContent: 'space-between',
-        marginTop: 5,
+        marginTop: 6,
     },
     statsContainer:{
         borderWidth: 2,
