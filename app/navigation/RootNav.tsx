@@ -1,6 +1,6 @@
 import { useAuth } from '@/app/AuthContext';
-import AppNavigator from './AppNav';
-import AuthNavigator from './AuthNav';
+import AppNavigator from '@/app/navigation/AppNav';
+import AuthNavigator from '@/app/navigation/AuthNav';
 
 export default function RootNavigator() {
     const { isAuthenticated } = useAuth();

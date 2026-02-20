@@ -1,6 +1,6 @@
 import { Text, View, StyleSheet, FlatList, Button, Dimensions } from 'react-native';
 import { useAuth } from '@/app/AuthContext';
-import { Quiz, User } from '@/DatabaseController';
+import { Quiz, User } from '@/app/components/Interfaces';
 import { useState, useEffect, useLayoutEffect } from 'react';
 import { useNavigation } from '@react-navigation/native';
 import { getOwnedQuizzes } from '@/api/quizzes';

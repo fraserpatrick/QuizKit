@@ -8,7 +8,7 @@ import {
     updatePassword,
 } from 'firebase/auth';
 import React, { ReactNode, createContext, useContext, useEffect, useState } from 'react';
-import { auth } from './firebase';
+import { auth } from '@/app/firebase';
 import { getUserByEmail } from '@/api/users';
 
 interface AuthContextType {

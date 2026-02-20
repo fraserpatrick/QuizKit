@@ -1,7 +1,7 @@
 import { useFocusEffect, useNavigation } from "@react-navigation/native";
 import React, { useCallback, useEffect, useLayoutEffect, useState } from 'react';
 import { FlatList, View, StyleSheet, Button, TextInput, Alert, Text } from 'react-native';
-import { Quiz, User } from "@/DatabaseController";
+import { Quiz, User } from '@/app/components/Interfaces';
 import { SegmentedButtons } from 'react-native-paper';
 import { useAuth } from "@/app/AuthContext";
 import PrimaryButtonWithIcon from "@/app/components/Button"; 

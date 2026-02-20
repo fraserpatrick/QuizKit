@@ -1,6 +1,6 @@
-import { Question, Quiz, User } from "@/DatabaseController";
+import { Quiz, Question, User } from '@/app/components/Interfaces';
 import { TouchableOpacity, View, Text, StyleSheet } from "react-native";
-import { useSounds } from "../hooks/useSounds";
+import { useSounds } from "@/app/hooks/useSounds";
 import { AntDesign } from "@expo/vector-icons";
 
 const {playClick} = useSounds();

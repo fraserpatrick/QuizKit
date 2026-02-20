@@ -1,7 +1,7 @@
 import { useFocusEffect, useNavigation } from "@react-navigation/native";
 import { useCallback, useEffect, useLayoutEffect, useState } from "react";
 import { View, Text, Button, Alert, Keyboard, TouchableWithoutFeedback, StyleSheet, TouchableOpacity, TextInput } from "react-native";
-import {Question} from '@/DatabaseController';
+import { Question } from '@/app/components/Interfaces';
 import { useAuth } from "@/app/AuthContext";
 import { PrimaryButtonWithIcon, PrimaryButtonWithIconRight } from "@/app/components/Button";
 import { getQuizQuestions } from "@/api/questions";

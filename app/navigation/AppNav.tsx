@@ -1,14 +1,14 @@
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import HomeScreen from '../screens/HomeScreen';
-import QuizEditor from '../screens/quizScreens/editors/QuizEditor';
-import ProfileScreen from '../screens/profileScreens/ProfileScreen';
-import ProfileEditor from '../screens/profileScreens/ProfileEditor';
-import QuizInfoScreen from '../screens/quizScreens/QuizInfoScreen';
-import QuestionEditor from '../screens/quizScreens/editors/QuestionEditor';
-import QuizInfoEditor from '../screens/quizScreens/editors/QuizInfoEditor';
-import QuizPlayer from '../screens/quizScreens/QuizPlayer';
-import QuizPlayerSummary from '../screens/quizScreens/QuizPlayerSummary';
-import QuestionReview from '../screens/quizScreens/QuestionReview';
+import HomeScreen from '@/app/screens/HomeScreen';
+import QuizEditor from '@/app/screens/quizScreens/editors/QuizEditor';
+import ProfileScreen from '@/app/screens/profileScreens/ProfileScreen';
+import ProfileEditor from '@/app/screens/profileScreens/ProfileEditor';
+import QuizInfoScreen from '@/app/screens/quizScreens/QuizInfoScreen';
+import QuestionEditor from '@/app/screens/quizScreens/editors/QuestionEditor';
+import QuizInfoEditor from '@/app/screens/quizScreens/editors/QuizInfoEditor';
+import QuizPlayer from '@/app/screens/quizScreens/QuizPlayer';
+import QuizPlayerSummary from '@/app/screens/quizScreens/QuizPlayerSummary';
+import QuestionReview from '@/app/screens/quizScreens/QuestionReview';
 
 const Stack = createNativeStackNavigator();
 
