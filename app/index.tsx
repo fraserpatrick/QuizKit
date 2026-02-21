@@ -1,7 +1,13 @@
 import { AuthProvider } from '@/app/AuthContext';
-import RootNav from './navigation/RootNav';
+import RootNav from '@/app/navigation/RootNav';
+import { initializeDatabase } from '@/localDatabase/databaseConnection';
+import { useEffect } from 'react';
 
 export default function App() {
+    useEffect(() => {
+        initializeDatabase();
+    }, []);
+
     return (
         <AuthProvider>
             <RootNav />

@@ -9,6 +9,8 @@ import { getOwnedQuizzes, getSharedQuizzes } from "@/api/quizzes";
 import { LeaderboardItem, QuizItem } from "@/app/components/Items";
 import { useSounds } from "@/app/hooks/useSounds";
 import { getLeaderboard } from "@/api/users";
+import { getLocalUsersQuizzes } from "@/localDatabase/quizzes";
+import { resetDatabase} from "@/localDatabase/databaseConnection";
 
 export default function HomeScreen() {
     const navigation = useNavigation();
@@ -31,6 +33,7 @@ export default function HomeScreen() {
         }, []);
 
 
+    const [localQuizzes, setLocalQuizzes] = useState<Quiz[]>([]);
     const [myQuizzes, setMyQuizzes] = useState<Quiz[]>([]);
     const [sharedQuizzes, setSharedQuizzes] = useState<Quiz[]>([]);
     const [quizzes, setQuizzes] = useState<Quiz[]>([]);
@@ -40,6 +43,8 @@ export default function HomeScreen() {
 
     const loadQuizzes = async () => {
         try {
+            const localQuizzes = await getLocalUsersQuizzes(username!);
+            setLocalQuizzes(localQuizzes);
             const myQuizzes = await getOwnedQuizzes(username!);
             setMyQuizzes(myQuizzes);
             const sharedQuizzes = await getSharedQuizzes(username!);
@@ -89,8 +94,10 @@ export default function HomeScreen() {
     useEffect(() => {
         if (selector === 'myQuizzes') {
             setQuizzes(myQuizzes);
-        } else {
+        } else if (selector === 'sharedQuizzes') {
             setQuizzes(sharedQuizzes);
+        } else if (selector === 'localQuizzes') {
+            setQuizzes(localQuizzes);
         }
     }, [selector, myQuizzes, sharedQuizzes]);
 
@@ -103,13 +110,17 @@ export default function HomeScreen() {
     return (
         <View style={styles.container}>
             <PrimaryButtonWithIcon label="Create Quiz" onPress={handleCreateQuiz} icon="form"/>
+            <Button title="local" onPress={() => console.log(localQuizzes)}/>
+            <Button title="reset" onPress={() => resetDatabase()}/>
             <View style={styles.quizContainer}>
                 <SegmentedButtons
                     theme={{ colors: { secondaryContainer: '#007BFF', onSecondaryContainer: '#FFFFFF' } }}
                     value={selector}
                     onValueChange={setSelector}
                     buttons={[
-                        { value: 'myQuizzes', label: 'My Quizzes', showSelectedCheck:true }, { value: 'sharedQuizzes', label: 'Shared Quizzes', showSelectedCheck:true},        
+                        { value: 'myQuizzes', label: 'My Quizzes', showSelectedCheck:true },
+                        { value: 'sharedQuizzes', label: 'Shared Quizzes', showSelectedCheck:true},   
+                        { value: 'localQuizzes', label: 'Local Quizzes', showSelectedCheck:true },     
                     ]}
                 />
                 <TextInput

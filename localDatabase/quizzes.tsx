@@ -1,51 +1,35 @@
-import localDatabaseController from '@/localDatabase/localDatabaseController';
+import { db } from '@/localDatabase/databaseConnection';
 import { Quiz } from '@/app/components/Interfaces';
 
-class quizTable {
-    public async createQuiz(title: string, owner: string, visibility: string, description: string): Promise<Quiz> {
-        const insertSQL = `INSERT INTO quiz (title, owner, visibility, description) VALUES (?, ?, ?, ?)`;
+export const createLocalQuiz = async (title: string, owner: string, visibility: string, description: string): Promise<Quiz> =>{
+    const insertSQL = `INSERT INTO quiz (title, owner, visibility, description, saveType) VALUES (?, ?, ?, ?, 'local')`;
+    const data = [title, owner, visibility, description];
+    
+    await db.runAsync(insertSQL, data);
 
-        await localDatabaseController.execute(insertSQL, [title, owner, visibility, description]);
+    const selectSQL = `SELECT * FROM quiz WHERE id = last_insert_rowid()`;
+    const result = db.getAllSync(selectSQL);
 
-        const selectSQL = `SELECT id, title, owner, visibility, description FROM quiz WHERE id = last_insert_rowid()`;
-        const [quiz] = await localDatabaseController.select<Quiz>(selectSQL);
-        if (!quiz) {
-            throw new Error('Failed to retrieve the newly created quiz');
-        }
-        return quiz;
-    }
-
-    public getQuizzes(): Promise<Quiz[]> {
-        const sql = `SELECT * FROM quiz`;
-        return localDatabaseController.select<Quiz>(sql);
-    }
-
-    public getUsersQuizzes(owner: string): Promise<Quiz[]> {
-        const sql = `SELECT * FROM quiz WHERE owner = ?`;
-        return localDatabaseController.select<Quiz>(sql, [owner]);
-    }
-
-    public getSharedQuizzes(owner: string): Promise<Quiz[]> {
-        const sql = `SELECT * FROM quiz WHERE visibility = 'Public' AND owner != ?`;
-        return localDatabaseController.select<Quiz>(sql, [owner]);
-    }
-
-    public deleteQuiz(quizID: number): Promise<boolean> {
-        const sql = `DELETE FROM quiz WHERE id = ?`;
-        return localDatabaseController.execute(sql, [quizID]);
-    }
-
-    public async updateQuiz(quizID: number, title: string, visibility: string, description: string) : Promise<Quiz>{
-        const updateSQL = `UPDATE quiz SET title = ?, visibility = ?, description = ? WHERE id = ?`;
-        await localDatabaseController.execute(updateSQL, [title, visibility, description, quizID]);
-
-        const selectSQL = `SELECT id, title, owner, visibility, description FROM quiz WHERE id = ?`;
-        const [quiz] = await localDatabaseController.select<Quiz>(selectSQL, [quizID]);
-        if (!quiz) {
-            throw new Error('Failed to retrieve the newly created quiz');
-        }
-        return quiz;
-    }
+    return result[0] as Quiz;
 }
 
-export default new quizTable();
+export const getLocalQuizzes = async () : Promise<Quiz[]> => {
+    const sql = `SELECT * FROM quiz ORDER BY title`;
+    const result = db.getAllSync(sql);
+
+    return result as Quiz[];
+}
+
+export const getLocalUsersQuizzes = async (owner: string) : Promise<Quiz[]> => {
+    const sql = `SELECT * FROM quiz WHERE owner = ? ORDER BY title`;
+    const result = db.getAllSync(sql, [owner])
+
+    return result as Quiz[];
+}
+
+export const deleteLocalQuiz = async (quizID: number) : Promise<boolean> => {
+    const sql = `DELETE FROM quiz WHERE id = ?`;
+    await db.runAsync(sql, [quizID]);
+
+    return true;
+}
