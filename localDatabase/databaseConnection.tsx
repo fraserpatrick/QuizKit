@@ -11,7 +11,8 @@ export const initializeDatabase = async () => {
                 title TEXT NOT NULL,
                 owner TEXT NOT NULL,
                 visibility TEXT NOT NULL,
-                description TEXT
+                description TEXT,
+                saveType TEXT NOT NULL
             );
         `);
 
@@ -22,7 +23,8 @@ export const initializeDatabase = async () => {
                 type TEXT NOT NULL,
                 text TEXT NOT NULL,
                 correctAnswer TEXT NOT NULL,
-                options TEXT
+                options TEXT,
+                feedback TEXT
             );
         `);
 

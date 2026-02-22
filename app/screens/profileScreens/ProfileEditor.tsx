@@ -7,6 +7,7 @@ import PrimaryButtonWithIcon from '@/app/components/Button';
 import { updateUsername, getUserByUsername } from '@/api/users';
 import { updateQuizToNewUsername } from '@/api/quizzes';
 import { useSounds } from '@/app/hooks/useSounds';
+import { updateLocalQuizToNewUsername } from '@/localDatabase/quizzes';
 
 export default function ProfileEditor() {
     const { username, user, changeUsername, changePassword } = useAuth();
@@ -91,9 +92,14 @@ export default function ProfileEditor() {
 
     const handleUpdateUsername = async () => {
         try {
-            await updateUsername(user!.email!, usernameInput.trim().toLowerCase());
-            updateQuizToNewUsername(username!, usernameInput.trim().toLowerCase());
-            changeUsername(usernameInput.trim().toLowerCase());
+            let newUsername = usernameInput.trim().toLowerCase();
+            await updateUsername(user!.email!, newUsername);
+
+            updateQuizToNewUsername(username!, newUsername);
+            updateLocalQuizToNewUsername(username!, newUsername);
+
+            changeUsername(newUsername);
+
             alert('Username updated successfully.');
             navigation.goBack();
         } catch (error) {

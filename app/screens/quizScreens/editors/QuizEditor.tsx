@@ -4,6 +4,7 @@ import { Question } from '@/app/components/Interfaces';
 import { useState, useCallback, useLayoutEffect } from 'react';
 import PrimaryButtonWithIcon from '@/app/components/Button';
 import { getQuizQuestions } from '@/api/questions';
+import { getLocalQuizQuestions } from '@/localDatabase/questions';
 import { QuestionItem } from '@/app/components/Items';
 
 export default function QuizEditor({route}: any) {
@@ -23,7 +24,11 @@ export default function QuizEditor({route}: any) {
 
     const loadQuestions = async () => {
             try {
-                setQuestions(await getQuizQuestions(passedQuiz.id!));
+                if (passedQuiz.saveType === 'local'){
+                    setQuestions(await getLocalQuizQuestions(passedQuiz.id!));
+                } else if (passedQuiz.saveType === 'cloud'){
+                    setQuestions(await getQuizQuestions(passedQuiz.id!));
+                }
             } catch (error) {
                 console.error('Error loading data:', error);
             }

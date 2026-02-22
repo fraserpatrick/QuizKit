@@ -5,6 +5,8 @@ import { PrimaryButtonWithIcon } from '@/app/components/Button';
 import { useAuth } from '@/app/AuthContext';
 import { deleteQuiz } from '@/api/quizzes';
 import { deleteQuestions } from '@/api/questions';
+import { deleteLocalQuiz } from '@/localDatabase/quizzes';
+import { deleteLocalQuestions } from '@/localDatabase/questions';
 import { useSounds } from '@/app/hooks/useSounds';
 
 
@@ -45,8 +47,14 @@ export default function QuizInfoScreen({route}: any) {
     const handleDeleteQuiz = () => {
         console.log('Deleting quiz with id: ' + passedQuiz.id);
         try{
-            deleteQuiz(passedQuiz.id);
-            deleteQuestions(passedQuiz.id);
+            if (passedQuiz.saveType === 'local'){
+                deleteLocalQuiz(passedQuiz.id);
+                deleteLocalQuestions(passedQuiz.id);
+            } else if (passedQuiz.saveType === 'cloud'){
+                deleteQuiz(passedQuiz.id);
+                deleteQuestions(passedQuiz.id);
+            }
+
             alert('Deleted quiz : ' + passedQuiz.title);
         }
         catch(error){

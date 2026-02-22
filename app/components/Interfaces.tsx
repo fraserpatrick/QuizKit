@@ -4,6 +4,7 @@ export interface Quiz {
     owner: string;
     visibility: string;
     description: string;
+    saveType: string;
 }
 
 export interface User {

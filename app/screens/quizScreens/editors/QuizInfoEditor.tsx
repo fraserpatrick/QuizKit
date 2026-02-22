@@ -1,11 +1,12 @@
 import { useNavigation } from '@react-navigation/native';
-import { useLayoutEffect, useState } from "react";
+import { useEffect, useLayoutEffect, useState } from "react";
 import { View, Text, Button, Keyboard, TextInput, TouchableWithoutFeedback, StyleSheet, Alert } from "react-native";
 import { SegmentedButtons } from "react-native-paper";
 import {useAuth} from '@/app/AuthContext'
 import PrimaryButtonWithIcon from '@/app/components/Button';
 import { updateQuiz, createQuiz } from '@/api/quizzes';
 import { useSounds } from '@/app/hooks/useSounds';
+import { createLocalQuiz, updateLocalQuiz } from '@/localDatabase/quizzes';
 
 export default function QuizInfoEditor({route}: any) {
     const {passedQuiz} = route.params;
@@ -31,6 +32,13 @@ export default function QuizInfoEditor({route}: any) {
     const [title, setTitle] = useState(passedQuiz ? passedQuiz.title : '');
     const [description, setDescription] = useState(passedQuiz ? passedQuiz.description : '');
     const [visibility, setVisibility] = useState(passedQuiz ? passedQuiz.visibility : 'Private');
+    const [saveType, setSaveType] = useState(passedQuiz ? passedQuiz.saveType : 'cloud');
+
+    useEffect(() => {
+        if (saveType === 'local') {
+            setVisibility("Private");
+        }
+    }, [saveType]);
 
     const handleQuizSave = () => {
         if (!title?.trim()){
@@ -54,9 +62,14 @@ export default function QuizInfoEditor({route}: any) {
 
     const handleCreateQuiz = async () => {
         try {
-            const newQuiz = await createQuiz(title.trim(), username!, visibility, description.trim());
+            let newQuiz;
+            if (saveType === 'local') {
+                newQuiz = await createLocalQuiz(title.trim(), username!, visibility, description.trim());
+            }
+            else if (saveType === 'cloud') {
+                newQuiz = await createQuiz(title.trim(), username!, visibility, description.trim());
+            }
             alert('Creating quiz with title: ' + title.trim());
-            console.log('Creating quiz with title: ' + title.trim());
 
             navigation.reset({index: 1, routes: [
                 {name: 'Home' as never} as never,
@@ -71,7 +84,19 @@ export default function QuizInfoEditor({route}: any) {
 
     const handleUpdateQuiz = async () => {
         try {
-            const updatedQuiz = await updateQuiz(passedQuiz.id, title.trim(), visibility, description.trim());
+            let updatedQuiz;
+            if (passedQuiz.saveType === saveType){
+                if (passedQuiz.saveType === 'local'){
+                    updatedQuiz = await updateLocalQuiz(passedQuiz.id, title.trim(), visibility, description.trim());
+                }
+                else if (passedQuiz.saveType === 'cloud'){
+                    updatedQuiz = await updateQuiz(passedQuiz.id, title.trim(), visibility, description.trim());
+                }
+            }
+            else {
+                // QUIZ MIGRATION
+            }
+
             alert('Quiz saved successfully.');
             navigation.reset({index: 1, routes: [
                 {name: 'Home' as never},
@@ -109,7 +134,18 @@ export default function QuizInfoEditor({route}: any) {
                         value={visibility}
                         onValueChange={setVisibility}
                         buttons={[
-                            { value: 'Private', label: 'Private', showSelectedCheck:true}, { value: 'Public', label: 'Public', showSelectedCheck:true},        
+                            { value: 'Private', label: 'Private', showSelectedCheck:true, disabled:saveType === "local" },
+                            { value: 'Public', label: 'Public', showSelectedCheck:true, disabled:saveType === "local" },        
+                        ]}
+                    />
+                    <Text style={styles.inputHeader}>Save Location:</Text>
+                    <SegmentedButtons 
+                        theme={{ colors: { secondaryContainer: '#FF6B00', onSecondaryContainer: '#FFFFFF' } }}
+                        value={saveType}
+                        onValueChange={setSaveType}
+                        buttons={[
+                            { value: 'local', label: 'Local', showSelectedCheck:true },
+                            { value: 'cloud', label: 'Cloud', showSelectedCheck:true },        
                         ]}
                     />
                 </View>

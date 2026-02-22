@@ -5,6 +5,7 @@ import { SelectList } from 'react-native-dropdown-select-list';
 import { SegmentedButtons } from "react-native-paper";
 import { PrimaryButtonWithIcon } from "@/app/components/Button";
 import { createQuestion, deleteQuestion, updateQuestion } from "@/api/questions";
+import { createLocalQuestion, updateLocalQuestion, deleteLocalQuestion } from "@/localDatabase/questions";
 import { useSounds } from "@/app/hooks/useSounds";
 
 export default function QuestionEditor({route}: any) {
@@ -73,10 +74,19 @@ export default function QuestionEditor({route}: any) {
 
         try {
             if (!passedQuestion) {
-                await createQuestion(passedQuiz.id, text.trim(), type, answer.trim(), options, feedback?.trim());
+                if (passedQuiz.saveType === 'local'){
+                    await createLocalQuestion(passedQuiz.id, text.trim(), type, answer.trim(), options, feedback?.trim());
+                }
+                else if (passedQuiz.saveType === 'cloud'){
+                    await createQuestion(passedQuiz.id, text.trim(), type, answer.trim(), options, feedback?.trim());
+                }
                 alert('Question saved successfully.');
             } else {
-                await updateQuestion(passedQuestion.id, text.trim(), type, answer.trim(), options, feedback?.trim());
+                if (passedQuiz.saveType === 'local'){
+                    await updateLocalQuestion(passedQuestion.id, text.trim(), type, answer.trim(), options, feedback?.trim());
+                } else if (passedQuiz.saveType === 'cloud'){
+                    await updateQuestion(passedQuestion.id, text.trim(), type, answer.trim(), options, feedback?.trim());
+                }
                 alert('Question updated successfully.');
             }
 
@@ -100,7 +110,11 @@ export default function QuestionEditor({route}: any) {
     const handleDeleteQuestion = () => {
         console.log('Deleting question with id: ' + passedQuestion.id);
         try {
-            deleteQuestion(passedQuestion.id);
+            if (passedQuiz.saveType === 'local'){
+                deleteLocalQuestion(passedQuestion.id);
+            } else if (passedQuiz.saveType === 'cloud'){
+                deleteQuestion(passedQuestion.id);
+            }
             alert('Question deleted successfully.');
             navigation.goBack();
         }

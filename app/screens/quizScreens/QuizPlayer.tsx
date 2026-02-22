@@ -7,6 +7,7 @@ import { PrimaryButtonWithIcon, PrimaryButtonWithIconRight } from "@/app/compone
 import { getQuizQuestions } from "@/api/questions";
 import { updateStats } from "@/api/users";
 import { useSounds } from "@/app/hooks/useSounds";
+import { getLocalQuizQuestions } from "@/localDatabase/questions";
 
 export default function QuizPlayer({route}: any) {
     const navigation = useNavigation();
@@ -33,8 +34,11 @@ export default function QuizPlayer({route}: any) {
 
     const loadQuestions = async () => {
         try {
-            const questions = await getQuizQuestions(passedQuiz.id!);
-            setQuestions(questions);
+            if (passedQuiz.saveType === 'local'){
+                setQuestions(await getLocalQuizQuestions(passedQuiz.id!));
+            } else if (passedQuiz.saveType === 'cloud'){
+                setQuestions(await getQuizQuestions(passedQuiz.id!));
+            }
         } catch (error) {
             console.error('Error loading data:', error);
         }
