@@ -27,13 +27,16 @@ export const getLocalUsersQuizzes = async (owner: string) : Promise<Quiz[]> => {
     return result as Quiz[];
 }
 
-export const updateLocalQuiz = async (quizID: number, title: string, visibility: string, description: string) : Promise<boolean> => {
+export const updateLocalQuiz = async (quizID: number, title: string, visibility: string, description: string) : Promise<Quiz> => {
     const sql = `UPDATE quiz SET title = ?, visibility = ?, description = ? WHERE id = ?`;
     const data = [title, visibility, description, quizID];
 
     await db.runAsync(sql, data);
 
-    return true;
+    const selectSQL = `SELECT * FROM quiz WHERE id = ?`;
+    const result = db.getAllSync(selectSQL, [quizID]);
+
+    return result[0] as Quiz;
 }
 
 export const updateLocalQuizToNewUsername = async (oldUsername: string, newUsername: string) : Promise<boolean> => {

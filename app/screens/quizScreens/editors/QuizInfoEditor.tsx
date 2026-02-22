@@ -7,6 +7,7 @@ import PrimaryButtonWithIcon from '@/app/components/Button';
 import { updateQuiz, createQuiz } from '@/api/quizzes';
 import { useSounds } from '@/app/hooks/useSounds';
 import { createLocalQuiz, updateLocalQuiz } from '@/localDatabase/quizzes';
+import { quizMigration } from '@/app/utils/quizMigration';
 
 export default function QuizInfoEditor({route}: any) {
     const {passedQuiz} = route.params;
@@ -19,14 +20,14 @@ export default function QuizInfoEditor({route}: any) {
         navigation.setOptions({
             title: 'Quiz info editor',
             headerLeft: () => (
-                <Button title="< Back" onPress={navigation.goBack} />
+                <Button title="< Back" onPress={() => navigation.goBack()} />
             ),
             headerStyle: {
                 backgroundColor: '#007BFF',
             },
             headerTintColor: '#fff',
         });
-    }, []);
+    }, [navigation]);
 
 
     const [title, setTitle] = useState(passedQuiz ? passedQuiz.title : '');
@@ -94,10 +95,12 @@ export default function QuizInfoEditor({route}: any) {
                 }
             }
             else {
-                // QUIZ MIGRATION
+                updatedQuiz = await quizMigration(passedQuiz.id, username!, title.trim(), visibility, description.trim(), saveType);
             }
-
+            
+            console.log("Quiz updated");
             alert('Quiz saved successfully.');
+
             navigation.reset({index: 1, routes: [
                 {name: 'Home' as never},
                 {name: 'QuizInfoScreen' as never, params: { passedQuiz: updatedQuiz }} as never,

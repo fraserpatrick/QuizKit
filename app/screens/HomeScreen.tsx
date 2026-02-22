@@ -10,7 +10,6 @@ import { LeaderboardItem, QuizItem } from "@/app/components/Items";
 import { useSounds } from "@/app/hooks/useSounds";
 import { getLeaderboard } from "@/api/users";
 import { getLocalUsersQuizzes } from "@/localDatabase/quizzes";
-import { resetDatabase} from "@/localDatabase/databaseConnection";
 
 export default function HomeScreen() {
     const navigation = useNavigation();
@@ -110,8 +109,6 @@ export default function HomeScreen() {
     return (
         <View style={styles.container}>
             <PrimaryButtonWithIcon label="Create Quiz" onPress={handleCreateQuiz} icon="form"/>
-            <Button title="local" onPress={() => console.log(localQuizzes)}/>
-            <Button title="reset" onPress={() => resetDatabase()}/>
             <View style={styles.quizContainer}>
                 <SegmentedButtons
                     theme={{ colors: { secondaryContainer: '#007BFF', onSecondaryContainer: '#FFFFFF' } }}
