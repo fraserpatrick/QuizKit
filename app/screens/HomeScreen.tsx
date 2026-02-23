@@ -10,6 +10,8 @@ import { LeaderboardItem, OwnedQuizItem, QuizItem } from "@/app/components/Items
 import { useSounds } from "@/app/hooks/useSounds";
 import { getLeaderboard } from "@/api/users";
 import { getLocalUsersQuizzes } from "@/localDatabase/quizzes";
+import { MaterialIcons } from '@expo/vector-icons'; // or react-native-vector-icons
+
 
 export default function HomeScreen() {
     const navigation = useNavigation();
@@ -117,11 +119,18 @@ export default function HomeScreen() {
                         { value: 'sharedQuizzes', label: 'Shared Quizzes', showSelectedCheck:true }, 
                     ]}
                 />
-                <TextInput
-                    style={styles.searchBar}
-                    value={search}
-                    onChangeText={setSearch}
-                />
+
+                <View style={styles.searchContainer}>
+                    <MaterialIcons name="search" size={24} color="#888" style={styles.searchIcon} />
+                    <TextInput
+                        style={styles.searchInput}
+                        placeholder="Search quizzes"
+                        placeholderTextColor="#888"
+                        value={search}
+                        onChangeText={setSearch}
+                        clearButtonMode="while-editing"
+                    />
+                </View>
                 <FlatList
                     data={searchedQuizzes}
                     keyExtractor={(item) => String(item.id)}
@@ -179,6 +188,25 @@ const styles = StyleSheet.create({
         borderColor: '#000000ff',
         borderRadius: 10,
         backgroundColor: '#ffffffff',
+    },
+    searchContainer: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        backgroundColor: '#ffffff',
+        borderRadius: 10,
+        borderWidth: 1,
+        paddingHorizontal: 15,
+        paddingVertical: 8,
+        marginVertical: 10,
+        marginHorizontal: 20,
+    },
+    searchIcon: {
+        marginRight: 10,
+    },
+    searchInput: {
+        flex: 1,
+        fontSize: 16,
+        color: '#000',
     },
     leaderboardContainer:{
         flex: 0.4,
