@@ -6,7 +6,7 @@ import { SegmentedButtons } from 'react-native-paper';
 import { useAuth } from "@/app/AuthContext";
 import PrimaryButtonWithIcon from "@/app/components/Button"; 
 import { getOwnedQuizzes, getSharedQuizzes } from "@/api/quizzes";
-import { LeaderboardItem, QuizItem } from "@/app/components/Items";
+import { LeaderboardItem, OwnedQuizItem, QuizItem } from "@/app/components/Items";
 import { useSounds } from "@/app/hooks/useSounds";
 import { getLeaderboard } from "@/api/users";
 import { getLocalUsersQuizzes } from "@/localDatabase/quizzes";
@@ -126,10 +126,17 @@ export default function HomeScreen() {
                     data={searchedQuizzes}
                     keyExtractor={(item) => String(item.id)}
                     renderItem={({ item }) => (
-                        <QuizItem
-                            quiz={item}
-                            onPress={() => handleOpenQuiz(item)}
-                        />
+                        selector === "myQuizzes" ? (
+                            <OwnedQuizItem
+                                quiz={item}
+                                onPress={() => handleOpenQuiz(item)}
+                            />
+                        ) : (
+                            <QuizItem
+                                quiz={item}
+                                onPress={() => handleOpenQuiz(item)}
+                            />
+                        )
                     )}
                 />
             </View>

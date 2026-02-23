@@ -66,6 +66,15 @@ export const VariableQuestionItem = ({ question, onPress, correct }: QuestionPro
 export const QuizItem = ({ quiz, onPress }: QuizProps) => (
     <TouchableOpacity onPress={() => { playClick(); onPress(); }}>
         <View style={styles.item}>
+            <Text style={styles.buttonText} numberOfLines={1} ellipsizeMode="tail">{quiz.title}</Text>
+            {iconItem()}
+        </View>
+    </TouchableOpacity>
+);
+
+export const OwnedQuizItem = ({ quiz, onPress }: QuizProps) => (
+    <TouchableOpacity onPress={() => { playClick(); onPress(); }}>
+        <View style={styles.item}>
             {saveIcon(quiz.saveType)}
             <Text style={styles.buttonText} numberOfLines={1} ellipsizeMode="tail">{quiz.title}</Text>
             {iconItem()}
