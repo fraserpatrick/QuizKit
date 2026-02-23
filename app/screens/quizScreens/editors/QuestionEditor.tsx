@@ -27,6 +27,10 @@ export default function QuestionEditor({route}: any) {
         'Single Answer',
         'Multiple Choice',
         'True or False',
+        'Slider',
+        'Multiple Select',
+        'Image',
+        'Audio',
     ];
 
     const defaultTypeOption = passedQuestion
@@ -186,6 +190,18 @@ export default function QuestionEditor({route}: any) {
                                 { value: 'True', label: 'True', showSelectedCheck:true}, { value: 'False', label: 'False', showSelectedCheck:true},        
                             ]}
                         />
+                    </>)}
+                    {type === 'Slider' &&(<>
+                        
+                    </>)}
+                    {type === 'Multiple Select' &&(<>
+                        
+                    </>)}
+                    {type === 'Image' &&(<>
+                        
+                    </>)}
+                    {type === 'Audio' &&(<>
+                        
                     </>)}
 
                     <Text style={styles.inputHeader}>Feedback:</Text>
