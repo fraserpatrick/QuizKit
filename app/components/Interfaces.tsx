@@ -23,7 +23,7 @@ export interface Question {
     type: string;
     text: string;
     correctAnswer: string;
-    options: string[];
+    mcOptions: string[];
     feedback: string;
     userAnswer?: string;
 }

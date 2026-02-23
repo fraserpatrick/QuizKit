@@ -23,7 +23,7 @@ export const initializeDatabase = async () => {
                 type TEXT NOT NULL,
                 text TEXT NOT NULL,
                 correctAnswer TEXT NOT NULL,
-                options TEXT,
+                mcOptions TEXT,
                 feedback TEXT
             );
         `);

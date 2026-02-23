@@ -15,7 +15,7 @@ export async function quizMigration(oldQuizID: number, username: string, title: 
         for (const question of questions){
             let parsedOptions: string[] = [];
             try {
-                parsedOptions = JSON.parse(question.options);
+                parsedOptions = JSON.parse(question.mcOptions);
             } catch (error) {
                 console.error('Error parsing options for question ID ' + question.id + ':', error);
             }
@@ -34,7 +34,7 @@ export async function quizMigration(oldQuizID: number, username: string, title: 
         for (const question of questions){
             let parsedOptions: string[] = [];
             try {
-                parsedOptions = JSON.parse(question.options);
+                parsedOptions = JSON.parse(question.mcOptions);
             } catch (error) {
                 console.error('Error parsing options for question ID ' + question.id + ':', error);
             }

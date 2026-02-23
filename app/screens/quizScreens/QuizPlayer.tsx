@@ -196,7 +196,7 @@ export default function QuizPlayer({route}: any) {
             case 'Multiple Choice':
                 return (
                     <MultipleChoiceInput
-                        options={question.options}
+                        options={question.mcOptions}
                         value={answer}
                         onChange={setAnswer}
                     />

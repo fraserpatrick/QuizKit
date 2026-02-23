@@ -7,6 +7,7 @@ import { PrimaryButtonWithIcon } from "@/app/components/Button";
 import { createQuestion, deleteQuestion, updateQuestion } from "@/api/questions";
 import { createLocalQuestion, updateLocalQuestion, deleteLocalQuestion } from "@/localDatabase/questions";
 import { useSounds } from "@/app/hooks/useSounds";
+import Slider from '@react-native-community/slider';
 
 export default function QuestionEditor({route}: any) {
     const {passedQuestion, passedQuiz} = route.params;
@@ -41,22 +42,25 @@ export default function QuestionEditor({route}: any) {
     const [type, setType] = useState(passedQuestion ? passedQuestion.type : '');
     const [answer, setAnswer] = useState(passedQuestion ? passedQuestion.correctAnswer : '');
     const [feedback, setFeedback] = useState(passedQuestion ? passedQuestion.feedback : '');
+    const [sliderStart, setSliderStart] = useState(passedQuestion && passedQuestion.type === 'Slider' ? parseInt(passedQuestion.sliderOptions.split('-')[0]) : 0);
+    const [sliderEnd, setSliderEnd] = useState(passedQuestion && passedQuestion.type === 'Slider' ? parseInt(passedQuestion.sliderOptions.split('-')[1]) : 100);
 
-    let options: string[] = [''];
-    if (passedQuestion?.type === 'Multiple Choice' && passedQuestion?.options) {
+    let mcOptions: string[] = [''];
+    if (passedQuestion?.type === 'Multiple Choice' && passedQuestion?.mcOptions) {
         try {
-            const parsed: unknown = JSON.parse(passedQuestion.options);
+            const parsed: unknown = JSON.parse(passedQuestion.mcOptions);
             if (Array.isArray(parsed) && parsed.every(item => typeof item === 'string')) {
-                options = parsed;
+                mcOptions = parsed;
             } 
         } catch (error) {
             console.error('Invalid JSON:', error);
         }
     }
 
-    const [wrongAnswer1, setWrongAnswer1] = useState(options[1] || '');
-    const [wrongAnswer2, setWrongAnswer2] = useState(options[2] || '');
-    const [wrongAnswer3, setWrongAnswer3] = useState(options[3] || '');
+    const [wrongAnswer1, setWrongAnswer1] = useState(mcOptions[1] || '');
+    const [wrongAnswer2, setWrongAnswer2] = useState(mcOptions[2] || '');
+    const [wrongAnswer3, setWrongAnswer3] = useState(mcOptions[3] || '');
+    const [sliderOptions, setSliderOptions] = useState(`${sliderStart}-${sliderEnd}`);
 
 
 
@@ -66,11 +70,11 @@ export default function QuestionEditor({route}: any) {
             return;
         }
 
-        let options = [''];
+        let mcOptions = [''];
 
         if (type === 'Multiple Choice') {
-            options = [answer.trim(), wrongAnswer1.trim(), wrongAnswer2.trim(), wrongAnswer3.trim()].filter(opt => opt !== '');
-            if (options.length < 2) {
+            mcOptions = [answer.trim(), wrongAnswer1.trim(), wrongAnswer2.trim(), wrongAnswer3.trim()].filter(opt => opt !== '');
+            if (mcOptions.length < 2) {
                 alert('Please provide at least 1 incorrect answer.');
                 return;
             }
@@ -79,17 +83,17 @@ export default function QuestionEditor({route}: any) {
         try {
             if (!passedQuestion) {
                 if (passedQuiz.saveType === 'local'){
-                    await createLocalQuestion(passedQuiz.id, text.trim(), type, answer.trim(), options, feedback?.trim());
+                    await createLocalQuestion(passedQuiz.id, text.trim(), type, answer.trim(), mcOptions, feedback?.trim());
                 }
                 else if (passedQuiz.saveType === 'cloud'){
-                    await createQuestion(passedQuiz.id, text.trim(), type, answer.trim(), options, feedback?.trim());
+                    await createQuestion(passedQuiz.id, text.trim(), type, answer.trim(), mcOptions, feedback?.trim());
                 }
                 alert('Question saved successfully.');
             } else {
                 if (passedQuiz.saveType === 'local'){
-                    await updateLocalQuestion(passedQuestion.id, text.trim(), type, answer.trim(), options, feedback?.trim());
+                    await updateLocalQuestion(passedQuestion.id, text.trim(), type, answer.trim(), mcOptions, feedback?.trim());
                 } else if (passedQuiz.saveType === 'cloud'){
-                    await updateQuestion(passedQuestion.id, text.trim(), type, answer.trim(), options, feedback?.trim());
+                    await updateQuestion(passedQuestion.id, text.trim(), type, answer.trim(), mcOptions, feedback?.trim());
                 }
                 alert('Question updated successfully.');
             }
@@ -109,7 +113,7 @@ export default function QuestionEditor({route}: any) {
                 {text: 'Yes, delete it', onPress: () => handleDeleteQuestion(), style: 'destructive',},
             ]
         );
-}
+    };
 
     const handleDeleteQuestion = () => {
         console.log('Deleting question with id: ' + passedQuestion.id);
@@ -125,6 +129,87 @@ export default function QuestionEditor({route}: any) {
         catch (error) {
             console.error('Error deleting question: ', error);
             alert('Failed to delete question.');
+        }
+    };
+
+
+    const renderInput = (type: string) => {
+        switch (type) {
+            case 'Single Answer':
+                return (
+                    <TextInput
+                        style={styles.input}
+                        value={answer}
+                        onChangeText={setAnswer}
+                    />
+                )
+
+            case 'Multiple Choice':
+                    return (<>
+                        <TextInput
+                            style={styles.input}
+                            value={answer}
+                            onChangeText={setAnswer}
+                        />
+                        <Text style={styles.inputHeader}>Incorrect answers:</Text>
+                        <TextInput
+                            style={styles.input}
+                            value={wrongAnswer1}
+                            onChangeText={setWrongAnswer1}
+                        />
+                        <TextInput
+                            style={styles.input}
+                            value={wrongAnswer2}
+                            onChangeText={setWrongAnswer2}
+                        />
+                        <TextInput
+                            style={styles.input}
+                            value={wrongAnswer3}
+                            onChangeText={setWrongAnswer3}
+                        />
+                    </>)
+
+            case 'True or False':
+                return (
+                    <SegmentedButtons
+                        theme={{ colors: { secondaryContainer: '#FF6B00', onSecondaryContainer: '#FFFFFF' } }}
+                        value={answer}
+                        onValueChange={setAnswer}
+                        buttons={[
+                            { value: 'True', label: 'True', showSelectedCheck:true}, { value: 'False', label: 'False', showSelectedCheck:true},        
+                        ]}
+                    />
+                )
+
+            case 'Slider':
+                return (<>
+                    <Text style={styles.inputHeader}>Answer: {answer}</Text>
+                    <TextInput
+                        style={styles.input}
+                        value={sliderStart.toString()}
+                        onChangeText={(text) => setSliderStart(parseInt(text) || 0)}
+                        keyboardType="numeric"
+                    />
+                    <TextInput
+                        style={styles.input}
+                        value={sliderEnd.toString()}
+                        onChangeText={(text) => setSliderEnd(parseInt(text) || 0)}
+                        keyboardType="numeric"
+                    />
+                    <Slider
+                        step={1}
+                        maximumValue={sliderEnd}
+                        minimumValue={sliderStart}
+                        onValueChange={(value) => setAnswer(value.toString())}
+                        tapToSeek={true}
+                    />
+                </>)
+
+            case 'Multiple Select':
+            case 'Image':
+            case 'Audio':
+            default:
+                return null;
         }
     };
 
@@ -148,60 +233,9 @@ export default function QuestionEditor({route}: any) {
                         defaultOption={defaultTypeOption}
                     />
 
-                    {type && (
+                    {type && (<>
                         <Text style={styles.inputHeader}>Answer:</Text>
-                    )}
-                    {type === 'Single Answer' &&(<>
-                        <TextInput
-                            style={styles.input}
-                            value={answer}
-                            onChangeText={setAnswer}
-                        />
-                    </>)}
-                    {type === 'Multiple Choice' &&(<>
-                        <TextInput
-                            style={styles.input}
-                            value={answer}
-                            onChangeText={setAnswer}
-                        />
-                        <Text style={styles.inputHeader}>Incorrect answers:</Text>
-                        <TextInput
-                            style={styles.input}
-                            value={wrongAnswer1}
-                            onChangeText={setWrongAnswer1}
-                        />
-                        <TextInput
-                            style={styles.input}
-                            value={wrongAnswer2}
-                            onChangeText={setWrongAnswer2}
-                        />
-                        <TextInput
-                            style={styles.input}
-                            value={wrongAnswer3}
-                            onChangeText={setWrongAnswer3}
-                        />
-                    </>)}
-                    {type === 'True or False' &&(<>
-                        <SegmentedButtons
-                            theme={{ colors: { secondaryContainer: '#FF6B00', onSecondaryContainer: '#FFFFFF' } }}
-                            value={answer}
-                            onValueChange={setAnswer}
-                            buttons={[
-                                { value: 'True', label: 'True', showSelectedCheck:true}, { value: 'False', label: 'False', showSelectedCheck:true},        
-                            ]}
-                        />
-                    </>)}
-                    {type === 'Slider' &&(<>
-                        
-                    </>)}
-                    {type === 'Multiple Select' &&(<>
-                        
-                    </>)}
-                    {type === 'Image' &&(<>
-                        
-                    </>)}
-                    {type === 'Audio' &&(<>
-                        
+                        {renderInput(type)}
                     </>)}
 
                     <Text style={styles.inputHeader}>Feedback:</Text>
