@@ -1,7 +1,7 @@
 import { useNavigation } from '@react-navigation/native';
 import { Alert, Button, StyleSheet, Text, View } from 'react-native';
 import { useLayoutEffect } from 'react';
-import { PrimaryButtonWithIcon } from '@/app/components/Button';
+import { PrimaryButtonWithIcon } from '@/app/components/Buttons';
 import { useAuth } from '@/app/AuthContext';
 import { deleteQuiz } from '@/api/quizzes';
 import { deleteQuestions } from '@/api/questions';

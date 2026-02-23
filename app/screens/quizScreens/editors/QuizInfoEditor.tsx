@@ -3,7 +3,7 @@ import { useEffect, useLayoutEffect, useState } from "react";
 import { View, Text, Button, Keyboard, TextInput, TouchableWithoutFeedback, StyleSheet, Alert } from "react-native";
 import { SegmentedButtons } from "react-native-paper";
 import {useAuth} from '@/app/AuthContext'
-import PrimaryButtonWithIcon from '@/app/components/Button';
+import PrimaryButtonWithIcon from '@/app/components/Buttons';
 import { updateQuiz, createQuiz } from '@/api/quizzes';
 import { useSounds } from '@/app/hooks/useSounds';
 import { createLocalQuiz, updateLocalQuiz } from '@/localDatabase/quizzes';

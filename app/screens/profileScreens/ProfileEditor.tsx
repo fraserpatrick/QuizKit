@@ -3,11 +3,12 @@ import { View, Text, Button, TouchableOpacity, TextInput, StyleSheet, Keyboard, 
 import { useNavigation } from '@react-navigation/native';
 import { useAuth } from '@/app/AuthContext';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
-import PrimaryButtonWithIcon from '@/app/components/Button';
+import PrimaryButtonWithIcon from '@/app/components/Buttons';
 import { updateUsername, getUserByUsername } from '@/api/users';
 import { updateQuizToNewUsername } from '@/api/quizzes';
 import { useSounds } from '@/app/hooks/useSounds';
 import { updateLocalQuizToNewUsername } from '@/localDatabase/quizzes';
+import { resetDatabase } from '@/localDatabase/databaseConnection';
 
 export default function ProfileEditor() {
     const { username, user, changeUsername, changePassword } = useAuth();
@@ -164,6 +165,7 @@ export default function ProfileEditor() {
                         />
                     </TouchableOpacity>
                 </View>
+                <Button title="Reset Database" onPress={resetDatabase} />
                 <PrimaryButtonWithIcon label="Save Profile Changes" icon="save" onPress={handleProfileSave}/>
             </View>
         </TouchableWithoutFeedback>

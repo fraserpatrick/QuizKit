@@ -4,7 +4,7 @@ import { FlatList, View, StyleSheet, Button, TextInput, Alert, Text } from 'reac
 import { Quiz, User } from '@/app/components/Interfaces';
 import { SegmentedButtons } from 'react-native-paper';
 import { useAuth } from "@/app/AuthContext";
-import PrimaryButtonWithIcon from "@/app/components/Button"; 
+import PrimaryButtonWithIcon from "@/app/components/Buttons"; 
 import { getOwnedQuizzes, getSharedQuizzes } from "@/api/quizzes";
 import { LeaderboardItem, OwnedQuizItem, QuizItem } from "@/app/components/Items";
 import { useSounds } from "@/app/hooks/useSounds";

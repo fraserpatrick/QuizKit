@@ -3,7 +3,7 @@ import React, { useState } from "react";
 import { StyleSheet, Image, Keyboard, Text, TextInput, TouchableOpacity, TouchableWithoutFeedback, View, Dimensions } from "react-native";
 import { useAuth } from "@/app/AuthContext";
 import { MaterialCommunityIcons } from '@expo/vector-icons';
-import { PrimaryButton } from "@/app/components/Button";
+import { PrimaryButton } from "@/app/components/Buttons";
 
 export default function LoginScreen() {
     const navigation = useNavigation();
