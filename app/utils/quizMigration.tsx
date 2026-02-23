@@ -13,7 +13,13 @@ export async function quizMigration(oldQuizID: number, username: string, title: 
         newQuiz = await createLocalQuiz(title, username, visibility, description);
 
         for (const question of questions){
-            await createLocalQuestion(newQuiz.id!, question.text, question.type, question.correctAnswer, question.options, question.feedback);
+            let parsedOptions: string[] = [];
+            try {
+                parsedOptions = JSON.parse(question.options);
+            } catch (error) {
+                console.error('Error parsing options for question ID ' + question.id + ':', error);
+            }
+            await createLocalQuestion(newQuiz.id!, question.text, question.type, question.correctAnswer, parsedOptions, question.feedback);
         }
 
         await deleteQuestions(oldQuizID);
@@ -26,7 +32,13 @@ export async function quizMigration(oldQuizID: number, username: string, title: 
         newQuiz = await createQuiz(title, username, visibility, description);
 
         for (const question of questions){
-            await createQuestion(newQuiz.id!, question.text, question.type, question.correctAnswer, question.options, question.feedback);
+            let parsedOptions: string[] = [];
+            try {
+                parsedOptions = JSON.parse(question.options);
+            } catch (error) {
+                console.error('Error parsing options for question ID ' + question.id + ':', error);
+            }
+            await createQuestion(newQuiz.id!, question.text, question.type, question.correctAnswer, parsedOptions, question.feedback);
         }
 
         await deleteLocalQuestions(oldQuizID);

@@ -13,20 +13,14 @@ export const getLocalQuestions = async (): Promise<Question[]> => {
     const sql = `SELECT * FROM question`;
     const result = db.getAllSync(sql);
 
-    return result.map((question: any) => ({
-        ...question,
-        options: JSON.parse(question.options),
-    })) as Question[];
+    return result as Question[];
 }
 
 export const getLocalQuizQuestions = async (quizID: number): Promise<Question[]> => {
     const sql = `SELECT * FROM question WHERE quizID = ?`;
     const result = db.getAllSync(sql, [quizID]);
 
-    return result.map((question: any) => ({
-        ...question,
-        options: JSON.parse(question.options),
-    })) as Question[];
+    return result as Question[];
 }
 
 export const updateLocalQuestion = async (questionID: number, text: string, type: string, correctAnswer: string, options: string[], feedback: string): Promise<boolean> => {
