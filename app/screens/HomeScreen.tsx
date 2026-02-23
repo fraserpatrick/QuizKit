@@ -92,13 +92,11 @@ export default function HomeScreen() {
 
     useEffect(() => {
         if (selector === 'myQuizzes') {
-            setQuizzes(myQuizzes);
+            setQuizzes([...myQuizzes, ...localQuizzes]);
         } else if (selector === 'sharedQuizzes') {
             setQuizzes(sharedQuizzes);
-        } else if (selector === 'localQuizzes') {
-            setQuizzes(localQuizzes);
         }
-    }, [selector, myQuizzes, sharedQuizzes]);
+    }, [selector, myQuizzes, sharedQuizzes, localQuizzes]);
 
 
     const searchedQuizzes = quizzes.filter((quiz) =>
@@ -116,8 +114,7 @@ export default function HomeScreen() {
                     onValueChange={setSelector}
                     buttons={[
                         { value: 'myQuizzes', label: 'My Quizzes', showSelectedCheck:true },
-                        { value: 'sharedQuizzes', label: 'Shared Quizzes', showSelectedCheck:true},   
-                        { value: 'localQuizzes', label: 'Local Quizzes', showSelectedCheck:true },     
+                        { value: 'sharedQuizzes', label: 'Shared Quizzes', showSelectedCheck:true }, 
                     ]}
                 />
                 <TextInput

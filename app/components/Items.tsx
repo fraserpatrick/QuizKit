@@ -32,6 +32,17 @@ const iconItem = (size: number = 24) => {
     );
 }
 
+const saveIcon = (saveType: string) => {
+    return (
+        <AntDesign
+            name={saveType === "local" ? 'download' : 'cloud'}
+            size={24}
+            color="#ffffff"
+            style={{ marginRight: 6 }}
+        />
+    );
+}
+
 
 export const QuestionItem = ({ question, onPress }: QuestionProps) => (
     <TouchableOpacity onPress={() => { playClick(); onPress(); }}>
@@ -55,6 +66,7 @@ export const VariableQuestionItem = ({ question, onPress, correct }: QuestionPro
 export const QuizItem = ({ quiz, onPress }: QuizProps) => (
     <TouchableOpacity onPress={() => { playClick(); onPress(); }}>
         <View style={styles.item}>
+            {saveIcon(quiz.saveType)}
             <Text style={styles.buttonText} numberOfLines={1} ellipsizeMode="tail">{quiz.title}</Text>
             {iconItem()}
         </View>

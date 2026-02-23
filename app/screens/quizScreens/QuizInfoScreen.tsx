@@ -84,12 +84,19 @@ export default function QuizInfoScreen({route}: any) {
                         <Text>{passedQuiz.description}</Text>
                     </View>
                 )}
-                {ownedByUser && (
+                {ownedByUser && (<>
                     <View style={styles.itemContainer}>
-                        <Text style={styles.header}>Visibility</Text>
-                        <Text>{passedQuiz.visibility}</Text>
+                        <Text style={styles.header}>Save Location</Text>
+                        <Text>{passedQuiz.saveType}</Text>
                     </View>
-                )}
+                
+                    {passedQuiz.saveType === "cloud" && (
+                        <View style={styles.itemContainer}>
+                            <Text style={styles.header}>Visibility</Text>
+                            <Text>{passedQuiz.visibility}</Text>
+                        </View>
+                    )}
+                </>)}
             </View>
             <View style={styles.buttonsContainer}>
                 <PrimaryButtonWithIcon label="Play quiz" icon="play-circle" onPress={() => navigation.navigate('QuizPlayer', { passedQuiz: passedQuiz })}/>
@@ -125,21 +132,8 @@ const styles = StyleSheet.create({
         fontSize: 24,
         marginBottom: 5,
     },
-    inlineButtonText:{
-        fontSize: 24,
-        textDecorationLine: 'underline',
-        textAlignVertical: 'center',
-    },
     quizTitle:{
         fontSize: 28,
         textAlign: 'center',
     },
-    userButton:{
-        borderWidth: 2,
-        alignSelf: 'flex-end',
-        backgroundColor: '#7a7a7aff',
-        borderRadius: 10,
-        marginTop: 4,
-        marginBottom: 4,
-    }
 });
