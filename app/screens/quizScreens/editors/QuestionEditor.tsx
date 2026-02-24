@@ -8,6 +8,7 @@ import { createQuestion, deleteQuestion, updateQuestion } from "@/api/questions"
 import { createLocalQuestion, updateLocalQuestion, deleteLocalQuestion } from "@/localDatabase/questions";
 import { useSounds } from "@/app/hooks/useSounds";
 import Slider from '@react-native-community/slider';
+import Checkbox from "expo-checkbox";
 
 export default function QuestionEditor({route}: any) {
     const {passedQuestion, passedQuiz} = route.params;
@@ -39,7 +40,7 @@ export default function QuestionEditor({route}: any) {
     : undefined;
 
     const [text, setText] = useState(passedQuestion ? passedQuestion.text : '');
-    const [type, setType] = useState(passedQuestion ? passedQuestion.type : '');
+    const [type, setType] = useState(passedQuestion ? passedQuestion.type : 'Multiple Select');
     const [answer, setAnswer] = useState(passedQuestion ? passedQuestion.correctAnswer : '');
     const [feedback, setFeedback] = useState(passedQuestion ? passedQuestion.feedback : '');
     const [sliderStart, setSliderStart] = useState(passedQuestion && passedQuestion.type === 'Slider' ? parseInt(passedQuestion.sliderOptions.split('-')[0]) : 0);
@@ -57,10 +58,20 @@ export default function QuestionEditor({route}: any) {
         }
     }
 
-    const [wrongAnswer1, setWrongAnswer1] = useState(mcOptions[1] || '');
-    const [wrongAnswer2, setWrongAnswer2] = useState(mcOptions[2] || '');
-    const [wrongAnswer3, setWrongAnswer3] = useState(mcOptions[3] || '');
+    const [mcWrongAnswer1, setMcWrongAnswer1] = useState(mcOptions[1] || '');
+    const [mcWrongAnswer2, setMcWrongAnswer2] = useState(mcOptions[2] || '');
+    const [mcWrongAnswer3, setMcWrongAnswer3] = useState(mcOptions[3] || '');
+
     const [sliderOptions, setSliderOptions] = useState(`${sliderStart}-${sliderEnd}`);
+
+    const [multiSelectOption1, setMultiSelectOption1] = useState('');
+    const [multiSelectOption2, setMultiSelectOption2] = useState('');
+    const [multiSelectOption3, setMultiSelectOption3] = useState('');
+    const [multiSelectOption4, setMultiSelectOption4] = useState('');
+    const [multiSelectCheckbox1, setMultiSelectCheckbox1] = useState(false);
+    const [multiSelectCheckbox2, setMultiSelectCheckbox2] = useState(false);
+    const [multiSelectCheckbox3, setMultiSelectCheckbox3] = useState(false);
+    const [multiSelectCheckbox4, setMultiSelectCheckbox4] = useState(false);
 
 
 
@@ -73,7 +84,7 @@ export default function QuestionEditor({route}: any) {
         let mcOptions = [''];
 
         if (type === 'Multiple Choice') {
-            mcOptions = [answer.trim(), wrongAnswer1.trim(), wrongAnswer2.trim(), wrongAnswer3.trim()].filter(opt => opt !== '');
+            mcOptions = [answer.trim(), mcWrongAnswer1.trim(), mcWrongAnswer2.trim(), mcWrongAnswer3.trim()].filter(opt => opt !== '');
             if (mcOptions.length < 2) {
                 alert('Please provide at least 1 incorrect answer.');
                 return;
@@ -154,18 +165,18 @@ export default function QuestionEditor({route}: any) {
                         <Text style={styles.inputHeader}>Incorrect answers:</Text>
                         <TextInput
                             style={styles.input}
-                            value={wrongAnswer1}
-                            onChangeText={setWrongAnswer1}
+                            value={mcWrongAnswer1}
+                            onChangeText={setMcWrongAnswer1}
                         />
                         <TextInput
                             style={styles.input}
-                            value={wrongAnswer2}
-                            onChangeText={setWrongAnswer2}
+                            value={mcWrongAnswer2}
+                            onChangeText={setMcWrongAnswer2}
                         />
                         <TextInput
                             style={styles.input}
-                            value={wrongAnswer3}
-                            onChangeText={setWrongAnswer3}
+                            value={mcWrongAnswer3}
+                            onChangeText={setMcWrongAnswer3}
                         />
                     </>)
 
@@ -206,6 +217,58 @@ export default function QuestionEditor({route}: any) {
                 </>)
 
             case 'Multiple Select':
+                return (<>
+                    <Text style={styles.inputHeader}>Options:</Text>
+                    <View style={styles.multiSelectItem}>
+                        <TextInput
+                            style={styles.multiSelectInput}
+                            value={multiSelectOption1}
+                            onChangeText={setMultiSelectOption1}
+                        />
+                        <Checkbox 
+                            style={styles.checkbox}
+                            value={multiSelectCheckbox1}
+                            onValueChange={setMultiSelectCheckbox1}
+                        />
+                    </View>
+                    <View style={styles.multiSelectItem}>
+                        <TextInput
+                            style={styles.multiSelectInput}
+                            value={multiSelectOption2}
+                            onChangeText={setMultiSelectOption2}
+                        />
+                        <Checkbox 
+                            style={styles.checkbox}
+                            value={multiSelectCheckbox2}
+                            onValueChange={setMultiSelectCheckbox2}
+                        />
+                    </View>
+                    <View style={styles.multiSelectItem}>
+                        <TextInput
+                            style={styles.multiSelectInput}
+                            value={multiSelectOption3}
+                            onChangeText={setMultiSelectOption3}
+                        />
+                        <Checkbox 
+                            style={styles.checkbox}
+                            value={multiSelectCheckbox3}
+                            onValueChange={setMultiSelectCheckbox3}
+                        />
+                    </View>
+                    <View style={styles.multiSelectItem}>
+                        <TextInput
+                            style={styles.multiSelectInput}
+                            value={multiSelectOption4}
+                            onChangeText={setMultiSelectOption4}
+                        />
+                        <Checkbox 
+                            style={styles.checkbox}
+                            value={multiSelectCheckbox4}
+                            onValueChange={setMultiSelectCheckbox4}
+                        />
+                    </View>
+                </>)
+
             case 'Image':
             case 'Audio':
             default:
@@ -291,4 +354,20 @@ const styles = StyleSheet.create({
         backgroundColor: '#ffffffff',
         height: 150,
     },
+    multiSelectItem:{
+        flexDirection: 'row'
+    },
+    multiSelectInput:{
+        width: '90%',
+        padding: 10,
+        marginBottom: 10,
+        borderWidth: 1,
+        borderColor: '#000000',
+        borderRadius: 10,
+        backgroundColor: '#ffffffff',
+    },
+    checkbox:{
+        transform: [{ scale: 1.5 }],
+        margin: 10
+    }
 });
