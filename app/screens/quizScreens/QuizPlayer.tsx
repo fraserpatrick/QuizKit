@@ -50,6 +50,7 @@ export default function QuizPlayer({route}: any) {
         }, [passedQuiz.id])
     );
 
+
     useEffect(() => {
         setAnswer(questions[currentQuestion]?.userAnswer ?? '');
     }, [currentQuestion, questions]);
@@ -67,6 +68,7 @@ export default function QuizPlayer({route}: any) {
             navigation.goBack();
         }
     }
+
 
     const handleQuizStart = () => {
         if (questions.length === 0) {
@@ -90,6 +92,7 @@ export default function QuizPlayer({route}: any) {
         setQuizStarted(true);
     }
 
+
     const saveAnswer = (quesiton: number, answer: string) => {
         setQuestions(prev => {
             const updated = [...prev];
@@ -101,6 +104,7 @@ export default function QuizPlayer({route}: any) {
         });
     };
 
+
     const handleNextQuestion = () => {
         saveAnswer(currentQuestion, answer);
         setCurrentQuestion(prev => prev + 1);
@@ -110,6 +114,7 @@ export default function QuizPlayer({route}: any) {
         saveAnswer(currentQuestion, answer);
         setCurrentQuestion(prev => prev - 1);
     }
+
 
     const calcScore = (questions: Question[]) => {
         let total = 0;
@@ -122,6 +127,7 @@ export default function QuizPlayer({route}: any) {
 
         return total;
     }
+
 
     const finishQuiz = async () => {
         const updatedQuestions = [...questions];
@@ -148,17 +154,32 @@ export default function QuizPlayer({route}: any) {
     }
 
 
-    const MultipleChoiceInput = ({options, value, onChange,}: {options: string[]; value: string; onChange: (val: string) => void;}) => {
-        if (options && !(options.length === 2 && options[0] === "True" && options[1] === "False")) {
+    function parseOptions(raw: unknown): string[] {
+        if (!raw) {
+            return [];
+        }
+
+        if (Array.isArray(raw)) {
+            return raw;
+        }
+
+        if (typeof raw === "string") {
             try {
-                const parsed: unknown = JSON.parse(options.toString());
-                if (Array.isArray(parsed) && parsed.every(item => typeof item === 'string')) {
-                    options = parsed;
-                } 
-            } catch (error) {
-                console.error('Invalid JSON:', error);
+                const parsed = JSON.parse(raw);
+
+                if (Array.isArray(parsed)) {
+                    return parsed;
+                }
+
+            } catch {
+                return [raw];
             }
         }
+        return [];
+    }
+
+
+    const MultipleChoiceInput = ({options, value, onChange,}: {options: string[]; value: string; onChange: (val: string) => void;}) => {
         return (
             <View>
                 {options.map(option => {
@@ -182,6 +203,48 @@ export default function QuizPlayer({route}: any) {
         );
     };
 
+
+    const MultipleSelectInput = ({options, value, onChange,}: {options: string[]; value: string; onChange: (val: string) => void}) => {
+        let selected: string[] = [];
+
+        try {
+            selected = value ? JSON.parse(value) : []
+        } catch {
+            selected = []
+        }
+        const toggle = (option: string) => {
+            let updated = [...selected]
+            if (updated.includes(option)) {
+                updated = updated.filter(opt => opt !== option)
+            } else {
+                updated.push(option)
+            }
+
+            onChange(JSON.stringify(updated))
+        }
+        return (
+            <View>
+                {options.map(option => {
+                    const isSelected = selected.includes(option);
+
+                    return (
+                        <TouchableOpacity
+                            key={option}
+                            onPress={() => toggle(option)}
+                            style={[styles.choiceButton, isSelected && styles.choiceButtonSelected,]}
+                        >
+                            <Text style={[styles.choiceText, isSelected && styles.choiceTextSelected,]}>
+                                {option}
+                            </Text>
+                        </TouchableOpacity>
+                    );
+                }
+                )}
+            </View>
+        );
+    };
+
+
     const renderQuestion= (question: Question) => {
         switch (question.type) {
             case 'Single Answer':
@@ -196,11 +259,20 @@ export default function QuizPlayer({route}: any) {
             case 'Multiple Choice':
                 return (
                     <MultipleChoiceInput
-                        options={question.mcOptions}
+                        options={parseOptions(question.mcOptions)}
                         value={answer}
                         onChange={setAnswer}
                     />
                 );
+
+            case 'Multiple Select':
+                return (
+                    <MultipleSelectInput
+                        options={parseOptions(question.mcOptions)}
+                        value={answer}
+                        onChange={setAnswer}
+                    />
+                )
 
             case 'True or False':
                 return (

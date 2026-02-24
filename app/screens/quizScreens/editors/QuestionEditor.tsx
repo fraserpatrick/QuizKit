@@ -9,6 +9,7 @@ import { createLocalQuestion, updateLocalQuestion, deleteLocalQuestion } from "@
 import { useSounds } from "@/app/hooks/useSounds";
 import Slider from '@react-native-community/slider';
 import Checkbox from "expo-checkbox";
+import { Question } from "@/app/components/Interfaces";
 
 export default function QuestionEditor({route}: any) {
     const {passedQuestion, passedQuiz} = route.params;
@@ -27,10 +28,10 @@ export default function QuestionEditor({route}: any) {
 
     const types = [
         'Single Answer',
-        'Multiple Choice',
         'True or False',
-        'Slider',
+        'Multiple Choice',
         'Multiple Select',
+        'Slider',
         'Image',
         'Audio',
     ];
@@ -40,71 +41,141 @@ export default function QuestionEditor({route}: any) {
     : undefined;
 
     const [text, setText] = useState(passedQuestion ? passedQuestion.text : '');
-    const [type, setType] = useState(passedQuestion ? passedQuestion.type : 'Multiple Select');
+    const [type, setType] = useState(passedQuestion ? passedQuestion.type : '');
     const [answer, setAnswer] = useState(passedQuestion ? passedQuestion.correctAnswer : '');
     const [feedback, setFeedback] = useState(passedQuestion ? passedQuestion.feedback : '');
-    const [sliderStart, setSliderStart] = useState(passedQuestion && passedQuestion.type === 'Slider' ? parseInt(passedQuestion.sliderOptions.split('-')[0]) : 0);
-    const [sliderEnd, setSliderEnd] = useState(passedQuestion && passedQuestion.type === 'Slider' ? parseInt(passedQuestion.sliderOptions.split('-')[1]) : 100);
 
-    let mcOptions: string[] = [''];
-    if (passedQuestion?.type === 'Multiple Choice' && passedQuestion?.mcOptions) {
-        try {
-            const parsed: unknown = JSON.parse(passedQuestion.mcOptions);
-            if (Array.isArray(parsed) && parsed.every(item => typeof item === 'string')) {
-                mcOptions = parsed;
-            } 
-        } catch (error) {
-            console.error('Invalid JSON:', error);
+
+    function parseOptions(question: Question, type: string) {
+        let mcOptions: string[] = []
+        let correctAnswers: string[] = []
+
+        if (question.mcOptions) {
+            try {
+                mcOptions = Array.isArray(question.mcOptions) ? question.mcOptions : JSON.parse(question.mcOptions)
+            } catch {
+                mcOptions = []
+            }
         }
+
+        if (question.correctAnswer) {
+            try {
+                correctAnswers = type === "Multiple Select" ? JSON.parse(question.correctAnswer) : [question.correctAnswer]
+            } catch {
+                correctAnswers = []
+            }
+        }
+
+        return mcOptions.map(option => ({
+            text: option,
+            correct: correctAnswers.includes(option)
+        }))
     }
 
-    const [mcWrongAnswer1, setMcWrongAnswer1] = useState(mcOptions[1] || '');
-    const [mcWrongAnswer2, setMcWrongAnswer2] = useState(mcOptions[2] || '');
-    const [mcWrongAnswer3, setMcWrongAnswer3] = useState(mcOptions[3] || '');
 
-    const [sliderOptions, setSliderOptions] = useState(`${sliderStart}-${sliderEnd}`);
+    const [options, setOptions] = useState(() =>{
+        if (!passedQuestion || !passedQuestion.mcOptions) {
+            return [{text: "", correct: false}];
+        }
+        return parseOptions(passedQuestion,passedQuestion.type)
 
-    const [multiSelectOption1, setMultiSelectOption1] = useState('');
-    const [multiSelectOption2, setMultiSelectOption2] = useState('');
-    const [multiSelectOption3, setMultiSelectOption3] = useState('');
-    const [multiSelectOption4, setMultiSelectOption4] = useState('');
-    const [multiSelectCheckbox1, setMultiSelectCheckbox1] = useState(false);
-    const [multiSelectCheckbox2, setMultiSelectCheckbox2] = useState(false);
-    const [multiSelectCheckbox3, setMultiSelectCheckbox3] = useState(false);
-    const [multiSelectCheckbox4, setMultiSelectCheckbox4] = useState(false);
+    });
+
+
+    const [sliderStart, setSliderStart] = useState(0);
+    const [sliderEnd, setSliderEnd] = useState(100);
+
+
+    const addOption = () => {
+        setOptions(prev => [
+            ...prev,
+            {text: "", correct: false}
+        ])
+    }
+
+    const removeOption = (index: number) => {
+        setOptions(prev => prev.filter(
+            (_,i)=>i!==index
+        ))
+    }
+
+    const updateOptionText = (index: number, value: string) => {
+        setOptions(prev => {
+            const copy=[...prev];
+            copy[index].text=value;
+            return copy;
+        })
+    }
+
+    const toggleCorrect = (index: number) => {
+        setOptions(prev=>{
+            let copy=[...prev]
+
+            if (type === "Multiple Choice") {
+                copy = copy.map(
+                    (option,i) => ({
+                        ...option,
+                        correct:i === index
+                    })
+                )
+            } else {
+                copy[index].correct =! copy[index].correct
+            }
+            return copy
+        })
+    }
 
 
 
     const saveQuestion = async () => {
-        if (text.trim() === '' || type.trim() === '' || answer.trim() === '') {
-            alert('Please fill in all fields.');
+        if (text.trim() === '') {
+            alert('Please enter a question.');
             return;
         }
 
-        let mcOptions = [''];
+        let mcOptions : string[] = [];
+        let correctAnswers : string[] = [];
+        let finalAnswer = ""
 
-        if (type === 'Multiple Choice') {
-            mcOptions = [answer.trim(), mcWrongAnswer1.trim(), mcWrongAnswer2.trim(), mcWrongAnswer3.trim()].filter(opt => opt !== '');
-            if (mcOptions.length < 2) {
-                alert('Please provide at least 1 incorrect answer.');
-                return;
+        if (type === "Multiple Choice" || type === "Multiple Select") {
+            mcOptions = options.map(option => option.text.trim()).filter(Boolean)
+            correctAnswers = options.filter(option => option.correct).map(option=>option.text)
+
+            if(mcOptions.length<2){
+                alert("Add options")
+                return
+            }
+
+            if (correctAnswers.length === 0) {
+                alert("Pick a correct answer")
+                return
             }
         }
+
+
+        if (type === "Multiple Choice") {
+            finalAnswer = correctAnswers[0]
+        } else if (type === "Multiple Select") {
+            finalAnswer = JSON.stringify(correctAnswers)
+        } else {
+            finalAnswer = answer
+        }
+
 
         try {
             if (!passedQuestion) {
                 if (passedQuiz.saveType === 'local'){
-                    await createLocalQuestion(passedQuiz.id, text.trim(), type, answer.trim(), mcOptions, feedback?.trim());
+                    await createLocalQuestion(passedQuiz.id, text.trim(), type, finalAnswer, mcOptions, feedback?.trim());
                 }
                 else if (passedQuiz.saveType === 'cloud'){
-                    await createQuestion(passedQuiz.id, text.trim(), type, answer.trim(), mcOptions, feedback?.trim());
+                    await createQuestion(passedQuiz.id, text.trim(), type, finalAnswer, mcOptions, feedback?.trim());
                 }
                 alert('Question saved successfully.');
             } else {
                 if (passedQuiz.saveType === 'local'){
-                    await updateLocalQuestion(passedQuestion.id, text.trim(), type, answer.trim(), mcOptions, feedback?.trim());
+                    await updateLocalQuestion(passedQuestion.id, text.trim(), type, finalAnswer, mcOptions, feedback?.trim());
                 } else if (passedQuiz.saveType === 'cloud'){
-                    await updateQuestion(passedQuestion.id, text.trim(), type, answer.trim(), mcOptions, feedback?.trim());
+                    await updateQuestion(passedQuestion.id, text.trim(), type, finalAnswer, mcOptions, feedback?.trim());
                 }
                 alert('Question updated successfully.');
             }
@@ -144,6 +215,32 @@ export default function QuestionEditor({route}: any) {
     };
 
 
+    const renderOptions = () => {
+        if (type !== "Multiple Choice" && type !== "Multiple Select") {
+            return null;
+        }
+
+        return (<>
+            <Text style={styles.inputHeader}>Options</Text>
+            {options.map((option,index) => (
+                <View key={index} style={styles.row}>
+                    <TextInput
+                        style={styles.optionInput}
+                        value={option.text}
+                        onChangeText={value => updateOptionText(index,value)}
+                    />
+                    <Checkbox
+                        value={option.correct}
+                        onValueChange={()=>toggleCorrect(index)}
+                    />
+                    <Button title="X" onPress={() => removeOption(index)}/>
+                </View>
+            ))}
+            <Button title="Add Option" onPress={addOption}/>
+        </>)
+    }
+
+
     const renderInput = (type: string) => {
         switch (type) {
             case 'Single Answer':
@@ -154,31 +251,6 @@ export default function QuestionEditor({route}: any) {
                         onChangeText={setAnswer}
                     />
                 )
-
-            case 'Multiple Choice':
-                    return (<>
-                        <TextInput
-                            style={styles.input}
-                            value={answer}
-                            onChangeText={setAnswer}
-                        />
-                        <Text style={styles.inputHeader}>Incorrect answers:</Text>
-                        <TextInput
-                            style={styles.input}
-                            value={mcWrongAnswer1}
-                            onChangeText={setMcWrongAnswer1}
-                        />
-                        <TextInput
-                            style={styles.input}
-                            value={mcWrongAnswer2}
-                            onChangeText={setMcWrongAnswer2}
-                        />
-                        <TextInput
-                            style={styles.input}
-                            value={mcWrongAnswer3}
-                            onChangeText={setMcWrongAnswer3}
-                        />
-                    </>)
 
             case 'True or False':
                 return (
@@ -217,57 +289,10 @@ export default function QuestionEditor({route}: any) {
                 </>)
 
             case 'Multiple Select':
-                return (<>
-                    <Text style={styles.inputHeader}>Options:</Text>
-                    <View style={styles.multiSelectItem}>
-                        <TextInput
-                            style={styles.multiSelectInput}
-                            value={multiSelectOption1}
-                            onChangeText={setMultiSelectOption1}
-                        />
-                        <Checkbox 
-                            style={styles.checkbox}
-                            value={multiSelectCheckbox1}
-                            onValueChange={setMultiSelectCheckbox1}
-                        />
-                    </View>
-                    <View style={styles.multiSelectItem}>
-                        <TextInput
-                            style={styles.multiSelectInput}
-                            value={multiSelectOption2}
-                            onChangeText={setMultiSelectOption2}
-                        />
-                        <Checkbox 
-                            style={styles.checkbox}
-                            value={multiSelectCheckbox2}
-                            onValueChange={setMultiSelectCheckbox2}
-                        />
-                    </View>
-                    <View style={styles.multiSelectItem}>
-                        <TextInput
-                            style={styles.multiSelectInput}
-                            value={multiSelectOption3}
-                            onChangeText={setMultiSelectOption3}
-                        />
-                        <Checkbox 
-                            style={styles.checkbox}
-                            value={multiSelectCheckbox3}
-                            onValueChange={setMultiSelectCheckbox3}
-                        />
-                    </View>
-                    <View style={styles.multiSelectItem}>
-                        <TextInput
-                            style={styles.multiSelectInput}
-                            value={multiSelectOption4}
-                            onChangeText={setMultiSelectOption4}
-                        />
-                        <Checkbox 
-                            style={styles.checkbox}
-                            value={multiSelectCheckbox4}
-                            onValueChange={setMultiSelectCheckbox4}
-                        />
-                    </View>
-                </>)
+                return renderOptions();
+
+            case 'Multiple Choice':
+                return renderOptions();
 
             case 'Image':
             case 'Audio':
@@ -369,5 +394,17 @@ const styles = StyleSheet.create({
     checkbox:{
         transform: [{ scale: 1.5 }],
         margin: 10
+    },
+    row:{
+        flexDirection:"row",
+        alignItems:"center",
+        marginBottom:10
+    },
+    optionInput:{
+        flex:1,
+        borderWidth:1,
+        padding:10,
+        borderRadius:10,
+        marginRight:10
     }
 });
