@@ -3,7 +3,6 @@ import { TouchableOpacity, View, Text, StyleSheet } from "react-native";
 import { useSounds } from "@/app/hooks/useSounds";
 import { AntDesign } from "@expo/vector-icons";
 
-const {playClick} = useSounds();
 
 type QuizProps = {
     quiz: Quiz;
@@ -44,64 +43,82 @@ const saveIcon = (saveType: string) => {
 }
 
 
-export const QuestionItem = ({ question, onPress }: QuestionProps) => (
-    <TouchableOpacity onPress={() => { playClick(); onPress(); }}>
-        <View style={styles.item}>
-            <Text style={styles.buttonText}>{question.text}</Text>
-            {iconItem()}
-        </View>
-    </TouchableOpacity>
-);
+export const QuestionItem = ({ question, onPress }: QuestionProps) => {
+    const { playClick } = useSounds();
+    return (
+        <TouchableOpacity onPress={() => { playClick(); onPress(); }}>
+            <View style={styles.item}>
+                <Text style={styles.buttonText}>{question.text}</Text>
+                {iconItem()}
+            </View>
+        </TouchableOpacity>
+    )
+};
 
-export const VariableQuestionItem = ({ question, onPress, correct }: QuestionProps & { correct: boolean }) => (
-    <TouchableOpacity onPress={() => { playClick(); onPress(); }}>
-        <View style={[styles.item, correct ? styles.correctItem : styles.incorrectItem]}>
-            <Text style={styles.buttonText}>{question.text}</Text>
-            {iconItem()}
-        </View>
-    </TouchableOpacity>
-);
-
-
-export const QuizItem = ({ quiz, onPress }: QuizProps) => (
-    <TouchableOpacity onPress={() => { playClick(); onPress(); }}>
-        <View style={styles.item}>
-            <Text style={styles.buttonText} numberOfLines={1} ellipsizeMode="tail">{quiz.title}</Text>
-            {iconItem()}
-        </View>
-    </TouchableOpacity>
-);
-
-export const OwnedQuizItem = ({ quiz, onPress }: QuizProps) => (
-    <TouchableOpacity onPress={() => { playClick(); onPress(); }}>
-        <View style={styles.item}>
-            {saveIcon(quiz.saveType)}
-            <Text style={styles.buttonText} numberOfLines={1} ellipsizeMode="tail">{quiz.title}</Text>
-            {iconItem()}
-        </View>
-    </TouchableOpacity>
-);
-
-export const SmallQuizItem = ({ quiz, onPress }: QuizProps) => (
-    <TouchableOpacity onPress={() => { playClick(); onPress(); }}>
-        <View style={styles.item}>
-            <Text style={styles.smallButtonText} numberOfLines={1} ellipsizeMode="tail">{quiz.title}</Text>
-            {iconItem(20)}
-        </View>
-    </TouchableOpacity>
-);
+export const VariableQuestionItem = ({ question, onPress, correct }: QuestionProps & { correct: boolean }) => {
+    const { playClick } = useSounds();
+    return (
+        <TouchableOpacity onPress={() => { playClick(); onPress(); }}>
+            <View style={[styles.item, correct ? styles.correctItem : styles.incorrectItem]}>
+                <Text style={styles.buttonText}>{question.text}</Text>
+                {iconItem()}
+            </View>
+        </TouchableOpacity>
+    )
+};
 
 
-export const LeaderboardItem = ({ user, ranking, onPress }: LeaderboardProps) => (
-    <TouchableOpacity onPress={() => { playClick(); onPress(); }}>
-        <View style={styles.item}>
-            <Text style={styles.rankingText}>{ranking}.</Text>
-            <Text style={styles.usernameText}>{user.username}</Text>
-            <Text style={styles.pointsText}>{user.points} points</Text>
-            {iconItem()}
-        </View>
-    </TouchableOpacity>
-);
+export const QuizItem = ({ quiz, onPress }: QuizProps) => {
+    const { playClick } = useSounds();
+    return (
+        <TouchableOpacity onPress={() => { playClick(); onPress(); }}>
+            <View style={styles.item}>
+                <Text style={styles.buttonText} numberOfLines={1} ellipsizeMode="tail">{quiz.title}</Text>
+                {iconItem()}
+            </View>
+        </TouchableOpacity>
+    )
+};
+
+export const OwnedQuizItem = ({ quiz, onPress }: QuizProps) => {
+    const { playClick } = useSounds();
+    return (
+        <TouchableOpacity onPress={() => { playClick(); onPress(); }}>
+            <View style={styles.item}>
+                {saveIcon(quiz.saveType)}
+                <Text style={styles.buttonText} numberOfLines={1} ellipsizeMode="tail">{quiz.title}</Text>
+                {iconItem()}
+            </View>
+        </TouchableOpacity>
+    )
+};
+
+export const SmallQuizItem = ({ quiz, onPress }: QuizProps) => {
+    const { playClick } = useSounds();
+    return (
+        <TouchableOpacity onPress={() => { playClick(); onPress(); }}>
+            <View style={styles.item}>
+                <Text style={styles.smallButtonText} numberOfLines={1} ellipsizeMode="tail">{quiz.title}</Text>
+                {iconItem(20)}
+            </View>
+        </TouchableOpacity>
+    )
+};
+
+
+export const LeaderboardItem = ({ user, ranking, onPress }: LeaderboardProps) => {
+    const { playClick } = useSounds();
+    return (
+        <TouchableOpacity onPress={() => { playClick(); onPress(); }}>
+            <View style={styles.item}>
+                <Text style={styles.rankingText}>{ranking}.</Text>
+                <Text style={styles.usernameText}>{user.username}</Text>
+                <Text style={styles.pointsText}>{user.points} points</Text>
+                {iconItem()}
+            </View>
+        </TouchableOpacity>
+    )
+};
 
 
 const styles = StyleSheet.create({

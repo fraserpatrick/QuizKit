@@ -3,7 +3,6 @@ import { TouchableOpacity, View, Text, StyleSheet } from "react-native";
 import { useSounds } from "../hooks/useSounds";
 import { AntDesign } from "@expo/vector-icons";
 
-const { playClick } = useSounds();
 
 interface ButtonProps {
     label: string;
@@ -22,6 +21,7 @@ const iconItem = (iconName: string) => {
 }
 
 export const PrimaryButton: React.FC<ButtonProps>= ({label, onPress}) => {
+    const { playClick } = useSounds();
     return (
         <TouchableOpacity onPress={() => { playClick(); onPress(); }}>
             <View style={styles.button}>
@@ -32,6 +32,7 @@ export const PrimaryButton: React.FC<ButtonProps>= ({label, onPress}) => {
 };
 
 export const PrimaryButtonWithIcon: React.FC<ButtonProps> = ({label, onPress, icon}) => {
+    const { playClick } = useSounds();
     return (
         <TouchableOpacity onPress={() => { playClick(); onPress(); }}>
             <View style={styles.button}>
@@ -43,6 +44,7 @@ export const PrimaryButtonWithIcon: React.FC<ButtonProps> = ({label, onPress, ic
 };
 
 export const PrimaryButtonWithIconRight: React.FC<ButtonProps> = ({label, onPress, icon}) => {
+    const { playClick } = useSounds();
     return (
         <TouchableOpacity onPress={() => { playClick(); onPress(); }}>
             <View style={styles.button}>
