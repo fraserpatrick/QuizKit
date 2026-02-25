@@ -24,7 +24,8 @@ export const initializeDatabase = async () => {
                 text TEXT NOT NULL,
                 correctAnswer TEXT NOT NULL,
                 mcOptions TEXT,
-                feedback TEXT
+                feedback TEXT,
+                imageUri TEXT
             );
         `);
 

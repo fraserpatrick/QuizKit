@@ -1,6 +1,6 @@
-const baseURL = process.env.EXPO_PUBLIC_API_BASE_URL ?? '';
+const baseURL = process.env.EXPO_PUBLIC_API_BASE_URL ? process.env.EXPO_PUBLIC_API_BASE_URL + 'public' : '';
 
-export const apiFetch = async (endPoint, method = "GET", body = null, params = {}) => {
+export const apiFetch = async (endPoint, method = "GET", body = null, params = {}, isFormData = false) => {
     try {
         let url = `${baseURL}/${endPoint}`;
 
@@ -11,11 +11,15 @@ export const apiFetch = async (endPoint, method = "GET", body = null, params = {
 
         const options = {
             method,
-            headers: {"Content-Type": "application/json"},
+            headers: {},
         };
 
+        if (!isFormData) {
+            options.headers["Content-Type"] = "application/json";
+        }
+
         if (body){
-            options.body = JSON.stringify(body);
+            options.body = isFormData ? body : JSON.stringify(body);
         };
 
         const response = await fetch(url, options);
@@ -27,7 +31,7 @@ export const apiFetch = async (endPoint, method = "GET", body = null, params = {
         return await response.json();
     }
     catch (error) {
-        console.error("Error getting users", error);
+        console.error("API error", error);
         throw error;
     }
 };

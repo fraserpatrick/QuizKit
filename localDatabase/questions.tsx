@@ -1,9 +1,9 @@
 import { db } from '@/localDatabase/databaseConnection';
 import { Question } from '@/app/components/Interfaces';
 
-export const createLocalQuestion = async (quizID: number, text: string, type: string, correctAnswer: string, mcOptions: string[], feedback: string): Promise<boolean> => {
-    const insertSQL = `INSERT INTO question (quizID, text, type, correctAnswer, mcOptions, feedback) VALUES (?, ?, ?, ?, ?, ?)`;
-    const data = [quizID, text, type, correctAnswer, JSON.stringify(mcOptions), feedback];
+export const createLocalQuestion = async (quizID: number, text: string, type: string, correctAnswer: string, mcOptions: string[], feedback: string, imageUri: string): Promise<boolean> => {
+    const insertSQL = `INSERT INTO question (quizID, text, type, correctAnswer, mcOptions, feedback, imageUri) VALUES (?, ?, ?, ?, ?, ?, ?)`;
+    const data = [quizID, text, type, correctAnswer, JSON.stringify(mcOptions), feedback, imageUri];
     await db.runAsync(insertSQL, data);
 
     return true;
@@ -23,9 +23,9 @@ export const getLocalQuizQuestions = async (quizID: number): Promise<Question[]>
     return result as Question[];
 }
 
-export const updateLocalQuestion = async (questionID: number, text: string, type: string, correctAnswer: string, mcOptions: string[], feedback: string): Promise<boolean> => {
-    const sql = `UPDATE question SET text = ?, type = ?, correctAnswer = ?, mcOptions = ?, feedback = ? WHERE id = ?`;
-    const data = [text, type, correctAnswer, JSON.stringify(mcOptions), feedback, questionID];
+export const updateLocalQuestion = async (questionID: number, text: string, type: string, correctAnswer: string, mcOptions: string[], feedback: string, imageUri: string): Promise<boolean> => {
+    const sql = `UPDATE question SET text = ?, type = ?, correctAnswer = ?, mcOptions = ?, feedback = ?, imageUri = ? WHERE id = ?`;
+    const data = [text, type, correctAnswer, JSON.stringify(mcOptions), feedback, imageUri, questionID];
 
     await db.runAsync(sql, data);
 

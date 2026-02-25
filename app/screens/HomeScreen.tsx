@@ -179,15 +179,8 @@ const styles = StyleSheet.create({
         flex: 0.6,
         marginTop: 10,
         borderWidth: 1,
-    },
-    searchBar:{
-        width: '100%',
-        padding: 10,
-        marginBottom: 10,
-        borderWidth: 1,
-        borderColor: '#000000ff',
         borderRadius: 10,
-        backgroundColor: '#ffffffff',
+        marginBottom: 10,
     },
     searchContainer: {
         flexDirection: 'row',
@@ -213,8 +206,8 @@ const styles = StyleSheet.create({
         marginBottom: 20,
         borderWidth: 1,
         borderRadius: 10,
-        backgroundColor: '#cfcfcf',
         padding: 10,
+        marginTop: 10,
     },
     leaderboardTitle:{
         fontSize: 20,

@@ -1,15 +1,16 @@
-import { View, Text, StyleSheet, TextInput, TouchableWithoutFeedback, Keyboard, Alert, Button, ScrollView } from "react-native";
+import { View, Text, StyleSheet, TextInput, TouchableWithoutFeedback, Keyboard, Alert, Button, ScrollView, Image } from "react-native";
 import React, { useLayoutEffect, useState } from "react";
 import { useNavigation } from "@react-navigation/native";
 import { SelectList } from 'react-native-dropdown-select-list';
 import { SegmentedButtons } from "react-native-paper";
 import { PrimaryButtonWithIcon } from "@/app/components/Buttons";
-import { createQuestion, deleteQuestion, updateQuestion } from "@/api/questions";
+import { createQuestion, deleteQuestion, updateQuestion, uploadImage } from "@/api/questions";
 import { createLocalQuestion, updateLocalQuestion, deleteLocalQuestion } from "@/localDatabase/questions";
 import { useSounds } from "@/app/hooks/useSounds";
 import Slider from '@react-native-community/slider';
 import Checkbox from "expo-checkbox";
 import { Question } from "@/app/components/Interfaces";
+import * as ImagePicker from 'expo-image-picker';
 
 export default function QuestionEditor({route}: any) {
     const {passedQuestion, passedQuiz} = route.params;
@@ -37,8 +38,8 @@ export default function QuestionEditor({route}: any) {
     ];
 
     const defaultTypeOption = passedQuestion
-    ? { key: passedQuestion.type, value: passedQuestion.type }
-    : undefined;
+        ? { key: passedQuestion.type, value: passedQuestion.type }
+        : undefined;
 
     const [text, setText] = useState(passedQuestion ? passedQuestion.text : '');
     const [type, setType] = useState(passedQuestion ? passedQuestion.type : '');
@@ -78,12 +79,7 @@ export default function QuestionEditor({route}: any) {
             return [{text: "", correct: false}];
         }
         return parseOptions(passedQuestion,passedQuestion.type)
-
     });
-
-
-    const [sliderStart, setSliderStart] = useState(0);
-    const [sliderEnd, setSliderEnd] = useState(100);
 
 
     const addOption = () => {
@@ -126,6 +122,32 @@ export default function QuestionEditor({route}: any) {
     }
 
 
+    const [sliderStart, setSliderStart] = useState(0);
+    const [sliderEnd, setSliderEnd] = useState(100);
+
+
+    const baseURL = process.env.EXPO_PUBLIC_API_BASE_URL ?? '';
+    const [imageUri, setImageUri] = useState(() => {
+        if (!passedQuestion) {
+            return "";
+        }
+
+        return passedQuiz?.saveType === 'cloud' 
+            ? baseURL + 'uploads/' + passedQuestion.imageUri
+            : passedQuestion?.imageUri;
+    });
+
+    const pickImage = async () => {
+        const result = await ImagePicker.launchImageLibraryAsync({
+            mediaTypes: ImagePicker.MediaTypeOptions.Images,
+            quality: 0.7
+        });
+
+        if (!result.canceled) {
+            setImageUri(result.assets[0].uri);
+        }
+    }
+
 
     const saveQuestion = async () => {
         if (text.trim() === '') {
@@ -135,7 +157,8 @@ export default function QuestionEditor({route}: any) {
 
         let mcOptions : string[] = [];
         let correctAnswers : string[] = [];
-        let finalAnswer = ""
+        let finalAnswer = "";
+        let finalImageUri = imageUri;
 
         if (type === "Multiple Choice" || type === "Multiple Select") {
             mcOptions = options.map(option => option.text.trim()).filter(Boolean)
@@ -162,20 +185,25 @@ export default function QuestionEditor({route}: any) {
         }
 
 
+        if (passedQuiz.saveType === "cloud" && imageUri.startsWith("file://")) {
+            finalImageUri = await uploadImage(imageUri);
+        }
+
+
         try {
             if (!passedQuestion) {
                 if (passedQuiz.saveType === 'local'){
-                    await createLocalQuestion(passedQuiz.id, text.trim(), type, finalAnswer, mcOptions, feedback?.trim());
+                    await createLocalQuestion(passedQuiz.id, text.trim(), type, finalAnswer, mcOptions, feedback?.trim(), imageUri);
                 }
                 else if (passedQuiz.saveType === 'cloud'){
-                    await createQuestion(passedQuiz.id, text.trim(), type, finalAnswer, mcOptions, feedback?.trim());
+                    await createQuestion(passedQuiz.id, text.trim(), type, finalAnswer, mcOptions, feedback?.trim(), finalImageUri);
                 }
                 alert('Question saved successfully.');
             } else {
                 if (passedQuiz.saveType === 'local'){
-                    await updateLocalQuestion(passedQuestion.id, text.trim(), type, finalAnswer, mcOptions, feedback?.trim());
+                    await updateLocalQuestion(passedQuestion.id, text.trim(), type, finalAnswer, mcOptions, feedback?.trim(), imageUri);
                 } else if (passedQuiz.saveType === 'cloud'){
-                    await updateQuestion(passedQuestion.id, text.trim(), type, finalAnswer, mcOptions, feedback?.trim());
+                    await updateQuestion(passedQuestion.id, text.trim(), type, finalAnswer, mcOptions, feedback?.trim(), finalImageUri);
                 }
                 alert('Question updated successfully.');
             }
@@ -295,6 +323,20 @@ export default function QuestionEditor({route}: any) {
                 return renderOptions();
 
             case 'Image':
+                return (<>
+                    <Button title="Select image" onPress={pickImage} />
+                    {imageUri !== "" && (
+                        <Image
+                            source={{uri: imageUri}}
+                            style={{
+                                width: "100%",
+                                height: 200,
+                                marginTop: 10
+                            }}
+                        />
+                    )}
+                </>)
+
             case 'Audio':
             default:
                 return null;

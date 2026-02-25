@@ -26,4 +26,5 @@ export interface Question {
     mcOptions: string[];
     feedback: string;
     userAnswer?: string;
+    imageUri?: string;
 }
