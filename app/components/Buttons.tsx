@@ -1,16 +1,17 @@
 import React from "react";
 import { TouchableOpacity, View, Text, StyleSheet } from "react-native";
-import { useSounds } from "../hooks/useSounds";
+import { useSounds } from "@/app/hooks/useSounds";
 import { AntDesign } from "@expo/vector-icons";
 
+type AntIconName = React.ComponentProps<typeof AntDesign>["name"];
 
 interface ButtonProps {
     label: string;
     onPress: () => void;
-    icon?: string;
+    icon?: AntIconName;
 }
 
-const iconItem = (iconName: string) => {
+const iconItem = (iconName: AntIconName) => {
     return (
         <AntDesign
             name={iconName}
@@ -36,7 +37,7 @@ export const PrimaryButtonWithIcon: React.FC<ButtonProps> = ({label, onPress, ic
     return (
         <TouchableOpacity onPress={() => { playClick(); onPress(); }}>
             <View style={styles.button}>
-                    {iconItem(icon)}
+                    {icon && iconItem(icon)}
                     <Text style={styles.buttonText}>{label}</Text>
             </View>
         </TouchableOpacity>
@@ -49,7 +50,7 @@ export const PrimaryButtonWithIconRight: React.FC<ButtonProps> = ({label, onPres
         <TouchableOpacity onPress={() => { playClick(); onPress(); }}>
             <View style={styles.button}>
                 <Text style={styles.buttonText}>{label}</Text>
-                {iconItem(icon)}
+                {icon && iconItem(icon)}
             </View>
         </TouchableOpacity>
     );
