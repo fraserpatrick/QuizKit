@@ -33,8 +33,6 @@ export default function QuestionEditor({route}: any) {
         'Multiple Choice',
         'Multiple Select',
         'Slider',
-        'Image',
-        'Audio',
     ];
 
     const defaultTypeOption = passedQuestion
@@ -129,6 +127,10 @@ export default function QuestionEditor({route}: any) {
     const baseURL = process.env.EXPO_PUBLIC_API_BASE_URL ?? '';
     const [imageUri, setImageUri] = useState(() => {
         if (!passedQuestion) {
+            return "";
+        }
+
+        if (passedQuestion.imageUri === ""){
             return "";
         }
 
@@ -322,22 +324,6 @@ export default function QuestionEditor({route}: any) {
             case 'Multiple Choice':
                 return renderOptions();
 
-            case 'Image':
-                return (<>
-                    <Button title="Select image" onPress={pickImage} />
-                    {imageUri !== "" && (
-                        <Image
-                            source={{uri: imageUri}}
-                            style={{
-                                width: "100%",
-                                height: 200,
-                                marginTop: 10
-                            }}
-                        />
-                    )}
-                </>)
-
-            case 'Audio':
             default:
                 return null;
         }
@@ -354,6 +340,17 @@ export default function QuestionEditor({route}: any) {
                         value={text}
                         onChangeText={setText}
                     />
+                    <Button title="Select image" onPress={pickImage} />
+                    {imageUri !== "" && (
+                        <Image
+                            source={{uri: imageUri}}
+                            style={{
+                                width: 100,
+                                height: 100,
+                                marginTop: 10
+                            }}
+                        />
+                    )}
                     <Text style={styles.inputHeader}>Type:</Text>
                     <SelectList
                         setSelected={setType}
