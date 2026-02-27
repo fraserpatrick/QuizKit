@@ -1,4 +1,4 @@
-import { View, Text, StyleSheet, TextInput, TouchableWithoutFeedback, Keyboard, Alert, Button, ScrollView, Image } from "react-native";
+import { View, Text, StyleSheet, TextInput, TouchableWithoutFeedback, Keyboard, Alert, Button, ScrollView, Image, Pressable, Modal } from "react-native";
 import React, { useLayoutEffect, useState } from "react";
 import { useNavigation } from "@react-navigation/native";
 import { SelectList } from 'react-native-dropdown-select-list';
@@ -39,6 +39,7 @@ export default function QuestionEditor({route}: any) {
         ? { key: passedQuestion.type, value: passedQuestion.type }
         : undefined;
 
+    const [previewVisible, setPreviewVisible] = useState(false);
     const [text, setText] = useState(passedQuestion ? passedQuestion.text : '');
     const [type, setType] = useState(passedQuestion ? passedQuestion.type : '');
     const [answer, setAnswer] = useState(passedQuestion ? passedQuestion.correctAnswer : '');
@@ -333,24 +334,41 @@ export default function QuestionEditor({route}: any) {
     return (
         <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
             <View style={styles.container}>
-                <ScrollView style={passedQuestion ? {flex: 0.7} : {flex: 0.8}}>
+                <ScrollView  contentContainerStyle={{ paddingBottom: 140, paddingHorizontal: 20 }}>
                     <Text style={styles.inputHeader}>Question Text:</Text>
                     <TextInput
                         style={styles.input}
                         value={text}
                         onChangeText={setText}
                     />
-                    <Button title="Select image" onPress={pickImage} />
-                    {imageUri !== "" && (
-                        <Image
-                            source={{uri: imageUri}}
-                            style={{
-                                width: 100,
-                                height: 100,
-                                marginTop: 10
-                            }}
+
+                    <Text style={styles.inputHeader}>Image (Optional)</Text>
+                    {imageUri === "" ? (
+                        <PrimaryButtonWithIcon
+                            label="Add Image"
+                            icon="camera"
+                            onPress={pickImage}
                         />
-                    )}
+                    ) : (<>
+                        <Pressable onPress={() => setPreviewVisible(true)}>
+                            <View style={styles.imageContainer}>
+                                <Image
+                                    source={{ uri: imageUri }}
+                                    style={styles.previewImage}
+                                    resizeMode="cover"
+                                />
+                            </View>
+                        </Pressable>
+                        <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
+                            <Button title="Change" onPress={pickImage} />
+                            <Button
+                                title="Remove"
+                                color="#cc0000"
+                                onPress={() => setImageUri("")}
+                            />
+                        </View>
+                    </>)}
+
                     <Text style={styles.inputHeader}>Type:</Text>
                     <SelectList
                         setSelected={setType}
@@ -375,7 +393,25 @@ export default function QuestionEditor({route}: any) {
                     />
                 </ScrollView>
 
-                <View style={passedQuestion ? {flex: 0.25} : {flex: 0.15}}>
+
+                <Modal
+                    visible={previewVisible}
+                    transparent
+                    animationType="fade"
+                >
+                    <Pressable
+                        style={styles.modalContainer}
+                        onPress={() => setPreviewVisible(false)}
+                    >
+                        <Image
+                            source={{ uri: imageUri }}
+                            style={styles.fullImage}
+                            resizeMode="contain"
+                        />
+                    </Pressable>
+                </Modal>
+
+                <View style={styles.floatingBar}>
                     <PrimaryButtonWithIcon label={passedQuestion ? 'Update Question' : 'Create Question'} icon="save" onPress={saveQuestion}/>
                     {passedQuestion && (
                         <PrimaryButtonWithIcon label="Delete Question" icon="delete" onPress={deleteQuestionAlert}/>
@@ -390,8 +426,6 @@ export default function QuestionEditor({route}: any) {
 const styles = StyleSheet.create({
     container:{
         flex: 1,
-        marginLeft: 20,
-        marginRight: 20,
         marginTop: 10,
     },
     inputHeader:{
@@ -418,22 +452,6 @@ const styles = StyleSheet.create({
         backgroundColor: '#ffffffff',
         height: 150,
     },
-    multiSelectItem:{
-        flexDirection: 'row'
-    },
-    multiSelectInput:{
-        width: '90%',
-        padding: 10,
-        marginBottom: 10,
-        borderWidth: 1,
-        borderColor: '#000000',
-        borderRadius: 10,
-        backgroundColor: '#ffffffff',
-    },
-    checkbox:{
-        transform: [{ scale: 1.5 }],
-        margin: 10
-    },
     row:{
         flexDirection:"row",
         alignItems:"center",
@@ -445,5 +463,51 @@ const styles = StyleSheet.create({
         padding:10,
         borderRadius:10,
         marginRight:10
-    }
+    },
+    imageOverlay: {
+        position: 'absolute',
+        bottom: 0,
+        width: '100%',
+        backgroundColor: '#00000080',
+        padding: 8,
+        alignItems: 'center',
+    },
+    floatingBar: {
+        position: 'absolute',
+        bottom: 0,
+        left: 0,
+        right: 0,
+        backgroundColor: '#fff',
+        paddingVertical: 15,
+        paddingHorizontal: 20,
+        borderTopLeftRadius: 20,
+        borderTopRightRadius: 20,
+        shadowColor: '#000',
+        shadowOpacity: 0.1,
+        shadowRadius: 15,
+        elevation: 15,
+    },
+    imageContainer: {
+        width: '100%',
+        aspectRatio: 16 / 9,
+        borderRadius: 15,
+        borderWidth: 1,
+        overflow: 'hidden',
+        marginBottom: 10,
+        backgroundColor: '#f2f2f2',
+    },
+    modalContainer: {
+        flex: 1,
+        backgroundColor: '#000000e6',
+        justifyContent: 'center',
+        alignItems: 'center',
+    },
+    fullImage: {
+        width: '100%',
+        height: '80%',
+    },
+    previewImage: {
+        width: '100%',
+        height: '100%',
+    },
 });
