@@ -191,6 +191,11 @@ export default function QuestionEditor({route}: any) {
         if (passedQuiz.saveType === "cloud" && imageUri.startsWith("file://")) {
             finalImageUri = await uploadImage(imageUri);
         }
+        console.log(finalImageUri)
+
+        if (finalImageUri.includes('uploads/')) {
+            finalImageUri = finalImageUri.split('uploads/')[1];
+        }
 
 
         try {
