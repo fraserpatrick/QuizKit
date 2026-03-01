@@ -151,7 +151,7 @@ export default function QuizPlayer({route}: any) {
         navigation.reset({index: 2, routes: [
             {name: 'Home'},
             {name: 'QuizInfoScreen', params: { passedQuiz: passedQuiz }},
-            {name: 'QuizPlayerSummary', params: { passedQuiz: passedQuiz, questions: updatedQuestions, score: score }}
+            {name: 'QuizPlayerSummary', params: { passedQuiz: passedQuiz, questions: updatedQuestions, score: score, points: points }}
         ],} as never);
     }
 
@@ -386,7 +386,6 @@ const styles = StyleSheet.create({
         aspectRatio: 16 / 9,
         borderRadius: 12,
         borderWidth: 1,
-        borderColor: '#ccc',
         backgroundColor: '#f0f0f0',
     },
     modalContainer: {

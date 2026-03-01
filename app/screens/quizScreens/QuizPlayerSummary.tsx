@@ -8,7 +8,7 @@ import { VariableQuestionItem } from "@/components/Items";
 import { useSounds } from "@/hooks/useSounds";
 
 export default function QuizPlayerSummary({ route }: any) {
-    const { passedQuiz, questions, score } = route.params;
+    const { passedQuiz, questions, score, points } = route.params;
     const percentage = (score/questions.length)*100;
     const navigation = useNavigation();
     const { playFanfare } = useSounds();
@@ -59,6 +59,7 @@ export default function QuizPlayerSummary({ route }: any) {
                         </Text>
                     </>)}
                 </AnimatedCircularProgress>
+                    <Text style={styles.bonusPointsText}>{points} points awarded</Text>
             </View>
             <View style={styles.questionsContainer}>
                 <FlatList
@@ -118,4 +119,8 @@ const styles = StyleSheet.create({
         color: 'white',
         fontSize: 20,
     },
+    bonusPointsText:{
+        fontSize: 16,
+        marginVertical: 10
+    }
 })
