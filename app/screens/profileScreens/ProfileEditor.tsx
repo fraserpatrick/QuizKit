@@ -3,7 +3,7 @@ import { View, Text, Button, TouchableOpacity, TextInput, StyleSheet, Keyboard, 
 import { useNavigation } from '@react-navigation/native';
 import { useAuth } from '@/context/AuthContext';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
-import PrimaryButtonWithIcon from '@/components/Buttons';
+import { PrimaryButtonWithIcon } from '@/components/Buttons';
 import { updateUsername, getUserByUsername } from '@/api/users';
 import { updateQuizToNewUsername } from '@/api/quizzes';
 import { useSounds } from '@/hooks/useSounds';

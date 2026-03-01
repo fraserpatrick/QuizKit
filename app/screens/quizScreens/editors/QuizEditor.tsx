@@ -2,7 +2,7 @@ import { useFocusEffect, useNavigation } from '@react-navigation/native';
 import { View, StyleSheet, FlatList, Button } from 'react-native';
 import { Question } from '@/components/Interfaces';
 import { useState, useCallback, useLayoutEffect } from 'react';
-import PrimaryButtonWithIcon from '@/components/Buttons';
+import { PrimaryButtonWithIcon } from '@/components/Buttons';
 import { getQuizQuestions } from '@/api/questions';
 import { getLocalQuizQuestions } from '@/localDatabase/questions';
 import { QuestionItem } from '@/components/Items';

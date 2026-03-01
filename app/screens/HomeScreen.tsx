@@ -4,7 +4,7 @@ import { FlatList, View, StyleSheet, Button, TextInput, Alert, Text, ActivityInd
 import { Quiz, User } from '@/components/Interfaces';
 import { SegmentedButtons } from 'react-native-paper';
 import { useAuth } from "@/context/AuthContext";
-import PrimaryButtonWithIcon from "@/components/Buttons"; 
+import { PrimaryButtonWithIcon } from "@/components/Buttons"; 
 import { getOwnedQuizzes, getSharedQuizzes } from "@/api/quizzes";
 import { LeaderboardItem, OwnedQuizItem, QuizItem } from "@/components/Items";
 import { useSounds } from "@/hooks/useSounds";
@@ -124,7 +124,7 @@ export default function HomeScreen() {
             return (
                 <View style={styles.loadingContainer}>
                     <ActivityIndicator size="large" color="#FF6B00" />
-                    <Text style={styles.loadingText}>Loading Quiz...</Text>
+                    <Text style={styles.loadingText}>Loading...</Text>
                 </View>
             );
         }

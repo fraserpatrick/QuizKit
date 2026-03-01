@@ -56,7 +56,6 @@ export const PrimaryButtonWithIconRight: React.FC<ButtonProps> = ({label, onPres
     );
 };
 
-export default PrimaryButtonWithIcon;
 
 const styles = StyleSheet.create({
     button:{

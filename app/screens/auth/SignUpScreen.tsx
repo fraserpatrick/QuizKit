@@ -4,7 +4,7 @@ import { useNavigation } from "@react-navigation/native";
 import { useAuth } from "@/context/AuthContext";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { createUser } from "@/api/users";
-import PrimaryButton from "@/components/Buttons";
+import { PrimaryButton } from "@/components/Buttons";
 
 export default function SignUpScreen() {
     const navigation = useNavigation();
