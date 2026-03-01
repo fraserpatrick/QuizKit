@@ -60,8 +60,20 @@ export const VariableQuestionItem = ({ question, onPress, correct }: QuestionPro
     return (
         <TouchableOpacity onPress={() => { playClick(); onPress(); }}>
             <View style={[styles.item, correct ? styles.correctItem : styles.incorrectItem]}>
-                <Text style={styles.buttonText}>{question.text}</Text>
-                {iconItem()}
+                <Text
+                    style={styles.buttonText}
+                    numberOfLines={1}
+                    ellipsizeMode="tail"
+                >
+                    {question.text}
+                </Text>
+
+                <View style={styles.rightSection}>
+                    <Text style={styles.questionPointsText}>
+                        {correct ? '+10 pts' : '+0 pts'}
+                    </Text>
+                    {iconItem()}
+                </View>
             </View>
         </TouchableOpacity>
     )
@@ -172,5 +184,15 @@ const styles = StyleSheet.create({
         fontSize: 16,
         color: 'white',
         textAlign: 'center',
+    },
+    rightSection: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        marginLeft: 10,
+    },
+    questionPointsText: {
+        color: 'white',
+        fontSize: 16,
+        marginRight: 8,
     },
 });

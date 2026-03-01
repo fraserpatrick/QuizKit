@@ -96,11 +96,10 @@ export default function ProfileScreen({route}: any) {
 
     return (
         <View style={styles.container}>
-            <Text style={{ fontWeight: 'bold', marginBottom: 4 }}>
-                Level {level}
-            </Text>
-
             <View style={styles.pointsContainer}>
+                <Text style={styles.containerHeader}>
+                    Level {level}
+                </Text>
                 <View style={styles.progressWrapper}>
                     <Progress.Bar
                         progress={progress}
@@ -194,5 +193,6 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         textAlign: 'center',
         marginBottom: 10,
+        fontWeight: 'bold'
     },
 });
