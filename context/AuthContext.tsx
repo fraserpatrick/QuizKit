@@ -41,6 +41,7 @@ export const AuthProvider = ({children} : AuthProviderProps) => {
             setUser(firebaseUser);
         if (!firebaseUser?.email) {
             setUsername(null);
+            setLoading(false);
             return;
         }
 
