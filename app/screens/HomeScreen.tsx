@@ -1,6 +1,6 @@
 import { useFocusEffect, useNavigation } from "@react-navigation/native";
 import React, { useCallback, useEffect, useLayoutEffect, useState } from 'react';
-import { FlatList, View, StyleSheet, Button, TextInput, Alert, Text } from 'react-native';
+import { FlatList, View, StyleSheet, Button, TextInput, Alert, Text, ActivityIndicator } from 'react-native';
 import { Quiz, User } from '@/components/Interfaces';
 import { SegmentedButtons } from 'react-native-paper';
 import { useAuth } from "@/context/AuthContext";
@@ -17,6 +17,7 @@ export default function HomeScreen() {
     const navigation = useNavigation();
     const {username, logout} = useAuth();
     const {playNotification} = useSounds();
+    const [loading, setLoading] = useState<boolean>(true);
 
     useLayoutEffect(() => {
         navigation.setOptions({
@@ -64,11 +65,24 @@ export default function HomeScreen() {
         }
     }
 
+    const fetchData = async () => {
+            try {
+                setLoading(true);
+                await loadLeaderboard();
+
+                if (username) {
+                    await loadQuizzes();
+                }
+            } catch (error) {
+                console.error('Error loading home data:', error);
+            } finally {
+                setLoading(false);
+            }
+        };
+
     useFocusEffect(
         useCallback(() => {
-            loadLeaderboard();
-            if (!username) return;
-            loadQuizzes();
+            fetchData();
         }, [username])
     );
 
@@ -105,6 +119,15 @@ export default function HomeScreen() {
         quiz.title.toLowerCase().includes(search.toLowerCase())
     );
 
+
+    if (loading) {
+            return (
+                <View style={styles.loadingContainer}>
+                    <ActivityIndicator size="large" color="#FF6B00" />
+                    <Text style={styles.loadingText}>Loading Quiz...</Text>
+                </View>
+            );
+        }
 
     return (
         <View style={styles.container}>
@@ -178,7 +201,6 @@ const styles = StyleSheet.create({
     quizContainer:{
         flex: 0.6,
         marginTop: 10,
-        borderWidth: 1,
         borderRadius: 10,
         marginBottom: 10,
     },
@@ -191,7 +213,7 @@ const styles = StyleSheet.create({
         paddingHorizontal: 15,
         paddingVertical: 8,
         marginVertical: 10,
-        marginHorizontal: 20,
+        marginHorizontal: 10,
     },
     searchIcon: {
         marginRight: 10,
@@ -215,4 +237,16 @@ const styles = StyleSheet.create({
         marginBottom: 10,
         textAlign: 'center',
     },
+    loadingContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: '#fff',
+},
+loadingText: {
+    marginTop: 15,
+    fontSize: 18,
+    fontWeight: '600',
+    color: '#333',
+},
 });

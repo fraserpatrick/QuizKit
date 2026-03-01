@@ -22,6 +22,7 @@ interface AuthContextType {
     username: string | null;
     changeUsername: (newUsername: string) => Promise<void>;
     changePassword?: (newPassword: string) => Promise<void>;
+    loading: boolean;
 }
 
 interface AuthProviderProps {
@@ -33,6 +34,7 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 export const AuthProvider = ({children} : AuthProviderProps) => {
     const [user, setUser] = useState<User | null>(null);
     const [username, setUsername] = useState<string | null>(null);
+    const [loading, setLoading] = useState(true);
 
     useEffect(() => {
         const unsubscribe = onAuthStateChanged(auth, async (firebaseUser) => {
@@ -53,6 +55,8 @@ export const AuthProvider = ({children} : AuthProviderProps) => {
         } catch (error) {
             console.error('Failed to load username:', error);
             setUsername(null);
+        } finally {
+            setLoading(false);
         }
     });
         return unsubscribe
@@ -106,6 +110,7 @@ export const AuthProvider = ({children} : AuthProviderProps) => {
         username,
         changeUsername,
         changePassword,
+        loading
     };
 
     return (

@@ -313,6 +313,7 @@ export default function QuizPlayer({route}: any) {
         )
     }; 
 
+
     return (<>
         {quizStarted ? (
             <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
