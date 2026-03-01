@@ -1,8 +1,8 @@
 import { useNavigation } from "expo-router";
 import { useState } from "react";
-import { Image, Text, StyleSheet, TouchableWithoutFeedback, Keyboard, View, TextInput, Dimensions } from "react-native";
+import { Image, Text, StyleSheet, TouchableWithoutFeedback, Keyboard, View, TextInput, Dimensions, KeyboardAvoidingView, Platform } from "react-native";
 import { useAuth } from "@/context/AuthContext";
-import PrimaryButton from "@/components/Buttons";
+import { PrimaryButton } from "@/components/Buttons";
 
 export default function ForgotPasswordScreen() {
     const navigation = useNavigation();
@@ -10,7 +10,7 @@ export default function ForgotPasswordScreen() {
 
     const [email, setEmail] = useState('');
 
-    const handleForgot = () => {
+    const handleForgot = async () => {
         if (!email.trim()) {
             alert('Please enter your email');
             return;
@@ -19,15 +19,20 @@ export default function ForgotPasswordScreen() {
         console.log('Password reset requested for:', email);
 
         try {
-            resetPassword(email);
+            await resetPassword(email);
             alert('Password reset email sent. Please check your inbox.');
-            navigation.navigate('Login' as never);
-        } 
-        catch (error) {
-            console.error('Password reset failed:', error);
-            alert('Password reset failed. Please try again.');
+        } catch (error: any) {
+            console.log('Password reset failed:', error);
+
+            if (error.code === 'auth/invalid-email') {
+                alert('Incorrect email.');
+            } else {
+                alert('Something went wrong. Please try again.');
+            }
             setEmail('');
+            return;
         }
+        navigation.navigate('Login' as never);
     }
 
     const handleNavigateToLogin = () => {
@@ -35,24 +40,31 @@ export default function ForgotPasswordScreen() {
     }
 
     return (
-        <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-            <View style={styles.container}>
-                <View style={styles.imageContainer}>
-                    <Image source={require('@/assets/images/icon.png')} style={styles.image} />
+        <KeyboardAvoidingView behavior={Platform.OS === "ios" ? "padding" : "height"} style={{ flex: 1 }}>
+            <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+                <View style={styles.container}>
+                    <View style={styles.imageContainer}>
+                        <Image source={require('@/assets/images/icon.png')} style={styles.image} />
+                    </View>
+                    <View style={styles.inputContainer}>
+                        <Text style={styles.inputHeader}>Email:</Text>
+                        <TextInput
+                            style={styles.input}
+                            value={email}
+                            onChangeText={setEmail}
+                            keyboardType="email-address"
+                            autoCapitalize="none"
+                            autoCorrect={false}
+                            textContentType="emailAddress"
+                            returnKeyType="done"
+                            onSubmitEditing={handleForgot}
+                        />
+                        <PrimaryButton label="Send reset password email" onPress={handleForgot} />
+                        <PrimaryButton label="Back to login" onPress={handleNavigateToLogin} />
+                    </View>
                 </View>
-                <View style={styles.inputContainer}>
-                    <Text style={styles.inputHeader}>Email:</Text>
-                    <TextInput
-                        style={styles.input}
-                        value={email}
-                        onChangeText={setEmail}
-                        returnKeyType="done"
-                    />
-                    <PrimaryButton label="Send reset password email" onPress={handleForgot} />
-                    <PrimaryButton label="Back to login" onPress={handleNavigateToLogin} />
-                </View>
-            </View>
-        </TouchableWithoutFeedback>
+            </TouchableWithoutFeedback>
+        </KeyboardAvoidingView>
     );
 }
 
@@ -60,22 +72,22 @@ export default function ForgotPasswordScreen() {
 const { width } = Dimensions.get('window');
 const styles = StyleSheet.create({
     container:{
-        flexGrow: 1,
+        flex: 1,
         justifyContent: 'center',
         alignItems: 'center',
     },
     imageContainer:{
         alignItems: 'center',
-        marginBottom: 80,
+        marginBottom: 40,
     },
     image:{
-        width: width * 0.8,
-        height: (width * 0.8) * 0.5,
-        resizeMode: 'contain',
+        width: width* 0.8,
+        borderRadius: 20,
+        overflow: 'hidden',
+        marginHorizontal: 30
     },
     inputContainer:{
         width: '80%',
-        marginTop: -30,
     },
     input:{
         width: '100%',
