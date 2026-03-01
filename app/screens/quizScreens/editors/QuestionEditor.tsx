@@ -469,14 +469,6 @@ const styles = StyleSheet.create({
         borderRadius:10,
         marginRight:10
     },
-    imageOverlay: {
-        position: 'absolute',
-        bottom: 0,
-        width: '100%',
-        backgroundColor: '#00000080',
-        padding: 8,
-        alignItems: 'center',
-    },
     floatingBar: {
         position: 'absolute',
         bottom: 0,
