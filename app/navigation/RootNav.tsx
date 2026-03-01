@@ -1,4 +1,4 @@
-import { useAuth } from '@/app/AuthContext';
+import { useAuth } from '@/context/AuthContext';
 import AppNavigator from '@/app/navigation/AppNav';
 import AuthNavigator from '@/app/navigation/AuthNav';
 

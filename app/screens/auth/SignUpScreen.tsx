@@ -1,10 +1,10 @@
 import { useState } from "react";
 import { Text, StyleSheet, TouchableWithoutFeedback, Keyboard, View, TextInput, TouchableOpacity } from "react-native";
 import { useNavigation } from "@react-navigation/native";
-import { useAuth } from "@/app/AuthContext";
+import { useAuth } from "@/context/AuthContext";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { createUser } from "@/api/users";
-import PrimaryButton from "@/app/components/Buttons";
+import PrimaryButton from "@/components/Buttons";
 
 export default function SignUpScreen() {
     const navigation = useNavigation();

@@ -1,16 +1,16 @@
 import { useFocusEffect, useNavigation } from "@react-navigation/native";
 import React, { useCallback, useEffect, useLayoutEffect, useState } from 'react';
 import { FlatList, View, StyleSheet, Button, TextInput, Alert, Text } from 'react-native';
-import { Quiz, User } from '@/app/components/Interfaces';
+import { Quiz, User } from '@/components/Interfaces';
 import { SegmentedButtons } from 'react-native-paper';
-import { useAuth } from "@/app/AuthContext";
-import PrimaryButtonWithIcon from "@/app/components/Buttons"; 
+import { useAuth } from "@/context/AuthContext";
+import PrimaryButtonWithIcon from "@/components/Buttons"; 
 import { getOwnedQuizzes, getSharedQuizzes } from "@/api/quizzes";
-import { LeaderboardItem, OwnedQuizItem, QuizItem } from "@/app/components/Items";
-import { useSounds } from "@/app/hooks/useSounds";
+import { LeaderboardItem, OwnedQuizItem, QuizItem } from "@/components/Items";
+import { useSounds } from "@/hooks/useSounds";
 import { getLeaderboard } from "@/api/users";
 import { getLocalUsersQuizzes } from "@/localDatabase/quizzes";
-import { MaterialIcons } from '@expo/vector-icons'; // or react-native-vector-icons
+import { MaterialIcons } from '@expo/vector-icons';
 
 
 export default function HomeScreen() {

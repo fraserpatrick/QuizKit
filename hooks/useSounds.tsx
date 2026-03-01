@@ -1,4 +1,4 @@
-import { notificationPlayer, clickPlayer, fanfarePlayer } from "@/app/utils/audioManager";
+import { notificationPlayer, clickPlayer, fanfarePlayer } from "@/utils/audioManager";
 
 export const useSounds = () => {
     const playNotification = () => {

@@ -1,6 +1,6 @@
 import React from "react";
 import { TouchableOpacity, View, Text, StyleSheet } from "react-native";
-import { useSounds } from "@/app/hooks/useSounds";
+import { useSounds } from "@/hooks/useSounds";
 import { AntDesign } from "@expo/vector-icons";
 
 type AntIconName = React.ComponentProps<typeof AntDesign>["name"];

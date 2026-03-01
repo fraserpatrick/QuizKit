@@ -1,4 +1,4 @@
-import { AuthProvider } from '@/app/AuthContext';
+import { AuthProvider } from '@/context/AuthContext';
 import RootNav from '@/app/navigation/RootNav';
 import { initializeDatabase } from '@/localDatabase/databaseConnection';
 import { useEffect } from 'react';

@@ -1,9 +1,9 @@
 import { useNavigation } from "@react-navigation/native";
 import React, { useState } from "react";
 import { StyleSheet, Image, Keyboard, Text, TextInput, TouchableOpacity, TouchableWithoutFeedback, View, Dimensions } from "react-native";
-import { useAuth } from "@/app/AuthContext";
+import { useAuth } from "@/context/AuthContext";
 import { MaterialCommunityIcons } from '@expo/vector-icons';
-import { PrimaryButton } from "@/app/components/Buttons";
+import { PrimaryButton } from "@/components/Buttons";
 
 export default function LoginScreen() {
     const navigation = useNavigation();

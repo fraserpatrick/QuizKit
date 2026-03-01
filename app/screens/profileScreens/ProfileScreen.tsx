@@ -1,11 +1,11 @@
 import { Text, View, StyleSheet, FlatList, Button, Dimensions } from 'react-native';
-import { useAuth } from '@/app/AuthContext';
-import { Quiz, User } from '@/app/components/Interfaces';
+import { useAuth } from '@/context/AuthContext';
+import { Quiz, User } from '@/components/Interfaces';
 import { useState, useEffect, useLayoutEffect } from 'react';
 import { useNavigation } from '@react-navigation/native';
 import { getOwnedQuizzes } from '@/api/quizzes';
 import { getUserByUsername } from '@/api/users';
-import { SmallQuizItem } from '@/app/components/Items';
+import { SmallQuizItem } from '@/components/Items';
 import * as Progress from 'react-native-progress';
 
 export default function ProfileScreen({route}: any) {

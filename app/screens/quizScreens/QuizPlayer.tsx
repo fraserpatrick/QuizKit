@@ -1,12 +1,12 @@
 import { useFocusEffect, useNavigation } from "@react-navigation/native";
 import { useCallback, useEffect, useLayoutEffect, useState } from "react";
 import { View, Text, Button, Alert, Keyboard, TouchableWithoutFeedback, StyleSheet, TouchableOpacity, TextInput, Image, ScrollView, Modal, Pressable } from "react-native";
-import { Question } from '@/app/components/Interfaces';
-import { useAuth } from "@/app/AuthContext";
-import { PrimaryButtonWithIcon, PrimaryButtonWithIconRight } from "@/app/components/Buttons";
+import { Question } from '@/components/Interfaces';
+import { useAuth } from "@/context/AuthContext";
+import { PrimaryButtonWithIcon, PrimaryButtonWithIconRight } from "@/components/Buttons";
 import { getQuizQuestions } from "@/api/questions";
 import { updateStats } from "@/api/users";
-import { useSounds } from "@/app/hooks/useSounds";
+import { useSounds } from "@/hooks/useSounds";
 import { getLocalQuizQuestions } from "@/localDatabase/questions";
 
 export default function QuizPlayer({route}: any) {

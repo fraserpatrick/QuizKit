@@ -1,12 +1,12 @@
 import React, { useLayoutEffect, useState } from 'react';
 import { View, Text, Button, TouchableOpacity, TextInput, StyleSheet, Keyboard, TouchableWithoutFeedback, Alert } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
-import { useAuth } from '@/app/AuthContext';
+import { useAuth } from '@/context/AuthContext';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
-import PrimaryButtonWithIcon from '@/app/components/Buttons';
+import PrimaryButtonWithIcon from '@/components/Buttons';
 import { updateUsername, getUserByUsername } from '@/api/users';
 import { updateQuizToNewUsername } from '@/api/quizzes';
-import { useSounds } from '@/app/hooks/useSounds';
+import { useSounds } from '@/hooks/useSounds';
 import { updateLocalQuizToNewUsername } from '@/localDatabase/quizzes';
 import { resetDatabase } from '@/localDatabase/databaseConnection';
 

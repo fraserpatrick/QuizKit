@@ -2,12 +2,12 @@ import { useNavigation } from '@react-navigation/native';
 import { useEffect, useLayoutEffect, useState } from "react";
 import { View, Text, Button, Keyboard, TextInput, TouchableWithoutFeedback, StyleSheet, Alert } from "react-native";
 import { SegmentedButtons } from "react-native-paper";
-import {useAuth} from '@/app/AuthContext'
-import PrimaryButtonWithIcon from '@/app/components/Buttons';
+import {useAuth} from '@/context/AuthContext'
+import PrimaryButtonWithIcon from '@/components/Buttons';
 import { updateQuiz, createQuiz } from '@/api/quizzes';
-import { useSounds } from '@/app/hooks/useSounds';
+import { useSounds } from '@/hooks/useSounds';
 import { createLocalQuiz, updateLocalQuiz } from '@/localDatabase/quizzes';
-import { quizMigration } from '@/app/utils/quizMigration';
+import { quizMigration } from '@/utils/quizMigration';
 
 export default function QuizInfoEditor({route}: any) {
     const {passedQuiz} = route.params;

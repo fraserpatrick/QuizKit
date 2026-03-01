@@ -1,11 +1,11 @@
 import { useFocusEffect, useNavigation } from '@react-navigation/native';
 import { View, StyleSheet, FlatList, Button } from 'react-native';
-import { Question } from '@/app/components/Interfaces';
+import { Question } from '@/components/Interfaces';
 import { useState, useCallback, useLayoutEffect } from 'react';
-import PrimaryButtonWithIcon from '@/app/components/Buttons';
+import PrimaryButtonWithIcon from '@/components/Buttons';
 import { getQuizQuestions } from '@/api/questions';
 import { getLocalQuizQuestions } from '@/localDatabase/questions';
-import { QuestionItem } from '@/app/components/Items';
+import { QuestionItem } from '@/components/Items';
 
 export default function QuizEditor({route}: any) {
     const {passedQuiz} = route.params;

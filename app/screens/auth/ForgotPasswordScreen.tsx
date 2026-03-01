@@ -1,8 +1,8 @@
 import { useNavigation } from "expo-router";
 import { useState } from "react";
 import { Image, Text, StyleSheet, TouchableWithoutFeedback, Keyboard, View, TextInput, Dimensions } from "react-native";
-import { useAuth } from "@/app/AuthContext";
-import PrimaryButton from "@/app/components/Buttons";
+import { useAuth } from "@/context/AuthContext";
+import PrimaryButton from "@/components/Buttons";
 
 export default function ForgotPasswordScreen() {
     const navigation = useNavigation();

@@ -3,13 +3,13 @@ import React, { useLayoutEffect, useState } from "react";
 import { useNavigation } from "@react-navigation/native";
 import { SelectList } from 'react-native-dropdown-select-list';
 import { SegmentedButtons } from "react-native-paper";
-import { PrimaryButtonWithIcon } from "@/app/components/Buttons";
+import { PrimaryButtonWithIcon } from "@/components/Buttons";
 import { createQuestion, deleteQuestion, updateQuestion, uploadImage } from "@/api/questions";
 import { createLocalQuestion, updateLocalQuestion, deleteLocalQuestion } from "@/localDatabase/questions";
-import { useSounds } from "@/app/hooks/useSounds";
+import { useSounds } from "@/hooks/useSounds";
 import Slider from '@react-native-community/slider';
 import Checkbox from "expo-checkbox";
-import { Question } from "@/app/components/Interfaces";
+import { Question } from "@/components/Interfaces";
 import * as ImagePicker from 'expo-image-picker';
 
 export default function QuestionEditor({route}: any) {
