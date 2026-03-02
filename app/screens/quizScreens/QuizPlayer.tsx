@@ -1,6 +1,6 @@
 import { useFocusEffect, useNavigation } from "@react-navigation/native";
 import { useCallback, useEffect, useLayoutEffect, useState } from "react";
-import { View, Text, Button, Alert, Keyboard, TouchableWithoutFeedback, StyleSheet, TouchableOpacity, TextInput, Image, ScrollView, Modal, Pressable } from "react-native";
+import { View, Text, Button, Alert, Keyboard, TouchableWithoutFeedback, StyleSheet, TouchableOpacity, TextInput, Image, ScrollView, Modal, Pressable, ActivityIndicator } from "react-native";
 import { Question } from '@/components/Interfaces';
 import { useAuth } from "@/context/AuthContext";
 import { PrimaryButtonWithIcon, PrimaryButtonWithIconRight } from "@/components/Buttons";
@@ -292,6 +292,8 @@ export default function QuizPlayer({route}: any) {
 
 
     const QuizImage = ({ imageUri, saveType }: { imageUri: string; saveType: 'cloud' | 'local' }) => {
+        const [loading, setLoading] = useState<boolean>(true);
+
         if (!imageUri) {
             return null;
         }
@@ -305,10 +307,23 @@ export default function QuizPlayer({route}: any) {
 
         return (
             <TouchableOpacity onPress={() => setImagePreviewVisible(true)} activeOpacity={0.8}>
-                <Image 
-                    source={{ uri }}
-                    style={styles.image}
-                />
+                <View style={styles.imageWrapper}>
+
+                    {loading && (
+                        <ActivityIndicator 
+                        size="large" 
+                        color="#FF6B00"
+                        style={styles.loader}
+                        />
+                    )}
+
+                    <Image 
+                        source={{ uri }}
+                        style={styles.image}
+                        onLoadStart={() => setLoading(true)}
+                        onLoadEnd={() => setLoading(false)}
+                    />
+                </View>
             </TouchableOpacity>
         )
     }; 
@@ -388,6 +403,20 @@ const styles = StyleSheet.create({
         borderRadius: 12,
         borderWidth: 1,
         backgroundColor: '#f0f0f0',
+    },
+    imageWrapper: {
+        width: '100%',
+        aspectRatio: 16 / 9,
+        borderRadius: 12,
+        borderWidth: 1,
+        backgroundColor: '#f0f0f0',
+        overflow: 'hidden',
+        justifyContent: 'center',
+        alignItems: 'center',
+    },
+    loader: {
+        position: 'absolute',
+        zIndex: 1,
     },
     modalContainer: {
         flex: 1,
