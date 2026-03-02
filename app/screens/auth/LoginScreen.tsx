@@ -62,12 +62,6 @@ export default function LoginScreen() {
         setShowPassword(!showPassword);
     };
 
-    const isPasswordValid = (pw: string) => ({
-        minLength: pw.length >= 8,
-        hasUppercase: /[A-Z]/.test(pw),
-        hasNumber: /\d/.test(pw),
-    });
-
 
     return (
         <KeyboardAvoidingView behavior={Platform.OS === "ios" ? "padding" : "height"} style={{ flex: 1 }}>
@@ -110,15 +104,6 @@ export default function LoginScreen() {
                                     color="#aaa"
                                 />
                             </TouchableOpacity>
-                        </View>
-                        <View style={styles.passwordRules}>
-                            {Object.entries(isPasswordValid(password)).map(([key, valid]) => (
-                                <Text key={key} style={{ color: valid ? 'green' : 'red', fontSize: 12 }}>
-                                    {key === 'minLength' ? 'At least 8 characters' :
-                                    key === 'hasUppercase' ? 'Contains uppercase letter' :
-                                    key === 'hasNumber' ? 'Contains a number' : ''}
-                                </Text>
-                            ))}
                         </View>
                         <PrimaryButton label={loading ? "Logging in..." : "Login"} onPress={handleLogin}/>
                         <PrimaryButton label="Forgot Password?" onPress={handleForgotPassword}/>
@@ -179,8 +164,5 @@ const styles = StyleSheet.create({
     },
     inputHeader:{
         fontSize: 18,
-    },
-    passwordRules: {
-        marginBottom: 8,
     },
 });
