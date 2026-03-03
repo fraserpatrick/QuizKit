@@ -87,12 +87,20 @@ export default function ProfileScreen({route}: any) {
     }
     
     const { level, lowerBound, upperBound } = calculateBounds(user.points);
-    const progress = Math.min(Math.max((user.points - lowerBound) / (upperBound - lowerBound), 0),1);
-    const [textWidth, setTextWidth] = useState(0);
-    const barWidth = screenWidth - 40;
-    const calculatedLeft = progress * barWidth - textWidth - 6;
-    const clampedLeft = Math.min(Math.max(calculatedLeft, 4),barWidth - textWidth - 4);
 
+
+
+    const progress = Math.min(Math.max((user.points - lowerBound) / (upperBound - lowerBound), 0),1);
+    const [pointsTextWidth, setPointsTextWidth] = useState(0);
+    const barWidth = screenWidth - 40;
+    const pointsCalculatedLeft = progress * barWidth - pointsTextWidth - 6;
+    const pointClampedLeft = Math.min(Math.max(pointsCalculatedLeft, 4),barWidth - pointsTextWidth - 4);
+
+
+    const accuracy = Math.min(Math.max((user.totalCorrect/user.totalAnswers), 0),1);
+    const [accuracyTextWidth, setAccuracyTextWidth] = useState(0);
+    const accuracyCalculatedLeft = accuracy * barWidth - accuracyTextWidth - 6;
+    const accuracyClampedLeft = Math.min(Math.max(accuracyCalculatedLeft, 4),barWidth - accuracyTextWidth - 4);
 
     return (
         <View style={styles.container}>
@@ -111,8 +119,8 @@ export default function ProfileScreen({route}: any) {
                         borderWidth={2}
                     />
                     <Text
-                        onLayout={(e) => setTextWidth(e.nativeEvent.layout.width)}
-                        style={[styles.pointsInside,{left: clampedLeft,},]}
+                        onLayout={(e) => setPointsTextWidth(e.nativeEvent.layout.width)}
+                        style={[styles.pointsInside,{left: pointClampedLeft,},]}
                     >
                         {user.points} points
                     </Text>
@@ -127,6 +135,25 @@ export default function ProfileScreen({route}: any) {
                 <Text>Total Quizzes: {user.totalQuizPlays}</Text>
                 <Text>Total Questions Answered: {user.totalAnswers}</Text>
                 <Text>Total Questions Correct: {user.totalCorrect}</Text>
+                <Text style={styles.accuracyHeader}>Accuracy</Text>
+                <View style={styles.progressWrapper && {marginVertical: 5}}>
+                    <Progress.Bar
+                        key={accuracy}
+                        progress={accuracy}
+                        width={barWidth}
+                        height={24}
+                        borderRadius={12}
+                        color="#FF6B00"
+                        borderColor="#000000"
+                        borderWidth={2}
+                    />
+                    <Text
+                        onLayout={(e) => setAccuracyTextWidth(e.nativeEvent.layout.width)}
+                        style={[styles.pointsInside,{left: accuracyClampedLeft,},]}
+                    >
+                        {(accuracy*100).toFixed(0)}%
+                    </Text>
+                </View>
             </View>
             <View style={styles.quizContainer}>
                 <Text style={styles.containerHeader}>Owned Quizzes</Text>
@@ -152,12 +179,12 @@ const styles = StyleSheet.create({
         padding: 10,
     },
     pointsContainer:{
-        flex: 0.2,
+        flex: 0.15,
         borderWidth: 2,
-        borderRadius: 5,
+        borderRadius: 10,
         marginBottom: 10,
         padding: 10,
-        backgroundColor: '#e0e0e0ff',
+        backgroundColor: '#e0e0e0',
     },
     progressWrapper: {
         position: 'relative',
@@ -175,16 +202,17 @@ const styles = StyleSheet.create({
     },
     statsContainer:{
         borderWidth: 2,
-        borderRadius: 5,
-        marginBottom: 10,
+        borderRadius: 10,
+        marginVertical: 10,
         padding: 10,
-        backgroundColor: '#e0e0e0ff',
-        flex: 0.2,
+        backgroundColor: '#e0e0e0',
+        flex: 0.27,
     },
     quizContainer:{
         borderWidth: 2,
-        borderRadius: 5,
-        backgroundColor: '#e0e0e0ff',
+        borderRadius: 10,
+        marginTop: 10,
+        backgroundColor: '#e0e0e0',
         padding: 10,
         flex: 0.5,
     },
@@ -195,4 +223,10 @@ const styles = StyleSheet.create({
         marginBottom: 10,
         fontWeight: 'bold'
     },
+    accuracyHeader: {
+        textAlign: 'center',
+        marginTop: 10,
+        fontWeight: 'bold',
+        fontSize: 16
+    }
 });
