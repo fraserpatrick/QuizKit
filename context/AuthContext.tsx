@@ -6,6 +6,7 @@ import {
     signOut,
     sendPasswordResetEmail,
     updatePassword,
+    deleteUser
 } from 'firebase/auth';
 import React, { ReactNode, createContext, useContext, useEffect, useState } from 'react';
 import { auth } from '@/app/firebase';
@@ -17,12 +18,14 @@ interface AuthContextType {
     signIn: (email: string, password: string) => Promise<User>;
     signUp: (email: string, password: string) => Promise<User>;
     logout: () => Promise<void>;
-    resetPassword: (email: string) => Promise<void>;
+    resetPassword: () => Promise<void>;
+    resetPasswordWithEmail: (email: string) => Promise<void>;
     getIdToken: () => Promise<string | null>;
     username: string | null;
     changeUsername: (newUsername: string) => Promise<void>;
     changePassword?: (newPassword: string) => Promise<void>;
     loading: boolean;
+    deleteAccount: () => Promise<void>;
 }
 
 interface AuthProviderProps {
@@ -78,7 +81,15 @@ export const AuthProvider = ({children} : AuthProviderProps) => {
         setUsername(null);
     };
 
-    const resetPassword = async (email: string): Promise<void> => {
+    const resetPassword = async () : Promise<void> => {
+        if (auth.currentUser) {
+            await sendPasswordResetEmail(auth, auth.currentUser.email!)
+        } else {
+            throw new Error('No authenticated user');
+        }
+    }
+
+    const resetPasswordWithEmail = async (email: string): Promise<void> => {
         await sendPasswordResetEmail(auth, email);
     };
 
@@ -100,6 +111,14 @@ export const AuthProvider = ({children} : AuthProviderProps) => {
         }
     }
 
+    const deleteAccount = async () : Promise<void> => {
+        if (auth.currentUser) {
+            await deleteUser(auth.currentUser);
+        } else {
+            throw new Error('No authenticated user');
+        }
+    }
+
     const value: AuthContextType = {
         user,
         isAuthenticated: !! user,
@@ -107,11 +126,13 @@ export const AuthProvider = ({children} : AuthProviderProps) => {
         signUp,
         logout,
         resetPassword,
+        resetPasswordWithEmail,
         getIdToken,
         username,
         changeUsername,
         changePassword,
-        loading
+        loading,
+        deleteAccount
     };
 
     return (

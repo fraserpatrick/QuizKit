@@ -6,7 +6,7 @@ import { PrimaryButton } from "@/components/Buttons";
 
 export default function ForgotPasswordScreen() {
     const navigation = useNavigation();
-    const {resetPassword} = useAuth();
+    const {resetPasswordWithEmail} = useAuth();
 
     const [email, setEmail] = useState('');
 
@@ -19,7 +19,7 @@ export default function ForgotPasswordScreen() {
         console.log('Password reset requested for:', email);
 
         try {
-            await resetPassword(email);
+            await resetPasswordWithEmail(email);
             alert('Password reset email sent. Please check your inbox.');
         } catch (error: any) {
             console.log('Password reset failed:', error);

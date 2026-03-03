@@ -151,7 +151,7 @@ export default function ProfileScreen({route}: any) {
                         onLayout={(e) => setAccuracyTextWidth(e.nativeEvent.layout.width)}
                         style={[styles.pointsInside,{left: accuracyClampedLeft,},]}
                     >
-                        {(accuracy*100).toFixed(0)}%
+                        {!Number.isNaN(accuracy) ? (accuracy*100).toFixed(0) : 0}%
                     </Text>
                 </View>
             </View>
