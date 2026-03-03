@@ -2,6 +2,7 @@ import React from "react";
 import { TouchableOpacity, View, Text, StyleSheet } from "react-native";
 import { useSounds } from "@/hooks/useSounds";
 import { AntDesign } from "@expo/vector-icons";
+import { PrimaryColour } from "@/components/SelectedStyles";
 
 type AntIconName = React.ComponentProps<typeof AntDesign>["name"];
 
@@ -62,7 +63,7 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         alignItems: 'center',
         justifyContent: 'center',
-        backgroundColor: '#007BFF',
+        backgroundColor: PrimaryColour,
         borderRadius: 10,
         marginTop: 4,
         marginBottom: 4,

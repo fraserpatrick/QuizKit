@@ -11,6 +11,7 @@ import Slider from '@react-native-community/slider';
 import Checkbox from "expo-checkbox";
 import { Question } from "@/components/Interfaces";
 import * as ImagePicker from 'expo-image-picker';
+import { SecondaryColour } from "@/components/SelectedStyles";
 
 export default function QuestionEditor({route}: any) {
     const {passedQuestion, passedQuiz} = route.params;
@@ -290,7 +291,7 @@ export default function QuestionEditor({route}: any) {
             case 'True or False':
                 return (
                     <SegmentedButtons
-                        theme={{ colors: { secondaryContainer: '#FF6B00', onSecondaryContainer: '#FFFFFF' } }}
+                        theme={{ colors: { secondaryContainer: SecondaryColour, onSecondaryContainer: '#FFFFFF' } }}
                         value={answer}
                         onValueChange={setAnswer}
                         buttons={[

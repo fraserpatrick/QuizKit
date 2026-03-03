@@ -11,6 +11,7 @@ import { useSounds } from "@/hooks/useSounds";
 import { getLeaderboard } from "@/api/users";
 import { getLocalUsersQuizzes } from "@/localDatabase/quizzes";
 import { MaterialIcons } from '@expo/vector-icons';
+import { PrimaryColour, SecondaryColour } from "@/components/SelectedStyles";
 
 
 export default function HomeScreen() {
@@ -123,7 +124,7 @@ export default function HomeScreen() {
     if (loading) {
             return (
                 <View style={styles.loadingContainer}>
-                    <ActivityIndicator size="large" color="#FF6B00" />
+                    <ActivityIndicator size="large" color={SecondaryColour} />
                     <Text style={styles.loadingText}>Loading...</Text>
                 </View>
             );
@@ -134,7 +135,7 @@ export default function HomeScreen() {
             <PrimaryButtonWithIcon label="Create Quiz" onPress={handleCreateQuiz} icon="form"/>
             <View style={styles.quizContainer}>
                 <SegmentedButtons
-                    theme={{ colors: { secondaryContainer: '#007BFF', onSecondaryContainer: '#FFFFFF' } }}
+                    theme={{ colors: { secondaryContainer: PrimaryColour, onSecondaryContainer: '#FFFFFF' } }}
                     value={selector}
                     onValueChange={setSelector}
                     buttons={[

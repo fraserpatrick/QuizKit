@@ -2,6 +2,7 @@ import { Quiz, Question, User } from '@/components/Interfaces';
 import { TouchableOpacity, View, Text, StyleSheet } from "react-native";
 import { useSounds } from "@/hooks/useSounds";
 import { AntDesign } from "@expo/vector-icons";
+import { PrimaryColour, SecondaryColour } from '@/components/SelectedStyles';
 
 
 type QuizProps = {
@@ -123,7 +124,7 @@ export const LeaderboardItem = ({ user, ranking, onPress, loggedIn }: Leaderboar
     const { playClick } = useSounds();
     return (
         <TouchableOpacity onPress={() => { playClick(); onPress(); }}>
-            <View style={[styles.item, loggedIn && {backgroundColor: '#007BFF'}]}>
+            <View style={[styles.item, loggedIn && {backgroundColor: PrimaryColour}]}>
                 <Text style={styles.rankingText}>{ranking}.</Text>
                 <Text style={[styles.usernameText, loggedIn && {fontWeight: 'bold'}]}>{user.username} {loggedIn && '(you)'}</Text>
                 <Text style={styles.pointsText}>{user.points} points</Text>
@@ -139,7 +140,7 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         alignItems: 'center',
         justifyContent: 'space-between',
-        backgroundColor: '#FF6B00',
+        backgroundColor: SecondaryColour,
         borderWidth: 1,
         marginTop: 4,
         marginHorizontal: 20,

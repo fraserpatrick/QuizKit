@@ -8,6 +8,7 @@ import { updateQuiz, createQuiz } from '@/api/quizzes';
 import { useSounds } from '@/hooks/useSounds';
 import { createLocalQuiz, updateLocalQuiz } from '@/localDatabase/quizzes';
 import { quizMigration } from '@/utils/quizMigration';
+import { PrimaryColour, SecondaryColour } from '@/components/SelectedStyles';
 
 export default function QuizInfoEditor({route}: any) {
     const {passedQuiz} = route.params;
@@ -23,7 +24,7 @@ export default function QuizInfoEditor({route}: any) {
                 <Button title="< Back" onPress={() => navigation.goBack()} />
             ),
             headerStyle: {
-                backgroundColor: '#007BFF',
+                backgroundColor: PrimaryColour,
             },
             headerTintColor: '#fff',
         });
@@ -133,7 +134,7 @@ export default function QuizInfoEditor({route}: any) {
                     />
                     <Text style={styles.inputHeader}>Visibility:</Text>
                     <SegmentedButtons 
-                        theme={{ colors: { secondaryContainer: '#FF6B00', onSecondaryContainer: '#FFFFFF' } }}
+                        theme={{ colors: { secondaryContainer: SecondaryColour, onSecondaryContainer: '#FFFFFF' } }}
                         value={visibility}
                         onValueChange={setVisibility}
                         buttons={[
@@ -143,7 +144,7 @@ export default function QuizInfoEditor({route}: any) {
                     />
                     <Text style={styles.inputHeader}>Save Location:</Text>
                     <SegmentedButtons 
-                        theme={{ colors: { secondaryContainer: '#FF6B00', onSecondaryContainer: '#FFFFFF' } }}
+                        theme={{ colors: { secondaryContainer: SecondaryColour, onSecondaryContainer: '#FFFFFF' } }}
                         value={saveType}
                         onValueChange={setSaveType}
                         buttons={[

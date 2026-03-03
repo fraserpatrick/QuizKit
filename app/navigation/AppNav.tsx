@@ -9,6 +9,7 @@ import QuizInfoEditor from '@/app/screens/quizScreens/editors/QuizInfoEditor';
 import QuizPlayer from '@/app/screens/quizScreens/QuizPlayer';
 import QuizPlayerSummary from '@/app/screens/quizScreens/QuizPlayerSummary';
 import QuestionReview from '@/app/screens/quizScreens/QuestionReview';
+import { PrimaryColour } from '@/components/SelectedStyles';
 
 const Stack = createNativeStackNavigator();
 
@@ -17,7 +18,7 @@ export default function AppNav() {
         <Stack.Navigator
             screenOptions={{
                 headerStyle: {
-                    backgroundColor: '#007BFF',
+                    backgroundColor: PrimaryColour,
                 },
                 headerTintColor: '#FFFFFF',
         }}>

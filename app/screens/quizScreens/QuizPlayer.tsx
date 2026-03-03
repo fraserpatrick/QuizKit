@@ -8,6 +8,7 @@ import { getQuizQuestions } from "@/api/questions";
 import { updateStats } from "@/api/users";
 import { useSounds } from "@/hooks/useSounds";
 import { getLocalQuizQuestions } from "@/localDatabase/questions";
+import { SecondaryColour } from "@/components/SelectedStyles";
 
 export default function QuizPlayer({route}: any) {
     const navigation = useNavigation();
@@ -312,7 +313,7 @@ export default function QuizPlayer({route}: any) {
                     {loading && (
                         <ActivityIndicator 
                         size="large" 
-                        color="#FF6B00"
+                        color={SecondaryColour}
                         style={styles.loader}
                         />
                     )}
@@ -453,7 +454,7 @@ const styles = StyleSheet.create({
         backgroundColor: '#fff',
     },
     choiceButtonSelected:{
-        backgroundColor: '#FF6B00',
+        backgroundColor: SecondaryColour
     },
     choiceText:{
         fontSize: 18,

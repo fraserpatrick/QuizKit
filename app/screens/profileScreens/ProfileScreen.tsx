@@ -7,6 +7,7 @@ import { getOwnedQuizzes } from '@/api/quizzes';
 import { getUserByUsername } from '@/api/users';
 import { SmallQuizItem } from '@/components/Items';
 import * as Progress from 'react-native-progress';
+import { SecondaryColour } from '@/components/SelectedStyles';
 
 export default function ProfileScreen({route}: any) {
     const { username } = useAuth();
@@ -114,7 +115,7 @@ export default function ProfileScreen({route}: any) {
                         width={barWidth}
                         height={24}
                         borderRadius={12}
-                        color="#FF6B00"
+                        color={SecondaryColour}
                         borderColor="#000000"
                         borderWidth={2}
                     />
@@ -143,7 +144,7 @@ export default function ProfileScreen({route}: any) {
                         width={barWidth}
                         height={24}
                         borderRadius={12}
-                        color="#FF6B00"
+                        color={SecondaryColour}
                         borderColor="#000000"
                         borderWidth={2}
                     />
