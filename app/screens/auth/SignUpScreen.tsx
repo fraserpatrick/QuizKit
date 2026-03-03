@@ -1,5 +1,5 @@
 import { useRef, useState } from "react";
-import { Text, StyleSheet, TouchableWithoutFeedback, Keyboard, View, TextInput, TouchableOpacity, KeyboardAvoidingView, Platform } from "react-native";
+import { Text, StyleSheet, TouchableWithoutFeedback, Keyboard, View, TextInput, TouchableOpacity, Image, KeyboardAvoidingView, Platform, Dimensions, ScrollView } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import { useAuth } from "@/context/AuthContext";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
@@ -107,108 +107,135 @@ export default function SignUpScreen() {
 
 
     return (
-        <KeyboardAvoidingView behavior={Platform.OS === "ios" ? "padding" : "height"} style={{ flex: 1 }}>
+        <KeyboardAvoidingView 
+            behavior={Platform.OS === "ios" ? "padding" : "height"} 
+            keyboardVerticalOffset={Platform.OS === "ios" ? 60 : 0}
+            style={{ flex: 1 }}
+        >
             <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-                <View style={styles.container}>
-                    <View style={styles.inputContainer}>
-                        <Text style={styles.inputHeader}>Username:</Text>
-                        <TextInput
-                            style={styles.input}
-                            value={username}
-                            onChangeText={setUsername}
-                            autoCapitalize="none"
-                            autoCorrect={false}
-                            textContentType="username"
-                            returnKeyType="next"
-                            onSubmitEditing={() => emailRef.current?.focus()}
-                        />
-                        <Text style={styles.inputHeader}>Email:</Text>
-                        <TextInput
-                            ref={emailRef}
-                            style={styles.input}
-                            value={email}
-                            onChangeText={setEmail}
-                            keyboardType="email-address"
-                            autoCapitalize="none"
-                            autoCorrect={false}
-                            textContentType="emailAddress"
-                            returnKeyType="next"
-                            onSubmitEditing={() => password1Ref.current?.focus()}
-                        />
-                        <Text style={styles.inputHeader}>Password:</Text>
-                        <View style={styles.passwordContainer}>
+                <ScrollView
+                    contentContainerStyle={styles.scrollContainer}
+                    keyboardShouldPersistTaps="handled"
+                    showsVerticalScrollIndicator={false}
+                >
+                    <View style={styles.container}>
+                        <View style={styles.imageContainer}>
+                            <Image source={require('@/assets/images/icon.png')} style={styles.image} />                 
+                        </View>
+                        <View style={styles.inputContainer}>
+                            <Text style={styles.inputHeader}>Username:</Text>
                             <TextInput
-                                ref={password1Ref}
-                                style={styles.passwordInput}
-                                value={password1}
-                                onChangeText={setPassword1}
-                                secureTextEntry={!showPassword1}
+                                style={styles.input}
+                                value={username}
+                                onChangeText={setUsername}
                                 autoCapitalize="none"
                                 autoCorrect={false}
-                                textContentType="password"
+                                textContentType="username"
                                 returnKeyType="next"
-                                onSubmitEditing={() => password2Ref.current?.focus()}
+                                onSubmitEditing={() => emailRef.current?.focus()}
                             />
-                            <TouchableOpacity style={styles.iconButton} onPress={toggleShowPassword1}>
-                                <MaterialCommunityIcons
-                                    name={showPassword1 ? 'eye-off' : 'eye'}
-                                    size={24}
-                                    color="#aaa"
-                                />
-                            </TouchableOpacity>
-                        </View>
-                        <View style={styles.passwordRules}>
-                            {Object.entries(isPasswordValid(password1)).map(([key, valid]) => (
-                                <Text key={key} style={{ color: valid ? 'green' : 'red', fontSize: 12 }}>
-                                    {key === 'minLength' ? 'At least 8 characters' :
-                                    key === 'hasUppercase' ? 'Contains an uppercase letter' :
-                                    key === 'hasNumber' ? 'Contains a number' : 
-                                    key ==='hasSpecialChar' ? 'Contains a special character' : ''}
-                                </Text>
-                            ))}
-                        </View>
-                        <Text style={styles.inputHeader}>Repeat password:</Text>
-                        <View style={styles.passwordContainer}>
+                            <Text style={styles.inputHeader}>Email:</Text>
                             <TextInput
-                                ref={password2Ref}
-                                style={styles.passwordInput}
-                                value={password2}
-                                onChangeText={setPassword2}
-                                secureTextEntry={!showPassword2}
+                                ref={emailRef}
+                                style={styles.input}
+                                value={email}
+                                onChangeText={setEmail}
+                                keyboardType="email-address"
                                 autoCapitalize="none"
                                 autoCorrect={false}
-                                textContentType="password"
-                                returnKeyType="done"
-                                onSubmitEditing={handleSignUp}
+                                textContentType="emailAddress"
+                                returnKeyType="next"
+                                onSubmitEditing={() => password1Ref.current?.focus()}
                             />
-                            <TouchableOpacity style={styles.iconButton} onPress={toggleShowPassword2}>
-                                <MaterialCommunityIcons
-                                    name={showPassword2 ? 'eye-off' : 'eye'}
-                                    size={24}
-                                    color="#aaa"
+                            <Text style={styles.inputHeader}>Password:</Text>
+                            <View style={styles.passwordContainer}>
+                                <TextInput
+                                    ref={password1Ref}
+                                    style={styles.passwordInput}
+                                    value={password1}
+                                    onChangeText={setPassword1}
+                                    secureTextEntry={!showPassword1}
+                                    autoCapitalize="none"
+                                    autoCorrect={false}
+                                    textContentType="password"
+                                    returnKeyType="next"
+                                    onSubmitEditing={() => password2Ref.current?.focus()}
                                 />
-                            </TouchableOpacity>
+                                <TouchableOpacity style={styles.iconButton} onPress={toggleShowPassword1}>
+                                    <MaterialCommunityIcons
+                                        name={showPassword1 ? 'eye-off' : 'eye'}
+                                        size={24}
+                                        color="#aaa"
+                                    />
+                                </TouchableOpacity>
+                            </View>
+                            <View style={styles.passwordRules}>
+                                {Object.entries(isPasswordValid(password1)).map(([key, valid]) => (
+                                    <Text key={key} style={{ color: valid ? 'green' : 'red', fontSize: 12 }}>
+                                        {key === 'minLength' ? 'At least 8 characters' :
+                                        key === 'hasUppercase' ? 'Contains an uppercase letter' :
+                                        key === 'hasNumber' ? 'Contains a number' : 
+                                        key ==='hasSpecialChar' ? 'Contains a special character' : ''}
+                                    </Text>
+                                ))}
+                            </View>
+                            <Text style={styles.inputHeader}>Repeat password:</Text>
+                            <View style={styles.passwordContainer}>
+                                <TextInput
+                                    ref={password2Ref}
+                                    style={styles.passwordInput}
+                                    value={password2}
+                                    onChangeText={setPassword2}
+                                    secureTextEntry={!showPassword2}
+                                    autoCapitalize="none"
+                                    autoCorrect={false}
+                                    textContentType="password"
+                                    returnKeyType="done"
+                                    onSubmitEditing={handleSignUp}
+                                />
+                                <TouchableOpacity style={styles.iconButton} onPress={toggleShowPassword2}>
+                                    <MaterialCommunityIcons
+                                        name={showPassword2 ? 'eye-off' : 'eye'}
+                                        size={24}
+                                        color="#aaa"
+                                    />
+                                </TouchableOpacity>
+                            </View>
+                        </View>
+                        <View style={styles.buttonsContainer}>
+                            <PrimaryButton label={loading ? 'Creating account...' : 'Create account'} onPress={handleSignUp} />
+                            <PrimaryButton label="I already have an account" onPress={handleNavigateToLogin} />
                         </View>
                     </View>
-                    <View style={styles.buttonsContainer}>
-                        <PrimaryButton label={loading ? 'Creating account...' : 'Create account'} onPress={handleSignUp} />
-                        <PrimaryButton label="I already have an account" onPress={handleNavigateToLogin} />
-                    </View>
-                </View>
+                </ScrollView>
             </TouchableWithoutFeedback>
         </KeyboardAvoidingView>
     );
 }
 
-
+const { height } = Dimensions.get('window');
 const styles = StyleSheet.create({
-    container:{
-        flex: 1,
-        paddingHorizontal: 20,
-        justifyContent: 'center'
+    scrollContainer: {
+        flexGrow: 1,
+        paddingTop: 40,
+        paddingBottom: 120,
+    },
+    container: {
+        paddingHorizontal: 24,
+    },
+    imageContainer: {
+        alignItems: "center",
+        marginBottom: 30
+    },
+    image:{
+        height: height * 0.18,
+        aspectRatio: 16 / 9,
+        borderRadius: 12,
+        borderWidth: 1,
+        overflow: 'hidden',
     },
     inputContainer:{
-        padding: 10
+        padding: 10,
     },
     input:{
         width: '100%',
@@ -234,7 +261,7 @@ const styles = StyleSheet.create({
         marginBottom: 5,
     },
     buttonsContainer:{
-        marginTop: 10
+        marginTop: 10,
     },
     iconButton: {
         padding: 5, 
