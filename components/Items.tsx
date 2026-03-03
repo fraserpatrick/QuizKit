@@ -18,6 +18,7 @@ type LeaderboardProps = {
     user: User;
     ranking: number;
     onPress: () => void;
+    loggedIn: boolean;
 }
 
 
@@ -118,13 +119,13 @@ export const SmallQuizItem = ({ quiz, onPress }: QuizProps) => {
 };
 
 
-export const LeaderboardItem = ({ user, ranking, onPress }: LeaderboardProps) => {
+export const LeaderboardItem = ({ user, ranking, onPress, loggedIn }: LeaderboardProps) => {
     const { playClick } = useSounds();
     return (
         <TouchableOpacity onPress={() => { playClick(); onPress(); }}>
-            <View style={styles.item}>
+            <View style={[styles.item, loggedIn && {backgroundColor: '#007BFF'}]}>
                 <Text style={styles.rankingText}>{ranking}.</Text>
-                <Text style={styles.usernameText}>{user.username}</Text>
+                <Text style={[styles.usernameText, loggedIn && {fontWeight: 'bold'}]}>{user.username} {loggedIn && '(you)'}</Text>
                 <Text style={styles.pointsText}>{user.points} points</Text>
                 {iconItem()}
             </View>

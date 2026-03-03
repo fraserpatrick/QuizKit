@@ -182,6 +182,7 @@ export default function HomeScreen() {
                             user={item}
                             ranking={index + 1}
                             onPress={() => navigation.navigate('ProfileScreen', { passedUsername: item.username })}
+                            loggedIn={username === item.username}
                         />
                     )}
                 />
