@@ -59,7 +59,9 @@ export default function QuizPlayerSummary({ route }: any) {
                         </Text>
                     </>)}
                 </AnimatedCircularProgress>
-                    <Text style={styles.bonusPointsText}>{points} points awarded</Text>
+                {score * 10 !== points && (
+                    <Text style={styles.bonusPointsText}>+25 bonus points for 100%</Text>
+                )}
             </View>
             <View style={styles.questionsContainer}>
                 <FlatList
