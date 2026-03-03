@@ -31,4 +31,8 @@ export const updateUsername = (email: string, newUsername: string) => {
 
 export const updateStats = (username: string, answered: number, correct: number, points: number) => {
     return apiFetch("users/updateStats", "PUT", {username, answered, correct, points});
+} 
+
+export const deleteUser = (username: string) => {
+    return apiFetch("users", "DELETE", null, {username});
 }

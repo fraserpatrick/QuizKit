@@ -4,9 +4,7 @@ import { useLayoutEffect } from 'react';
 import { PrimaryButtonWithIcon } from '@/components/Buttons';
 import { useAuth } from '@/context/AuthContext';
 import { deleteQuiz } from '@/api/quizzes';
-import { deleteQuestions } from '@/api/questions';
 import { deleteLocalQuiz } from '@/localDatabase/quizzes';
-import { deleteLocalQuestions } from '@/localDatabase/questions';
 import { useSounds } from '@/hooks/useSounds';
 
 
@@ -49,10 +47,8 @@ export default function QuizInfoScreen({route}: any) {
         try{
             if (passedQuiz.saveType === 'local'){
                 deleteLocalQuiz(passedQuiz.id);
-                deleteLocalQuestions(passedQuiz.id);
             } else if (passedQuiz.saveType === 'cloud'){
                 deleteQuiz(passedQuiz.id);
-                deleteQuestions(passedQuiz.id);
             }
 
             alert('Deleted quiz : ' + passedQuiz.title);

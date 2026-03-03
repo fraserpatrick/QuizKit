@@ -5,6 +5,8 @@ export const db = SQLite.openDatabaseSync("QuizkitDatabase.db");
 
 export const initializeDatabase = async () => {
     try {
+        await db.execAsync(`PRAGMA foreign_keys = ON;`);
+
         await db.execAsync(`
             CREATE TABLE IF NOT EXISTS quiz (
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -25,7 +27,10 @@ export const initializeDatabase = async () => {
                 correctAnswer TEXT NOT NULL,
                 mcOptions TEXT,
                 feedback TEXT,
-                imageUri TEXT
+                imageUri TEXT,
+                FOREIGN KEY (quizID)
+                    REFERENCES quiz(id)
+                    ON DELETE CASCADE
             );
         `);
 

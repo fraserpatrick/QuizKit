@@ -24,11 +24,6 @@ export const deleteQuestion = (questionID: number) => {
     return apiFetch("questions", "DELETE", null, {questionID});
 }
 
-export const deleteQuestions = (quizID: number) => {
-    return apiFetch("questions", "DELETE", null, {quizID})
-}
-
-
 
 export const uploadImage = async (localUri: string) => {
     const data = new FormData();

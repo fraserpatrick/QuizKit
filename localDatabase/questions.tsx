@@ -1,5 +1,5 @@
 import { db } from '@/localDatabase/databaseConnection';
-import { Question } from '@/app/components/Interfaces';
+import { Question } from '@/components/Interfaces';
 
 export const createLocalQuestion = async (quizID: number, text: string, type: string, correctAnswer: string, mcOptions: string[], feedback: string, imageUri: string): Promise<boolean> => {
     const insertSQL = `INSERT INTO question (quizID, text, type, correctAnswer, mcOptions, feedback, imageUri) VALUES (?, ?, ?, ?, ?, ?, ?)`;
@@ -35,13 +35,6 @@ export const updateLocalQuestion = async (questionID: number, text: string, type
 export const deleteLocalQuestion = async (questionID: number): Promise<boolean> => {
     const sql = `DELETE FROM question WHERE id = ?`;
     await db.runAsync(sql, [questionID]);
-
-    return true;
-}
-
-export const deleteLocalQuestions = async (quizID: number): Promise<boolean> => {
-    const sql = `DELETE FROM question WHERE quizID = ?`;
-    await db.runAsync(sql, [quizID]);
 
     return true;
 }

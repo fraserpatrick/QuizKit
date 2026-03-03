@@ -1,6 +1,6 @@
-import { createQuestion, deleteQuestions, getQuizQuestions, uploadImage } from "@/api/questions";
+import { createQuestion, getQuizQuestions, uploadImage } from "@/api/questions";
 import { createQuiz, deleteQuiz } from "@/api/quizzes";
-import { createLocalQuestion, deleteLocalQuestions, getLocalQuizQuestions } from "@/localDatabase/questions";
+import { createLocalQuestion, getLocalQuizQuestions } from "@/localDatabase/questions";
 import { createLocalQuiz, deleteLocalQuiz } from "@/localDatabase/quizzes";
 
 export async function quizMigration(oldQuizID: number, username: string, title: string, visibility: string, description: string, saveType: string) {
@@ -24,7 +24,6 @@ export async function quizMigration(oldQuizID: number, username: string, title: 
             await createLocalQuestion(newQuiz.id!, question.text, question.type, question.correctAnswer, parsedOptions, question.feedback, question.imageUri); //TODO: FIX THIS
         }
 
-        await deleteQuestions(oldQuizID);
         await deleteQuiz(oldQuizID);
 
     }
@@ -49,7 +48,6 @@ export async function quizMigration(oldQuizID: number, username: string, title: 
             await createQuestion(newQuiz.id!, question.text, question.type, question.correctAnswer, parsedOptions, question.feedback, finalImageUri);
         }
 
-        await deleteLocalQuestions(oldQuizID);
         await deleteLocalQuiz(oldQuizID);
 
     }

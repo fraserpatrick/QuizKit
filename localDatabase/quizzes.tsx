@@ -1,5 +1,5 @@
 import { db } from '@/localDatabase/databaseConnection';
-import { Quiz } from '@/app/components/Interfaces';
+import { Quiz } from '@/components/Interfaces';
 
 export const createLocalQuiz = async (title: string, owner: string, visibility: string, description: string): Promise<Quiz> =>{
     const insertSQL = `INSERT INTO quiz (title, owner, visibility, description, saveType) VALUES (?, ?, ?, ?, 'local')`;
@@ -12,6 +12,7 @@ export const createLocalQuiz = async (title: string, owner: string, visibility: 
 
     return result[0] as Quiz;
 }
+
 
 export const getLocalQuizzes = async () : Promise<Quiz[]> => {
     const sql = `SELECT * FROM quiz ORDER BY title`;
@@ -26,6 +27,7 @@ export const getLocalUsersQuizzes = async (owner: string) : Promise<Quiz[]> => {
 
     return result as Quiz[];
 }
+
 
 export const updateLocalQuiz = async (quizID: number, title: string, visibility: string, description: string) : Promise<Quiz> => {
     const sql = `UPDATE quiz SET title = ?, visibility = ?, description = ? WHERE id = ?`;
@@ -48,9 +50,17 @@ export const updateLocalQuizToNewUsername = async (oldUsername: string, newUsern
     return true;
 }
 
+
 export const deleteLocalQuiz = async (quizID: number) : Promise<boolean> => {
     const sql = `DELETE FROM quiz WHERE id = ?`;
     await db.runAsync(sql, [quizID]);
+
+    return true;
+}
+
+export const deleteLocalQuizWithOwner = async (username: string) : Promise<boolean> => {
+    const sql = `DELETE FROM quiz WHERE owner = ?`;
+    await db.runAsync(sql, [username]);
 
     return true;
 }

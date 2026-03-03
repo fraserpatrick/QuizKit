@@ -30,3 +30,7 @@ export const updateQuizToNewUsername = (oldUsername: string, newUsername: string
 export const deleteQuiz = (id: number) => {
     return apiFetch("quizzes", "DELETE", null, {id});
 }
+
+export const deleteQuizWithOwner = (username: string) => {
+    return apiFetch("quizzes", "DELETE", null, {username});
+}

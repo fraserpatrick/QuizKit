@@ -3,10 +3,10 @@ import { View, Text, Button, TextInput, StyleSheet, Keyboard, TouchableWithoutFe
 import { useNavigation } from '@react-navigation/native';
 import { useAuth } from '@/context/AuthContext';
 import { PrimaryButtonWithIcon } from '@/components/Buttons';
-import { updateUsername, getUserByUsername } from '@/api/users';
-import { updateQuizToNewUsername } from '@/api/quizzes';
+import { updateUsername, getUserByUsername, deleteUser } from '@/api/users';
+import { deleteQuizWithOwner, updateQuizToNewUsername } from '@/api/quizzes';
 import { useSounds } from '@/hooks/useSounds';
-import { updateLocalQuizToNewUsername } from '@/localDatabase/quizzes';
+import { deleteLocalQuizWithOwner, updateLocalQuizToNewUsername } from '@/localDatabase/quizzes';
 import { resetDatabase } from '@/localDatabase/databaseConnection';
 
 export default function ProfileEditor() {
@@ -103,7 +103,9 @@ export default function ProfileEditor() {
         setLoadingDelete(true);
 
         try{
-            alert('COMPLETE THIS CODE');
+            await deleteQuizWithOwner(username!);
+            await deleteLocalQuizWithOwner(username!)
+            await deleteUser(username!);
             await deleteAccount();
             alert('Account Deleted. Goodbye');
         } catch (error:any) {
