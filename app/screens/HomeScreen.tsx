@@ -12,6 +12,7 @@ import { getLeaderboard } from "@/api/users";
 import { getLocalUsersQuizzes } from "@/localDatabase/quizzes";
 import { MaterialIcons } from '@expo/vector-icons';
 import { PrimaryColour, SecondaryColour } from "@/components/SelectedStyles";
+import { DestructiveModal } from "@/components/Modal";
 
 
 export default function HomeScreen() {
@@ -19,6 +20,7 @@ export default function HomeScreen() {
     const {username, logout} = useAuth();
     const {playNotification} = useSounds();
     const [loading, setLoading] = useState<boolean>(true);
+    const [logoutModalVisible, setLogoutModalVisible] = useState(false);
 
     useLayoutEffect(() => {
         navigation.setOptions({
@@ -90,13 +92,13 @@ export default function HomeScreen() {
 
     const handleLogout = () => {
         playNotification();
-        Alert.alert(
-            'Logout', 'Are you sure you want to logout?', [
-                {text: 'No, stay logged in', style: 'cancel',},
-                {text: 'Yes, logout', onPress: () => logout(), style: 'destructive',},
-            ]
-        );
+        setLogoutModalVisible(true);
     ;}
+
+    const confirmLogout = () => {
+        setLogoutModalVisible(false);
+        logout();
+    };
 
     const handleCreateQuiz = () => {
         navigation.navigate('QuizInfoEditor', {passedQuiz: null});
@@ -188,7 +190,17 @@ export default function HomeScreen() {
                     )}
                 />
             </View>
+            <DestructiveModal
+                visible={logoutModalVisible}
+                titleText='Logout'
+                infoText='Are you sure you want to logout?'
+                cancelText='No, stay logged in'
+                confirmText='Yes, logout'
+                onClose={() => setLogoutModalVisible(false)}
+                onConfirm={confirmLogout}
+            />
         </View>
+        
     );
 }
 
