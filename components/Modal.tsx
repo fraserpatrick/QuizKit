@@ -1,4 +1,4 @@
-import { Modal, TouchableWithoutFeedback, Keyboard, View, Pressable, StyleSheet, Text, StyleProp, ViewStyle } from "react-native";
+import { Modal, TouchableWithoutFeedback, Keyboard, View, Pressable, StyleSheet, Text, StyleProp, ViewStyle, Image } from "react-native";
 
 interface BaseModalProps {
     visible: boolean;
@@ -10,6 +10,13 @@ interface BaseModalProps {
     onConfirm: () => void;
     confirmButtonStyle?: StyleProp<ViewStyle>;
 }
+
+interface ImageModalProps {
+    visible: boolean;
+    onClose: () => void;
+    imageUri: string;
+}
+
 
 export const BaseModal: React.FC<BaseModalProps> = ({visible, titleText, infoText, cancelText, confirmText, onClose, onConfirm, confirmButtonStyle}) => {
     return (
@@ -67,6 +74,29 @@ export const DestructiveModal: React.FC<BaseModalProps> = (props) => {
 };
 
 
+export const ImageModal: React.FC<ImageModalProps> = ({visible, onClose, imageUri}) => {
+    return (
+        <Modal
+            visible={visible}
+            transparent
+            animationType="fade"
+            onRequestClose={onClose}
+        >
+            <Pressable
+                style={styles.imageContainer}
+                onPress={onClose}
+            >
+                <Image
+                    source={{ uri: imageUri }}
+                    style={styles.fullImage}
+                    resizeMode="contain"
+                />
+            </Pressable>
+        </Modal>
+    )
+}
+
+
 const styles = StyleSheet.create({
     modalOverlay: {
         flex: 1,
@@ -108,5 +138,15 @@ const styles = StyleSheet.create({
         fontWeight: "600",
         letterSpacing: 0.5,
         textAlign: "center",
+    },
+    imageContainer: {
+        flex: 1,
+        backgroundColor: '#000000e6',
+        justifyContent: 'center',
+        alignItems: 'center',
+    },
+    fullImage: {
+        width: '100%',
+        height: '80%',
     },
 });

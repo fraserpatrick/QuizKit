@@ -1,6 +1,6 @@
 import { useFocusEffect, useNavigation } from "@react-navigation/native";
 import { useCallback, useEffect, useLayoutEffect, useState } from "react";
-import { View, Text, Button, Alert, Keyboard, TouchableWithoutFeedback, StyleSheet, TouchableOpacity, TextInput, Image, ScrollView, Modal, Pressable, ActivityIndicator } from "react-native";
+import { View, Text, Button, Alert, Keyboard, TouchableWithoutFeedback, StyleSheet, TouchableOpacity, TextInput, Image, ScrollView, ActivityIndicator } from "react-native";
 import { Question } from '@/components/Interfaces';
 import { useAuth } from "@/context/AuthContext";
 import { PrimaryButtonWithIcon, PrimaryButtonWithIconRight } from "@/components/Buttons";
@@ -9,6 +9,7 @@ import { updateStats } from "@/api/users";
 import { useSounds } from "@/hooks/useSounds";
 import { getLocalQuizQuestions } from "@/localDatabase/questions";
 import { SecondaryColour } from "@/components/SelectedStyles";
+import { ImageModal } from "@/components/Modal";
 
 export default function QuizPlayer({route}: any) {
     const navigation = useNavigation();
@@ -365,19 +366,14 @@ export default function QuizPlayer({route}: any) {
             </View>
         )}
 
-        <Modal visible={imagePreviewVisible} transparent={true} animationType="fade">
-            <Pressable style={styles.modalContainer} onPress={() => setImagePreviewVisible(false)}>
-                {questions[currentQuestion]?.imageUri && (
-                    <Image 
-                        source={{uri: passedQuiz.saveType === 'cloud'
-                            ? `${process.env.EXPO_PUBLIC_API_BASE_URL ?? ''}uploads/${questions[currentQuestion].imageUri}`
-                            : questions[currentQuestion].imageUri}}
-                        style={styles.fullImage} 
-                        resizeMode="contain" 
-                    />
-                )}
-            </Pressable>
-        </Modal>
+        <ImageModal
+            visible={imagePreviewVisible}
+            onClose={() => setImagePreviewVisible(false)}
+            imageUri={questions[currentQuestion]?.imageUri ? passedQuiz.saveType === "cloud"
+                ? `${process.env.EXPO_PUBLIC_API_BASE_URL ?? ""}uploads/${questions[currentQuestion].imageUri}`
+                : questions[currentQuestion].imageUri : ''
+            }
+        />
     </>);
 }
 
@@ -418,16 +414,6 @@ const styles = StyleSheet.create({
     loader: {
         position: 'absolute',
         zIndex: 1,
-    },
-    modalContainer: {
-        flex: 1,
-        backgroundColor: '#000000e6',
-        justifyContent: 'center',
-        alignItems: 'center',
-    },
-    fullImage: {
-        width: '100%',
-        height: '80%',
     },
     inputContainer:{
         flex: 1,

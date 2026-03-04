@@ -1,4 +1,4 @@
-import { View, Text, StyleSheet, TextInput, TouchableWithoutFeedback, Keyboard, Alert, Button, ScrollView, Image, Pressable, Modal } from "react-native";
+import { View, Text, StyleSheet, TextInput, TouchableWithoutFeedback, Keyboard, Alert, Button, ScrollView, Image, Pressable } from "react-native";
 import React, { useLayoutEffect, useState } from "react";
 import { useNavigation } from "@react-navigation/native";
 import { SelectList } from 'react-native-dropdown-select-list';
@@ -12,6 +12,7 @@ import Checkbox from "expo-checkbox";
 import { Question } from "@/components/Interfaces";
 import * as ImagePicker from 'expo-image-picker';
 import { SecondaryColour } from "@/components/SelectedStyles";
+import { ImageModal } from "@/components/Modal";
 
 export default function QuestionEditor({route}: any) {
     const {passedQuestion, passedQuiz} = route.params;
@@ -399,22 +400,11 @@ export default function QuestionEditor({route}: any) {
                 </ScrollView>
 
 
-                <Modal
+                <ImageModal
                     visible={previewVisible}
-                    transparent
-                    animationType="fade"
-                >
-                    <Pressable
-                        style={styles.modalContainer}
-                        onPress={() => setPreviewVisible(false)}
-                    >
-                        <Image
-                            source={{ uri: imageUri }}
-                            style={styles.fullImage}
-                            resizeMode="contain"
-                        />
-                    </Pressable>
-                </Modal>
+                    onClose={() => setPreviewVisible(false)}
+                    imageUri={imageUri}
+                />
 
                 <View style={styles.floatingBar}>
                     <PrimaryButtonWithIcon label={passedQuestion ? 'Update Question' : 'Create Question'} icon="save" onPress={saveQuestion}/>
@@ -492,16 +482,6 @@ const styles = StyleSheet.create({
         overflow: 'hidden',
         marginBottom: 10,
         backgroundColor: '#f2f2f2',
-    },
-    modalContainer: {
-        flex: 1,
-        backgroundColor: '#000000e6',
-        justifyContent: 'center',
-        alignItems: 'center',
-    },
-    fullImage: {
-        width: '100%',
-        height: '80%',
     },
     previewImage: {
         width: '100%',
