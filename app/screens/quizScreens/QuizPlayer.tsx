@@ -9,7 +9,7 @@ import { updateStats } from "@/api/users";
 import { useSounds } from "@/hooks/useSounds";
 import { getLocalQuizQuestions } from "@/localDatabase/questions";
 import { SecondaryColour } from "@/components/SelectedStyles";
-import { ImageModal } from "@/components/Modal";
+import { BaseModal, DestructiveModal, ImageModal } from "@/components/Modal";
 
 export default function QuizPlayer({route}: any) {
     const navigation = useNavigation();
@@ -19,6 +19,8 @@ export default function QuizPlayer({route}: any) {
     const [currentQuestion, setCurrentQuestion] = useState(0);
     const [questions, setQuestions] = useState<Question[]>([]);
     const {playNotification} = useSounds();
+    const [exitModalVisible, setExitModalVisible] = useState(false);
+    const [startModalVisible, setStartModalVisible] = useState(false);
 
     useLayoutEffect(() => {
         navigation.setOptions({
@@ -63,10 +65,7 @@ export default function QuizPlayer({route}: any) {
     const handleExit = () => {
         if (quizStarted){
             playNotification();
-            Alert.alert( 'Exit Player', 'Are you ready to exit this quiz?', [
-                {text: 'No, keep playing', style: 'cancel',},
-                {text: 'Yes, exit quiz', onPress: () => navigation.goBack(), style: 'destructive',},
-            ]);
+            setExitModalVisible(true);
         }
         else {
             navigation.goBack();
@@ -81,18 +80,12 @@ export default function QuizPlayer({route}: any) {
         }
 
         playNotification();
-        Alert.alert(
-            'Start Quiz',
-            'Are you ready to start this quiz?',
-            [
-                { text: 'Not yet', style: 'cancel' },
-                { text: 'Yes, start playing', onPress:startQuiz }
-            ]
-        );
+        setStartModalVisible(true);
     };
 
 
     const startQuiz = () => {
+        setStartModalVisible(false);
         setQuizStarted(true);
     }
 
@@ -373,6 +366,24 @@ export default function QuizPlayer({route}: any) {
                 ? `${process.env.EXPO_PUBLIC_API_BASE_URL ?? ""}uploads/${questions[currentQuestion].imageUri}`
                 : questions[currentQuestion].imageUri : ''
             }
+        />
+        <DestructiveModal
+            visible={exitModalVisible}
+            titleText='Exit Quiz'
+            infoText='Are you sure you want to exit this quiz?'
+            cancelText='No, keep playing'
+            confirmText='Yes, exit quiz'
+            onClose={() => setExitModalVisible(false)}
+            onConfirm={navigation.goBack}
+        />
+        <BaseModal
+            visible={startModalVisible}
+            titleText='Start Quiz'
+            infoText='Are you ready to start this quiz?'
+            cancelText='Not yet'
+            confirmText='Yes, start playing'
+            onClose={() => setStartModalVisible(false)}
+            onConfirm={startQuiz}
         />
     </>);
 }

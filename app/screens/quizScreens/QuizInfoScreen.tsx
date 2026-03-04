@@ -1,11 +1,12 @@
 import { useNavigation } from '@react-navigation/native';
-import { Alert, Button, StyleSheet, Text, View } from 'react-native';
-import { useLayoutEffect } from 'react';
+import { Button, StyleSheet, Text, View } from 'react-native';
+import { useLayoutEffect, useState } from 'react';
 import { PrimaryButtonWithIcon } from '@/components/Buttons';
 import { useAuth } from '@/context/AuthContext';
 import { deleteQuiz } from '@/api/quizzes';
 import { deleteLocalQuiz } from '@/localDatabase/quizzes';
 import { useSounds } from '@/hooks/useSounds';
+import { DestructiveModal } from '@/components/Modal';
 
 
 export default function QuizInfoScreen({route}: any) {
@@ -14,6 +15,7 @@ export default function QuizInfoScreen({route}: any) {
     const { username } = useAuth();
     const ownedByUser = passedQuiz.owner === username;
     const {playNotification} = useSounds();
+    const [deleteModalVisible, setDeleteModalVisible] = useState(false);
     
     useLayoutEffect(() => {
         navigation.setOptions({
@@ -35,11 +37,7 @@ export default function QuizInfoScreen({route}: any) {
 
     const quizDeleteAlert = () => {
         playNotification();
-        Alert.alert(
-            'Delete Quiz', 'Are you sure you want to delete this quiz?', [
-                {text: 'No, keep it', style: 'cancel',},
-                {text: 'Yes, delete it', onPress: () => handleDeleteQuiz(), style: 'destructive',},
-        ]);
+        setDeleteModalVisible(true);
     };
 
     const handleDeleteQuiz = () => {
@@ -101,6 +99,16 @@ export default function QuizInfoScreen({route}: any) {
                     <PrimaryButtonWithIcon label="Delete quiz" icon="delete" onPress={quizDeleteAlert}/>
                 </>)}
             </View>
+
+            <DestructiveModal
+                visible={deleteModalVisible}
+                titleText='Delete Quiz'
+                infoText='Are you sure you want to delete this quiz?'
+                cancelText='No, keep it'
+                confirmText='Yes, delete it'
+                onClose={() => setDeleteModalVisible(false)}
+                onConfirm={handleDeleteQuiz}
+            />
         </View>
     );
 }

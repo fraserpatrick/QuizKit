@@ -1,4 +1,4 @@
-import { View, Text, StyleSheet, TextInput, TouchableWithoutFeedback, Keyboard, Alert, Button, ScrollView, Image, Pressable } from "react-native";
+import { View, Text, StyleSheet, TextInput, TouchableWithoutFeedback, Keyboard, Button, ScrollView, Image, Pressable } from "react-native";
 import React, { useLayoutEffect, useState } from "react";
 import { useNavigation } from "@react-navigation/native";
 import { SelectList } from 'react-native-dropdown-select-list';
@@ -12,12 +12,13 @@ import Checkbox from "expo-checkbox";
 import { Question } from "@/components/Interfaces";
 import * as ImagePicker from 'expo-image-picker';
 import { SecondaryColour } from "@/components/SelectedStyles";
-import { ImageModal } from "@/components/Modal";
+import { DestructiveModal, ImageModal } from "@/components/Modal";
 
 export default function QuestionEditor({route}: any) {
     const {passedQuestion, passedQuiz} = route.params;
     const navigation = useNavigation();
     const {playNotification} = useSounds();
+    const [deleteModalVisible, setDeleteModalVisible] = useState(false);
 
     useLayoutEffect(() => {
         navigation.setOptions({
@@ -226,12 +227,7 @@ export default function QuestionEditor({route}: any) {
 
     const deleteQuestionAlert = () => { 
         playNotification();
-        Alert.alert(
-            'Delete Question', 'Are you sure you want to delete this question?', [
-                {text: 'No, keep it', style: 'cancel',},
-                {text: 'Yes, delete it', onPress: () => handleDeleteQuestion(), style: 'destructive',},
-            ]
-        );
+        setDeleteModalVisible(true);
     };
 
     const handleDeleteQuestion = () => {
@@ -404,6 +400,15 @@ export default function QuestionEditor({route}: any) {
                     visible={previewVisible}
                     onClose={() => setPreviewVisible(false)}
                     imageUri={imageUri}
+                />
+                <DestructiveModal
+                    visible={deleteModalVisible}
+                    titleText='Delete Question'
+                    infoText='Are you sure you want to delete this question?'
+                    cancelText='No, keep it'
+                    confirmText='Yes, delete it'
+                    onClose={() => setDeleteModalVisible(false)}
+                    onConfirm={handleDeleteQuestion}
                 />
 
                 <View style={styles.floatingBar}>

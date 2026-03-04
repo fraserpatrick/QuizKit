@@ -1,6 +1,6 @@
 import { useNavigation } from '@react-navigation/native';
 import { useEffect, useLayoutEffect, useState } from "react";
-import { View, Text, Button, Keyboard, TextInput, TouchableWithoutFeedback, StyleSheet, Alert } from "react-native";
+import { View, Text, Button, Keyboard, TextInput, TouchableWithoutFeedback, StyleSheet } from "react-native";
 import { SegmentedButtons } from "react-native-paper";
 import {useAuth} from '@/context/AuthContext'
 import { PrimaryButtonWithIcon } from '@/components/Buttons';
@@ -9,12 +9,14 @@ import { useSounds } from '@/hooks/useSounds';
 import { createLocalQuiz, updateLocalQuiz } from '@/localDatabase/quizzes';
 import { quizMigration } from '@/utils/quizMigration';
 import { PrimaryColour, SecondaryColour } from '@/components/SelectedStyles';
+import { BaseModal } from '@/components/Modal';
 
 export default function QuizInfoEditor({route}: any) {
     const {passedQuiz} = route.params;
     const navigation = useNavigation();
     const {username} = useAuth();
     const {playNotification} = useSounds();
+    const [saveModalVisible, setSaveModalVisible] = useState(false);
 
 
     useLayoutEffect(() => {
@@ -48,18 +50,7 @@ export default function QuizInfoEditor({route}: any) {
             return;
         }
         playNotification();
-        if (passedQuiz){
-            Alert.alert('Update quiz?', 'Are you sure you want to update this quiz?', [
-                {text: 'No, go back', style: 'cancel',},
-                {text: 'Yes, update quiz', onPress: handleUpdateQuiz , style: 'default',},
-            ]);
-        }
-        else{
-            Alert.alert('Create quiz?', 'Are you sure you want to create this quiz?', [
-                {text: 'No, go back', style: 'cancel',},
-                {text: 'Yes, create quiz', onPress: handleCreateQuiz , style: 'default',},
-            ]);
-        }
+        setSaveModalVisible(true);
     }
 
     const handleCreateQuiz = async () => {
@@ -156,6 +147,17 @@ export default function QuizInfoEditor({route}: any) {
                 <View style={styles.buttonsContainer}>
                     <PrimaryButtonWithIcon label={passedQuiz ? 'Save quiz changes' : 'Create new quiz'} icon={passedQuiz ? 'save' : 'plus'} onPress={handleQuizSave}/>
                 </View>
+                <BaseModal
+                    visible={saveModalVisible}
+                    titleText={passedQuiz ? 'Update quiz?' : 'Create quiz?'}
+                    infoText={passedQuiz 
+                        ? 'Are you sure you want to update this quiz?' 
+                        : 'Are you sure you want to create this quiz?'}
+                        cancelText='No, go back'
+                        confirmText={passedQuiz ? 'Yes, update quiz' : 'Yes, create quiz'}
+                        onClose={() => setSaveModalVisible(false)}
+                        onConfirm={passedQuiz ? handleUpdateQuiz: handleCreateQuiz}
+                />
             </View>
         </TouchableWithoutFeedback>
     );
