@@ -70,7 +70,7 @@ export default function QuizPlayerSummary({ route }: any) {
                     renderItem={({ item }) => (
                         <VariableQuestionItem
                             question={item}
-                            onPress={() => navigation.navigate('QuestionReview', {question: item})}
+                            onPress={() => navigation.navigate('QuestionReview', {question: item, passedQuiz: passedQuiz})}
                             correct={correct(item)}
                         />
                     )}

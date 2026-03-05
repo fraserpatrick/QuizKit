@@ -332,7 +332,7 @@ export default function QuizPlayer({route}: any) {
                         <View style={styles.questionContainer}>
                             <Text style={styles.questionHeader}>{questions[currentQuestion].text}?</Text>
                             <QuizImage
-                                imageUri={questions[currentQuestion].imageUri}
+                                imageUri={questions[currentQuestion].imageUri!}
                                 saveType={passedQuiz.saveType}
                             />
                         </View>
