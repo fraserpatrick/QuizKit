@@ -1,4 +1,4 @@
-import { Modal, TouchableWithoutFeedback, Keyboard, View, Pressable, StyleSheet, Text, StyleProp, ViewStyle, Image } from "react-native";
+import { Modal, TouchableWithoutFeedback, Keyboard, View, Pressable, StyleSheet, Text, StyleProp, ViewStyle, Image, TextInput } from "react-native";
 
 interface BaseModalProps {
     visible: boolean;
@@ -15,6 +15,19 @@ interface ImageModalProps {
     visible: boolean;
     onClose: () => void;
     imageUri: string;
+}
+
+interface TextModalProps {
+    visible: boolean;
+    titleText: string;
+    infoText: string;
+    cancelText: string;
+    confirmText: string;
+    onClose: () => void;
+    onConfirm: () => void;
+    inputValue: string;
+    inputChange: (text: string) => void;
+    placeholder: string;
 }
 
 
@@ -97,6 +110,63 @@ export const ImageModal: React.FC<ImageModalProps> = ({visible, onClose, imageUr
 }
 
 
+export const TextModal: React.FC<TextModalProps> = ({visible, titleText, infoText, cancelText, confirmText, onClose, onConfirm, inputValue, inputChange, placeholder}) => {
+    return (
+        <Modal
+            animationType="fade"
+            transparent
+            visible={visible}
+            onRequestClose={onClose}
+        >
+            <View style={styles.modalOverlay}>
+                <Pressable
+                    style={StyleSheet.absoluteFillObject}
+                    onPress={onClose}
+                />
+                <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+                    <View style={styles.modalContainer}>
+                        <Text style={styles.modalTitle}>{titleText}</Text>
+                        <Text>{infoText}</Text>
+                        <TextInput
+                            style={styles.input}
+                            value={inputValue}
+                            onChangeText={inputChange}
+                            secureTextEntry
+                            placeholder={placeholder}
+                            placeholderTextColor='#818181'
+                            autoCapitalize="none"
+                            autoCorrect={false}
+                            textContentType="password"
+                            returnKeyType="done"
+                        />
+
+                        <View style={styles.buttonRow}>
+                            <Pressable
+                                style={({ pressed }) => [styles.modalButton, pressed && styles.buttonPressed]}
+                                onPress={onClose}
+                            >
+                                <Text style={styles.buttonText}>
+                                    {cancelText}
+                                </Text>
+                            </Pressable>
+
+                            <Pressable
+                                style={({ pressed }) => [ styles.modalButton, pressed && styles.buttonPressed]}
+                                onPress={onConfirm}
+                            >
+                                <Text style={styles.buttonText}>
+                                    {confirmText}
+                                </Text>
+                            </Pressable>
+                        </View>
+                    </View>
+                </TouchableWithoutFeedback>
+            </View>
+        </Modal>
+    );
+};
+
+
 const styles = StyleSheet.create({
     modalOverlay: {
         flex: 1,
@@ -148,5 +218,14 @@ const styles = StyleSheet.create({
     fullImage: {
         width: '100%',
         height: '80%',
+    },
+    input:{
+        width: '100%',
+        padding: 10,
+        marginBottom: 10,
+        borderWidth: 1,
+        borderColor: '#000000ff',
+        borderRadius: 10,
+        backgroundColor: '#ffffffff',
     },
 });

@@ -1,5 +1,5 @@
 import React, { useLayoutEffect, useState } from 'react';
-import { View, Text, Button, TextInput, StyleSheet, Keyboard, TouchableWithoutFeedback, Alert } from 'react-native';
+import { View, Text, Button, TextInput, StyleSheet, Keyboard, TouchableWithoutFeedback, Alert, Modal, Pressable } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { useAuth } from '@/context/AuthContext';
 import { PrimaryButtonWithIcon } from '@/components/Buttons';
@@ -8,6 +8,7 @@ import { deleteQuizWithOwner, updateQuizToNewUsername } from '@/api/quizzes';
 import { useSounds } from '@/hooks/useSounds';
 import { deleteLocalQuizWithOwner, updateLocalQuizToNewUsername } from '@/localDatabase/quizzes';
 import { resetDatabase } from '@/localDatabase/databaseConnection';
+import { TextModal } from '@/components/Modal';
 
 export default function ProfileEditor() {
     const { username, user, changeUsername, resetPassword, deleteAccount } = useAuth();
@@ -16,6 +17,10 @@ export default function ProfileEditor() {
     const [loadingUsername, setLoadingUsername] = useState<boolean>(false);
     const [loadingPassword, setLoadingPassword] = useState<boolean>(false);
     const [loadingDelete, setLoadingDelete] = useState<boolean>(false);
+
+    const [deleteModalVisible, setDeleteModalVisible] = useState(false);
+    const [deletePassword, setDeletePassword] = useState('');
+
     const [usernameInput, setUsernameInput] = useState(username!);
 
 
@@ -100,19 +105,33 @@ export default function ProfileEditor() {
     }
 
     const handleDeleteAccount = async () => {
+        if (!deletePassword) {
+            alert('No password entered')
+            return;
+        }
         setLoadingDelete(true);
 
         try{
+            await deleteAccount(deletePassword);
+
+            setDeleteModalVisible(false);
+
             await deleteQuizWithOwner(username!);
             await deleteLocalQuizWithOwner(username!)
             await deleteUser(username!);
-            await deleteAccount();
+
             alert('Account Deleted. Goodbye');
         } catch (error:any) {
             console.log(error);
-            alert('Failed to delete account.')
+
+            if (error.code === 'auth/invalid-credential') {
+                alert('Incorrect Password')
+            } else {
+                alert('Failed to delete account.');
+            }
         } finally {
             setLoadingDelete(false);
+            setDeletePassword('');
         }
     } 
     
@@ -120,14 +139,9 @@ export default function ProfileEditor() {
         if (loadingDelete) {
             return;
         }
-
+        
         playNotification();
-        Alert.alert(
-            'Delete Account', 'Are you sure you want to delete your account? This will also delete any Quizzes you own!', [
-                {text: 'No, I want to stay', style: 'cancel',},
-                {text: 'Yes, delete my account', onPress: () => handleDeleteAccount(), style: 'destructive',},
-            ]
-        );
+        setDeleteModalVisible(true);
     }
 
     return (
@@ -147,6 +161,20 @@ export default function ProfileEditor() {
                     />
                     <PrimaryButtonWithIcon label={loadingUsername ? 'Updating username...' : 'Update username'} icon="save" onPress={checkUpdateUsername}/>
                 </View>
+
+                <TextModal
+                    visible={deleteModalVisible}
+                    titleText='Confirm Account Deletion'
+                    infoText='Enter your password to permanently delete your account and all quizzes you own:'
+                    cancelText='Cancel'
+                    confirmText='Delete Account'
+                    onClose={() => setDeleteModalVisible(false)}
+                    onConfirm={handleDeleteAccount}
+                    inputValue={deletePassword}
+                    inputChange={setDeletePassword}
+                    placeholder='Password'
+                />
+
                 <PrimaryButtonWithIcon label={loadingPassword ? 'Sending password reset email...' : 'Send password reset email'} icon="save" onPress={handlePasswordReset}/>
                 <PrimaryButtonWithIcon label={loadingDelete ? 'Deleting account...' : 'Delete account'} icon="save" onPress={deleteAccountAlert}/>
 

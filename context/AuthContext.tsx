@@ -6,7 +6,9 @@ import {
     signOut,
     sendPasswordResetEmail,
     updatePassword,
-    deleteUser
+    deleteUser,
+    reauthenticateWithCredential,
+    EmailAuthProvider
 } from 'firebase/auth';
 import React, { ReactNode, createContext, useContext, useEffect, useState } from 'react';
 import { auth } from '@/app/firebase';
@@ -25,7 +27,7 @@ interface AuthContextType {
     changeUsername: (newUsername: string) => Promise<void>;
     changePassword?: (newPassword: string) => Promise<void>;
     loading: boolean;
-    deleteAccount: () => Promise<void>;
+    deleteAccount: (password: string) => Promise<void>;
 }
 
 interface AuthProviderProps {
@@ -111,13 +113,17 @@ export const AuthProvider = ({children} : AuthProviderProps) => {
         }
     }
 
-    const deleteAccount = async () : Promise<void> => {
-        if (auth.currentUser) {
-            await deleteUser(auth.currentUser);
-        } else {
+    const deleteAccount = async (password: string) : Promise<void> => {
+        if (!auth.currentUser || !auth.currentUser.email) {
             throw new Error('No authenticated user');
         }
-    }
+
+        const credential = EmailAuthProvider.credential(auth.currentUser.email, password);
+
+
+        await reauthenticateWithCredential(auth.currentUser, credential);
+        await deleteUser(auth.currentUser);
+    };
 
     const value: AuthContextType = {
         user,
