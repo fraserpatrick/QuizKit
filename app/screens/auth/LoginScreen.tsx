@@ -4,16 +4,20 @@ import { StyleSheet, Image, Keyboard, Text, TextInput, TouchableOpacity, Touchab
 import { useAuth } from "@/context/AuthContext";
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { PrimaryButton } from "@/components/Buttons";
+import { TextModal } from "@/components/Modal";
 
 export default function LoginScreen() {
     const navigation = useNavigation();
-    const {signIn} = useAuth();
+    const {signIn, resetPasswordWithEmail} = useAuth();
     const [loading, setLoading] = useState<boolean>(false);
 
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [showPassword, setShowPassword] = useState(false);
     const passwordRef = useRef<TextInput>(null);
+
+    const [resetEmail, setResetEmail] = useState('');
+    const [forgotModalVisible, setForgotModalVisible] = useState<boolean>(false);
 
 
     const handleLogin = async () => {
@@ -50,9 +54,34 @@ export default function LoginScreen() {
         }
     };
 
-    const handleForgotPassword = () => {
-        navigation.navigate('ForgotPassword' as never);
+
+    const handleForgotPassword = async () => {
+        let cleanResetEmail = resetEmail.trim().toLowerCase();
+
+        if (!cleanResetEmail) {
+            alert('Please enter your email');
+            return;
+        }
+
+        console.log('Password reset requested for:', cleanResetEmail);
+
+        try {
+            await resetPasswordWithEmail(cleanResetEmail);
+
+            alert('Password reset email sent. Please check your inbox.');
+            setForgotModalVisible(false)
+            setResetEmail('');
+        } catch (error: any) {
+            console.log('Password reset failed:', error);
+
+            if (error.code === 'auth/invalid-email') {
+                alert('Incorrect email.');
+            } else {
+                alert('Something went wrong. Please try again.');
+            }
+        }
     }
+
 
     const handleCreateAccount = () => {
         navigation.navigate('SignUp' as never);
@@ -106,9 +135,22 @@ export default function LoginScreen() {
                             </TouchableOpacity>
                         </View>
                         <PrimaryButton label={loading ? "Logging in..." : "Login"} onPress={handleLogin}/>
-                        <PrimaryButton label="Forgot Password?" onPress={handleForgotPassword}/>
+                        <PrimaryButton label="Forgot Password?" onPress={() => setForgotModalVisible(true)}/>
                         <PrimaryButton label="Don't have an account?" onPress={handleCreateAccount} />
                     </View>
+
+                    <TextModal
+                        visible={forgotModalVisible}
+                        titleText='Password Reset'
+                        infoText='Enter your email to receive a password reset email:'
+                        cancelText='Cancel'
+                        confirmText='Get reset email'
+                        onClose={() => setForgotModalVisible(false)}
+                        onConfirm={handleForgotPassword}
+                        inputValue={resetEmail}
+                        inputChange={setResetEmail}
+                        placeholder='Email'
+                    />
                 </View>
             </TouchableWithoutFeedback>
         </KeyboardAvoidingView>

@@ -131,12 +131,12 @@ export const TextModal: React.FC<TextModalProps> = ({visible, titleText, infoTex
                             style={styles.input}
                             value={inputValue}
                             onChangeText={inputChange}
-                            secureTextEntry
+                            //secureTextEntry
                             placeholder={placeholder}
                             placeholderTextColor='#818181'
                             autoCapitalize="none"
                             autoCorrect={false}
-                            textContentType="password"
+                            //textContentType="password"
                             returnKeyType="done"
                         />
 
@@ -220,6 +220,7 @@ const styles = StyleSheet.create({
         height: '80%',
     },
     input:{
+        marginTop: 10,
         width: '100%',
         padding: 10,
         marginBottom: 10,
