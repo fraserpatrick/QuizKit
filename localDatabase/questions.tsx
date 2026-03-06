@@ -17,7 +17,7 @@ export const getLocalQuestions = async (): Promise<Question[]> => {
 }
 
 export const getLocalQuizQuestions = async (quizID: number): Promise<Question[]> => {
-    const sql = `SELECT * FROM question WHERE quizID = ?`;
+    const sql = `SELECT * FROM question WHERE quizID = ? ORDER BY questionOrder`;
     const result = db.getAllSync(sql, [quizID]);
 
     return result as Question[];
@@ -31,6 +31,25 @@ export const updateLocalQuestion = async (questionID: number, text: string, type
 
     return true;
 }
+
+export const updateLocalQuestionOrder = async (questions: Question[]): Promise<boolean> => {
+    await db.runAsync("BEGIN TRANSACTION");
+    const sql = `UPDATE question SET questionOrder = ? WHERE id = ?`;
+
+    try {
+        for (let index = 0; index < questions.length; index++) {
+            const question = questions[index];
+            await db.runAsync(sql, [index, question.id!]);
+        }
+
+        await db.runAsync("COMMIT");
+        return true;
+    } catch (error) {
+        await db.runAsync("ROLLBACK");
+        console.error("Failed to update question order:", error);
+        return false;
+    }
+};
 
 export const deleteLocalQuestion = async (questionID: number): Promise<boolean> => {
     const sql = `DELETE FROM question WHERE id = ?`;

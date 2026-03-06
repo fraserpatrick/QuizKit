@@ -28,6 +28,7 @@ export const initializeDatabase = async () => {
                 mcOptions TEXT,
                 feedback TEXT,
                 imageUri TEXT,
+                questionOrder INTEGER DEFAULT 0,
                 FOREIGN KEY (quizID)
                     REFERENCES quiz(id)
                     ON DELETE CASCADE

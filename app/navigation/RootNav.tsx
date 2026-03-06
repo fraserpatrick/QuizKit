@@ -3,6 +3,7 @@ import AppNavigator from '@/app/navigation/AppNav';
 import AuthNavigator from '@/app/navigation/AuthNav';
 import { View, ActivityIndicator, Text } from 'react-native';
 import { SecondaryColour } from '@/components/SelectedStyles';
+import { GestureHandlerRootView } from 'react-native-gesture-handler';
 
 export default function RootNavigator() {
     const { isAuthenticated, loading } = useAuth();
@@ -19,6 +20,8 @@ export default function RootNavigator() {
     }
 
     return (
-        isAuthenticated ? <AppNavigator /> : <AuthNavigator />
+        <GestureHandlerRootView style={{ flex: 1 }}>
+            {isAuthenticated ? <AppNavigator /> : <AuthNavigator />}
+        </GestureHandlerRootView>
     );
 }

@@ -12,7 +12,7 @@ type QuizProps = {
 
 type QuestionProps = {
     question: Question;
-    onPress: () => void;
+    onPress?: () => void;
 }
 
 type LeaderboardProps = {
@@ -44,14 +44,28 @@ const saveIcon = (saveType: string) => {
     );
 }
 
+const reorderIcon = () => {
+    return (
+        <AntDesign
+            name="holder"
+            size={24}
+            color="#fff"
+        />
+    ) 
+}
 
-export const QuestionItem = ({ question, onPress }: QuestionProps) => {
+
+export const QuestionItem = ({ question, onPress, onLongPress, isActive, number }: QuestionProps & {onLongPress?: () => void; isActive?: boolean; number: number }) => {
     const { playClick } = useSounds();
     return (
-        <TouchableOpacity onPress={() => { playClick(); onPress(); }}>
-            <View style={styles.item}>
+        <TouchableOpacity 
+            onPress={() => { playClick(); onPress?.(); }}
+            onLongPress={onLongPress}
+        >
+            <View style={[styles.item, isActive && { backgroundColor: PrimaryColour }]}>
+                <Text style={styles.questionNumberText}>{number}.</Text>
                 <Text style={styles.buttonText}>{question.text}</Text>
-                {iconItem()}
+                {onLongPress ? reorderIcon() : iconItem()}
             </View>
         </TouchableOpacity>
     )
@@ -60,7 +74,7 @@ export const QuestionItem = ({ question, onPress }: QuestionProps) => {
 export const VariableQuestionItem = ({ question, onPress, correct }: QuestionProps & { correct: boolean }) => {
     const { playClick } = useSounds();
     return (
-        <TouchableOpacity onPress={() => { playClick(); onPress(); }}>
+        <TouchableOpacity onPress={() => { playClick(); onPress?.(); }}>
             <View style={[styles.item, correct ? styles.correctItem : styles.incorrectItem]}>
                 <Text
                     style={styles.buttonText}
@@ -142,7 +156,7 @@ const styles = StyleSheet.create({
         justifyContent: 'space-between',
         backgroundColor: SecondaryColour,
         borderWidth: 1,
-        marginTop: 4,
+        marginTop: 8,
         marginHorizontal: 20,
         borderRadius: 5,
         paddingHorizontal: 10,
@@ -202,5 +216,11 @@ const styles = StyleSheet.create({
         color: 'white',
         fontSize: 16,
         marginRight: 8,
+    },
+    questionNumberText: {
+        width: 28,
+        textAlign: 'center',
+        fontWeight: 'bold',
+        color: 'white',
     },
 });

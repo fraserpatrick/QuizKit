@@ -1,35 +1,46 @@
 import { useFocusEffect, useNavigation } from '@react-navigation/native';
-import { View, StyleSheet, FlatList, Button, Text } from 'react-native';
+import { View, StyleSheet, Button, Text } from 'react-native';
 import { Question } from '@/components/Interfaces';
 import { useState, useCallback, useLayoutEffect } from 'react';
 import { PrimaryButtonWithIcon } from '@/components/Buttons';
 import { getQuizQuestions } from '@/api/questions';
-import { getLocalQuizQuestions } from '@/localDatabase/questions';
+import { getLocalQuizQuestions, updateLocalQuestionOrder } from '@/localDatabase/questions';
 import { QuestionItem } from '@/components/Items';
+import DraggableFlatList, { RenderItemParams } from 'react-native-draggable-flatlist';
 
 export default function QuizEditor({route}: any) {
     const {passedQuiz} = route.params;
     const navigation = useNavigation();
+    const [reorderMode, setReorderMode] = useState(false);
+    const [questions, setQuestions] = useState<Question[]>([]);
+    const [tempQuestions, setTempQuestions] = useState<Question[]>([]);
 
     useLayoutEffect(() => {
         navigation.setOptions({
             title: `Editing: ${passedQuiz.title}`,
             headerLeft: () => (
                 <Button title="< Back" onPress={() => navigation.goBack()} />
-            )
+            ),
+            headerRight: () => (
+                <Button
+                    title={reorderMode ? "Exit" : "Reorder"}
+                    onPress={toggleReorderMode}
+                />
+            ),
         });
-    }, [navigation, passedQuiz.title]);
+    }, [navigation, passedQuiz.title, reorderMode]);
 
-    const [questions, setQuestions] = useState<Question[]>([]);
 
     const loadQuestions = async () => {
             try {
                 if (passedQuiz.saveType === 'local'){
                     const localQuestions = await getLocalQuizQuestions(passedQuiz.id!);
                     setQuestions(localQuestions)
+                    setTempQuestions(localQuestions);
                 } else if (passedQuiz.saveType === 'cloud'){
                     const cloudQuestions = await getQuizQuestions(passedQuiz.id!)
                     setQuestions(cloudQuestions);
+                    setTempQuestions(cloudQuestions);
                 }
             } catch (error) {
                 console.error('Error loading data:', error);
@@ -43,28 +54,69 @@ export default function QuizEditor({route}: any) {
     );
 
 
+    const toggleReorderMode = () => {
+        if (reorderMode) {
+            setTempQuestions(questions);
+        }
+        setReorderMode(!reorderMode);
+    }
+
+
     const handleCreateQuestions = () => {
-        navigation.navigate('QuestionEditor', { passedQuestion: null, passedQuiz: passedQuiz });
+        navigation.navigate('QuestionEditor', { passedQuestion: null, passedQuiz });
     };
 
     const handleOpenQuestion = (question: Question) => {
-        navigation.navigate('QuestionEditor', { passedQuestion: question, passedQuiz: passedQuiz });
+        navigation.navigate('QuestionEditor', { passedQuestion: question, passedQuiz });
     }
+
+
+    const saveQuestionOrder = async (newQuestions: Question[]) => {
+        console.log("SAVING")
+        setQuestions(newQuestions);
+        if (passedQuiz.saveType === 'local'){
+            await updateLocalQuestionOrder(newQuestions);
+        } else if (passedQuiz.saveType === 'cloud'){
+            
+        }
+    }
+
+
+    const handleButtonPress = () => {
+        if (reorderMode) {
+            saveQuestionOrder(tempQuestions);
+            setReorderMode(false);
+        }
+        else {
+            handleCreateQuestions();
+        }
+    }
+
+
+    const renderDraggableItem = ({ item, drag, isActive }: RenderItemParams<Question>) => {
+        const listForNumbering = reorderMode ? tempQuestions : questions;
+        const questionNumber = listForNumbering.indexOf(item) + 1;
+    
+        return (
+            <QuestionItem
+            question={item}
+            onPress={!reorderMode ? () => handleOpenQuestion(item) : undefined}
+            onLongPress={reorderMode ? drag : undefined}
+            isActive={isActive}
+            number={questionNumber}
+            />
+        )   
+    }; 
 
 
     return (
         <View style={styles.container}>
-            <View style={styles.questionsContainer}>
-                <FlatList
-                    data={questions}
+                <DraggableFlatList
+                    data={reorderMode ? tempQuestions : questions}
                     keyExtractor={(item) => String(item.id)}
                     contentContainerStyle={{paddingBottom: 60}}
-                    renderItem={({ item }) => (
-                        <QuestionItem
-                            question={item}
-                            onPress={() => handleOpenQuestion(item)}
-                        />
-                    )}
+                    onDragEnd={({data}) => reorderMode && setTempQuestions(data)}
+                    renderItem={renderDraggableItem}
                     ListEmptyComponent={() => (
                         <View style={styles.emptyContainer}>
                             <Text style={styles.emptyTitle}>No questions yet</Text>
@@ -74,9 +126,8 @@ export default function QuizEditor({route}: any) {
                         </View>
                     )}
                 />
-            </View>
             <View style={styles.buttonsContainer}>
-                <PrimaryButtonWithIcon label="Create new question" icon="plus" onPress={handleCreateQuestions}/>
+                <PrimaryButtonWithIcon label={reorderMode ? 'Update question order' : 'Create new question'} icon={reorderMode ? 'save' : 'plus'} onPress={handleButtonPress}/>
             </View>
         </View>
     );
@@ -88,9 +139,6 @@ const styles = StyleSheet.create({
         flex: 1,
         paddingHorizontal: 20,
         marginTop: 10,
-    },
-    questionsContainer:{
-        flex: 0.9,
     },
     buttonsContainer:{
         position: 'absolute',
