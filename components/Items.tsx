@@ -146,6 +146,11 @@ const styles = StyleSheet.create({
         marginHorizontal: 20,
         borderRadius: 5,
         paddingHorizontal: 10,
+        shadowColor: '#000',
+        shadowOpacity: 0.15,
+        shadowRadius: 3,
+        shadowOffset: { width: 0, height: 2 },
+        elevation: 2,
     },
     icon: {
         marginLeft: 8,
@@ -155,6 +160,7 @@ const styles = StyleSheet.create({
         color: 'white',
         fontSize: 16,
         marginVertical: 10,
+        fontWeight: 600
     },
     smallButtonText: {
         flex: 1,
