@@ -1,5 +1,5 @@
 import { useNavigation } from '@react-navigation/native';
-import { Button, StyleSheet, Text, View } from 'react-native';
+import { Button, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { useLayoutEffect, useState } from 'react';
 import { PrimaryButtonWithIcon } from '@/components/Buttons';
 import { useAuth } from '@/context/AuthContext';
@@ -21,7 +21,7 @@ export default function QuizInfoScreen({route}: any) {
         navigation.setOptions({
             title: 'Quiz information',
             headerLeft: () => (
-                <Button title="< Back" onPress={navigation.goBack} />
+                <Button title="< Back" onPress={() => navigation.goBack()} />
             ),
             headerRight: ownedByUser? () => (
                 <Button
@@ -32,7 +32,7 @@ export default function QuizInfoScreen({route}: any) {
                 />
             ): undefined
         });
-    }, []);
+    }, [navigation, ownedByUser, passedQuiz]);
 
 
     const quizDeleteAlert = () => {
@@ -40,13 +40,14 @@ export default function QuizInfoScreen({route}: any) {
         setDeleteModalVisible(true);
     };
 
-    const handleDeleteQuiz = () => {
+    const handleDeleteQuiz = async () => {
+        setDeleteModalVisible(false);
         console.log('Deleting quiz with id: ' + passedQuiz.id);
         try{
             if (passedQuiz.saveType === 'local'){
-                deleteLocalQuiz(passedQuiz.id);
+                await deleteLocalQuiz(passedQuiz.id);
             } else if (passedQuiz.saveType === 'cloud'){
-                deleteQuiz(passedQuiz.id);
+                await deleteQuiz(passedQuiz.id);
             }
 
             alert('Deleted quiz : ' + passedQuiz.title);
@@ -62,36 +63,39 @@ export default function QuizInfoScreen({route}: any) {
 
     return (
         <View style={styles.container}>
-            <View style={ownedByUser ? {flex: 0.74} : {flex: 0.9}}>
-                <View style={styles.itemContainer}>
-                    <Text style={styles.quizTitle}>{passedQuiz.title}</Text>    
-                </View>            
-                {!ownedByUser && (
+            <ScrollView contentContainerStyle={{ paddingBottom: 120 }}>
+                <View style={ownedByUser ? {flex: 0.74} : {flex: 0.9}}>
                     <View style={styles.itemContainer}>
-                        <Text style={styles.header}>Created by:</Text>
-                        <PrimaryButtonWithIcon label={passedQuiz.owner} icon="user" onPress={() => navigation.navigate('ProfileScreen', { passedUsername: passedQuiz.owner })}/>
-                    </View>
-                )}
-                {passedQuiz.description && (
-                    <View style={styles.itemContainer}>
-                        <Text style={styles.header}>Description</Text>
-                        <Text>{passedQuiz.description}</Text>
-                    </View>
-                )}
-                {ownedByUser && (<>
-                    <View style={styles.itemContainer}>
-                        <Text style={styles.header}>Save Location</Text>
-                        <Text>{passedQuiz.saveType}</Text>
-                    </View>
-                
-                    {passedQuiz.saveType === "cloud" && (
+                        <Text style={styles.quizTitle}>{passedQuiz.title}</Text>    
+                    </View>            
+                    {!ownedByUser && (
                         <View style={styles.itemContainer}>
-                            <Text style={styles.header}>Visibility</Text>
-                            <Text>{passedQuiz.visibility}</Text>
+                            <Text style={styles.header}>Created by:</Text>
+                            <PrimaryButtonWithIcon label={passedQuiz.owner} icon="user" onPress={() => navigation.navigate('ProfileScreen', { passedUsername: passedQuiz.owner })}/>
                         </View>
                     )}
-                </>)}
-            </View>
+                    {passedQuiz.description && (
+                        <View style={styles.itemContainer}>
+                            <Text style={styles.header}>Description</Text>
+                            <Text style={styles.contentText}>{passedQuiz.description}</Text>
+                        </View>
+                    )}
+                    {ownedByUser && (<>
+                        <View style={styles.itemContainer}>
+                            <Text style={styles.header}>Save Location</Text>
+                            <Text style={styles.contentText}>{passedQuiz.saveType}</Text>
+                        </View>
+                    
+                        {passedQuiz.saveType === "cloud" && (
+                            <View style={styles.itemContainer}>
+                                <Text style={styles.header}>Visibility</Text>
+                                <Text style={styles.contentText}>{passedQuiz.visibility}</Text>
+                            </View>
+                        )}
+                    </>)}
+                </View>
+            </ScrollView>
+
             <View style={styles.buttonsContainer}>
                 <PrimaryButtonWithIcon label="Play quiz" icon="play-circle" onPress={() => navigation.navigate('QuizPlayer', { passedQuiz: passedQuiz })}/>
                 {ownedByUser && (<>
@@ -117,27 +121,43 @@ export default function QuizInfoScreen({route}: any) {
 const styles = StyleSheet.create({
     container:{
         flex: 1,
-        marginLeft: 20,
-        marginRight: 20,
         marginTop: 10,
+        paddingHorizontal: 20
     },
     itemContainer:{
-        padding: 5,
+        padding: 10,
         backgroundColor: '#c9c9c9',
-        borderWidth: 1,
-        borderRadius: 5,
-        marginBottom: 10,
+        borderWidth: 2,
+        borderRadius: 10,
+        marginVertical: 10,
     },
     buttonsContainer:{
-        flex: 0.1,
-        marginBottom: 0,
+        position: 'absolute',
+        bottom: 0,
+        left: 0,
+        right: 0,
+        backgroundColor: '#fff',
+        paddingVertical: 15,
+        paddingHorizontal: 20,
+        borderTopLeftRadius: 20,
+        borderTopRightRadius: 20,
+        shadowColor: '#000',
+        shadowOpacity: 0.1,
+        shadowRadius: 15,
+        elevation: 15,
     },
     header:{
-        fontSize: 24,
-        marginBottom: 5,
+        fontSize: 20,
+        fontWeight: 'bold',
+        marginBottom: 8,
     },
     quizTitle:{
         fontSize: 28,
+        fontWeight: 'bold',
         textAlign: 'center',
+    },
+    contentText: {
+        fontSize: 16,
+        lineHeight: 22,
     },
 });
