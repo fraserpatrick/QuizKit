@@ -1,5 +1,5 @@
 import React, { useLayoutEffect, useState } from 'react';
-import { View, Text, Button, TextInput, StyleSheet, Keyboard, TouchableWithoutFeedback, Alert, Modal, Pressable } from 'react-native';
+import { View, Text, Button, TextInput, StyleSheet, Keyboard, TouchableWithoutFeedback, Alert } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { useAuth } from '@/context/AuthContext';
 import { PrimaryButtonWithIcon } from '@/components/Buttons';
@@ -7,7 +7,6 @@ import { updateUsername, getUserByUsername, deleteUser } from '@/api/users';
 import { deleteQuizWithOwner, updateQuizToNewUsername } from '@/api/quizzes';
 import { useSounds } from '@/hooks/useSounds';
 import { deleteLocalQuizWithOwner, updateLocalQuizToNewUsername } from '@/localDatabase/quizzes';
-import { resetDatabase } from '@/localDatabase/databaseConnection';
 import { TextModal } from '@/components/Modal';
 
 export default function ProfileEditor() {
@@ -104,6 +103,7 @@ export default function ProfileEditor() {
         }
     }
 
+
     const handleDeleteAccount = async () => {
         if (!deletePassword) {
             alert('No password entered')
@@ -134,7 +134,8 @@ export default function ProfileEditor() {
             setDeletePassword('');
         }
     } 
-    
+
+
     const deleteAccountAlert = () => {
         if (loadingDelete) {
             return;
@@ -143,6 +144,7 @@ export default function ProfileEditor() {
         playNotification();
         setDeleteModalVisible(true);
     }
+
 
     return (
         <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
@@ -161,6 +163,12 @@ export default function ProfileEditor() {
                     />
                     <PrimaryButtonWithIcon label={loadingUsername ? 'Updating username...' : 'Update username'} icon="save" onPress={checkUpdateUsername}/>
                 </View>
+                <View style={{marginVertical: 20}}>
+                    <PrimaryButtonWithIcon label={loadingPassword ? 'Sending password reset email...' : 'Send password reset email'} icon="save" onPress={handlePasswordReset}/>
+                </View>
+                <View>
+                    <PrimaryButtonWithIcon label={loadingDelete ? 'Deleting account...' : 'Delete account'} icon="save" onPress={deleteAccountAlert}/>
+                </View>
 
                 <TextModal
                     visible={deleteModalVisible}
@@ -174,11 +182,6 @@ export default function ProfileEditor() {
                     inputChange={setDeletePassword}
                     placeholder='Password'
                 />
-
-                <PrimaryButtonWithIcon label={loadingPassword ? 'Sending password reset email...' : 'Send password reset email'} icon="save" onPress={handlePasswordReset}/>
-                <PrimaryButtonWithIcon label={loadingDelete ? 'Deleting account...' : 'Delete account'} icon="save" onPress={deleteAccountAlert}/>
-
-            <Button title="Reset Database" onPress={resetDatabase} />
             </View>
         </TouchableWithoutFeedback>
     );
