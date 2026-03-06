@@ -173,6 +173,15 @@ export default function HomeScreen() {
                             />
                         )
                     )}
+                    ListEmptyComponent={
+                        <Text style={styles.emptyText}>
+                            {search.length > 0
+                                ? `No quizzes found for "${search}"`
+                                : selector === "myQuizzes"
+                                    ? "You haven't created any quizzes yet."
+                                    : "There are no shared quizzes."}
+                        </Text>
+                    }
                 />
             </View>
             <View style={styles.leaderboardContainer}>
@@ -252,15 +261,21 @@ const styles = StyleSheet.create({
         textAlign: 'center',
     },
     loadingContainer: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: '#fff',
-},
-loadingText: {
-    marginTop: 15,
-    fontSize: 18,
-    fontWeight: '600',
-    color: '#333',
-},
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+        backgroundColor: '#fff',
+    },
+    loadingText: {
+        marginTop: 15,
+        fontSize: 18,
+        fontWeight: '600',
+        color: '#333',
+    },
+    emptyText: {
+        textAlign: 'center',
+        marginTop: 20,
+        fontSize: 16,
+        color: '#888'
+    }
 });
