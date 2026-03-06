@@ -3,7 +3,7 @@ import { View, StyleSheet, Button, Text } from 'react-native';
 import { Question } from '@/components/Interfaces';
 import { useState, useCallback, useLayoutEffect } from 'react';
 import { PrimaryButtonWithIcon } from '@/components/Buttons';
-import { getQuizQuestions } from '@/api/questions';
+import { getQuizQuestions, updateQuestionOrder } from '@/api/questions';
 import { getLocalQuizQuestions, updateLocalQuestionOrder } from '@/localDatabase/questions';
 import { QuestionItem } from '@/components/Items';
 import DraggableFlatList, { RenderItemParams } from 'react-native-draggable-flatlist';
@@ -72,12 +72,11 @@ export default function QuizEditor({route}: any) {
 
 
     const saveQuestionOrder = async (newQuestions: Question[]) => {
-        console.log("SAVING")
         setQuestions(newQuestions);
         if (passedQuiz.saveType === 'local'){
             await updateLocalQuestionOrder(newQuestions);
         } else if (passedQuiz.saveType === 'cloud'){
-            
+            await updateQuestionOrder(newQuestions);
         }
     }
 
@@ -114,7 +113,7 @@ export default function QuizEditor({route}: any) {
                 <DraggableFlatList
                     data={reorderMode ? tempQuestions : questions}
                     keyExtractor={(item) => String(item.id)}
-                    contentContainerStyle={{paddingBottom: 60}}
+                    contentContainerStyle={{paddingBottom: 120}}
                     onDragEnd={({data}) => reorderMode && setTempQuestions(data)}
                     renderItem={renderDraggableItem}
                     ListEmptyComponent={() => (
