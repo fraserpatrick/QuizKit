@@ -2,8 +2,16 @@ import { db } from '@/localDatabase/databaseConnection';
 import { Question } from '@/components/Interfaces';
 
 export const createLocalQuestion = async (quizID: number, text: string, type: string, correctAnswer: string, mcOptions: string[], feedback: string, imageUri: string): Promise<boolean> => {
-    const insertSQL = `INSERT INTO question (quizID, text, type, correctAnswer, mcOptions, feedback, imageUri) VALUES (?, ?, ?, ?, ?, ?, ?)`;
-    const data = [quizID, text, type, correctAnswer, JSON.stringify(mcOptions), feedback, imageUri];
+    const selectSQL =  `SELECT MAX(questionOrder) as maxOrder FROM question WHERE quizID = ?`;
+    const result = db.getAllSync(selectSQL, [quizID]);
+
+    const maxOrder = result?.[0]?.maxOrder ?? 0;
+    const nextQuestionOrder = maxOrder + 1;
+    
+    const insertSQL = `INSERT INTO question 
+        (quizID, text, type, correctAnswer, mcOptions, feedback, imageUri, questionOrder) 
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?)`;
+    const data = [quizID, text, type, correctAnswer, JSON.stringify(mcOptions), feedback, imageUri, nextQuestionOrder];
     await db.runAsync(insertSQL, data);
 
     return true;
