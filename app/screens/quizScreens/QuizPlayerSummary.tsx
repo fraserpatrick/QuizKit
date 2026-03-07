@@ -24,10 +24,12 @@ export default function QuizPlayerSummary({ route }: any) {
 
 
     const handlePlayAgain = () => {
+        const updatedQuestions = questions.map(({ userAnswer, ...rest }) => rest);
+
         navigation.reset({index: 2, routes: [
             {name: 'Home'},
-            {name: 'QuizInfoScreen', params: { passedQuiz: passedQuiz }},
-            {name: 'QuizPlayer', params: { passedQuiz: passedQuiz }}
+            {name: 'QuizInfoScreen', params: { passedQuiz }},
+            {name: 'QuizPlayer', params: { passedQuiz, passedQuestions: updatedQuestions }}
         ],} as never);
     }
 

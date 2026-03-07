@@ -1,12 +1,15 @@
-import { useNavigation } from '@react-navigation/native';
+import { useFocusEffect, useNavigation } from '@react-navigation/native';
 import { Button, ScrollView, StyleSheet, Text, View } from 'react-native';
-import { useLayoutEffect, useState } from 'react';
+import { useCallback, useLayoutEffect, useState } from 'react';
 import { PrimaryButtonWithIcon } from '@/components/Buttons';
 import { useAuth } from '@/context/AuthContext';
 import { deleteQuiz } from '@/api/quizzes';
 import { deleteLocalQuiz } from '@/localDatabase/quizzes';
 import { useSounds } from '@/hooks/useSounds';
-import { DestructiveModal } from '@/components/Modal';
+import { BaseModal, DestructiveModal } from '@/components/Modal';
+import { getQuizQuestions } from '@/api/questions';
+import { getLocalQuizQuestions } from '@/localDatabase/questions';
+import { Question } from '@/components/Interfaces';
 
 
 export default function QuizInfoScreen({route}: any) {
@@ -16,6 +19,8 @@ export default function QuizInfoScreen({route}: any) {
     const ownedByUser = passedQuiz.owner === username;
     const {playNotification} = useSounds();
     const [deleteModalVisible, setDeleteModalVisible] = useState(false);
+    const [startModalVisible, setStartModalVisible] = useState(false);
+    const [questions, setQuestions] = useState<Question[]>([]);
     
     useLayoutEffect(() => {
         navigation.setOptions({
@@ -33,6 +38,25 @@ export default function QuizInfoScreen({route}: any) {
             ): undefined
         });
     }, [navigation, ownedByUser, passedQuiz]);
+
+
+    const loadQuestions = async () => {
+            try {
+                if (passedQuiz.saveType === 'local'){
+                    setQuestions(await getLocalQuizQuestions(passedQuiz.id!));
+                } else if (passedQuiz.saveType === 'cloud'){
+                    setQuestions(await getQuizQuestions(passedQuiz.id!));
+                }
+            } catch (error) {
+                console.error('Error loading data:', error);
+            }
+        };
+    
+        useFocusEffect(
+            useCallback(() => {
+                loadQuestions();
+            }, [passedQuiz.id])
+        );
 
 
     const quizDeleteAlert = () => {
@@ -58,6 +82,22 @@ export default function QuizInfoScreen({route}: any) {
             return;
         }
         navigation.reset({index: 0, routes: [{name: 'Home' as never} as never,],} as never);
+    }
+
+
+    const handleQuizStart = () => {
+        if (questions.length === 0) {
+            alert('No questions');
+            return;
+        }
+
+        playNotification();
+        setStartModalVisible(true);
+    };
+
+    const startQuiz = () => {
+        setStartModalVisible(false);
+        navigation.navigate('QuizPlayer', { passedQuiz, passedQuestions: questions });
     }
 
 
@@ -93,11 +133,14 @@ export default function QuizInfoScreen({route}: any) {
                             </View>
                         )}
                     </>)}
+                    <View style={styles.itemContainer}>
+                        <Text style={styles.header}>{questions.length} question{questions.length !== 1 && 's'}</Text>
+                    </View>
                 </View>
             </ScrollView>
 
             <View style={styles.buttonsContainer}>
-                <PrimaryButtonWithIcon label="Play quiz" icon="play-circle" onPress={() => navigation.navigate('QuizPlayer', { passedQuiz: passedQuiz })}/>
+                <PrimaryButtonWithIcon label="Play quiz" icon="play-circle" onPress={handleQuizStart}/>
                 {ownedByUser && (<>
                     <PrimaryButtonWithIcon label="Edit questions" icon="edit" onPress={() => navigation.navigate('QuizEditor', { passedQuiz: passedQuiz })}/>
                     <PrimaryButtonWithIcon label="Delete quiz" icon="delete" onPress={quizDeleteAlert}/>
@@ -112,6 +155,15 @@ export default function QuizInfoScreen({route}: any) {
                 confirmText='Yes, delete it'
                 onClose={() => setDeleteModalVisible(false)}
                 onConfirm={handleDeleteQuiz}
+            />
+            <BaseModal
+                visible={startModalVisible}
+                titleText='Start Quiz'
+                infoText='Are you ready to start this quiz?'
+                cancelText='Not yet'
+                confirmText='Yes, start playing'
+                onClose={() => setStartModalVisible(false)}
+                onConfirm={startQuiz}
             />
         </View>
     );
@@ -149,7 +201,6 @@ const styles = StyleSheet.create({
     header:{
         fontSize: 20,
         fontWeight: 'bold',
-        marginBottom: 8,
     },
     quizTitle:{
         fontSize: 28,
@@ -159,5 +210,6 @@ const styles = StyleSheet.create({
     contentText: {
         fontSize: 16,
         lineHeight: 22,
+        marginTop: 8,
     },
 });

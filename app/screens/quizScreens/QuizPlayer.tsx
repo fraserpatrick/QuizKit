@@ -1,60 +1,35 @@
-import { useFocusEffect, useNavigation } from "@react-navigation/native";
-import { useCallback, useEffect, useLayoutEffect, useState } from "react";
-import { View, Text, Button, Alert, Keyboard, TouchableWithoutFeedback, StyleSheet, TouchableOpacity, TextInput, Image, ScrollView, ActivityIndicator } from "react-native";
+import { useNavigation } from "@react-navigation/native";
+import { useEffect, useLayoutEffect, useState } from "react";
+import { View, Text, Button, Keyboard, TouchableWithoutFeedback, StyleSheet, TouchableOpacity, TextInput, Image, ScrollView, ActivityIndicator } from "react-native";
 import { Question } from '@/components/Interfaces';
 import { useAuth } from "@/context/AuthContext";
 import { PrimaryButtonWithIcon, PrimaryButtonWithIconRight } from "@/components/Buttons";
-import { getQuizQuestions } from "@/api/questions";
 import { updateStats } from "@/api/users";
 import { useSounds } from "@/hooks/useSounds";
-import { getLocalQuizQuestions } from "@/localDatabase/questions";
 import { SecondaryColour } from "@/components/SelectedStyles";
-import { BaseModal, DestructiveModal, ImageModal } from "@/components/Modal";
+import { DestructiveModal, ImageModal } from "@/components/Modal";
 
 export default function QuizPlayer({route}: any) {
     const navigation = useNavigation();
     const { username } = useAuth();
-    const {passedQuiz} = route.params;
-    const [quizStarted, setQuizStarted] = useState(false);
+    const { passedQuiz, passedQuestions } = route.params;
     const [currentQuestion, setCurrentQuestion] = useState(0);
-    const [questions, setQuestions] = useState<Question[]>([]);
     const {playNotification} = useSounds();
     const [exitModalVisible, setExitModalVisible] = useState(false);
-    const [startModalVisible, setStartModalVisible] = useState(false);
+    const [questions, setQuestions] = useState<Question[]>(passedQuestions);
 
     useLayoutEffect(() => {
         navigation.setOptions({
-            title: quizStarted
-                ? `Question ${currentQuestion + 1} of ${questions.length}`
-                : `${passedQuiz.title}`,
+            title: `Question ${currentQuestion + 1} of ${questions.length}`,
             headerLeft: () => (
                 <Button title="< Exit" onPress={handleExit} />
             )
         });
-    }, [navigation, currentQuestion, quizStarted]);
+    }, [navigation, currentQuestion]);
 
 
     const [answer, setAnswer] = useState('');
     const [imagePreviewVisible, setImagePreviewVisible] = useState(false);
-
-
-    const loadQuestions = async () => {
-        try {
-            if (passedQuiz.saveType === 'local'){
-                setQuestions(await getLocalQuizQuestions(passedQuiz.id!));
-            } else if (passedQuiz.saveType === 'cloud'){
-                setQuestions(await getQuizQuestions(passedQuiz.id!));
-            }
-        } catch (error) {
-            console.error('Error loading data:', error);
-        }
-    };
-
-    useFocusEffect(
-        useCallback(() => {
-            loadQuestions();
-        }, [passedQuiz.id])
-    );
 
 
     useEffect(() => {
@@ -63,30 +38,8 @@ export default function QuizPlayer({route}: any) {
 
 
     const handleExit = () => {
-        if (quizStarted){
-            playNotification();
-            setExitModalVisible(true);
-        }
-        else {
-            navigation.goBack();
-        }
-    }
-
-
-    const handleQuizStart = () => {
-        if (questions.length === 0) {
-            Alert.alert('No questions', 'This quiz has no questions.');
-            return;
-        }
-
         playNotification();
-        setStartModalVisible(true);
-    };
-
-
-    const startQuiz = () => {
-        setStartModalVisible(false);
-        setQuizStarted(true);
+        setExitModalVisible(true);
     }
 
 
@@ -325,39 +278,32 @@ export default function QuizPlayer({route}: any) {
 
 
     return (<>
-        {quizStarted ? (
-            <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-                <View style={styles.container}>
-                    <ScrollView contentContainerStyle={{paddingBottom: 140}}>
-                        <View style={styles.questionContainer}>
-                            <Text style={styles.questionHeader}>{questions[currentQuestion].text}?</Text>
-                            <QuizImage
-                                imageUri={questions[currentQuestion].imageUri!}
-                                saveType={passedQuiz.saveType}
-                            />
-                        </View>
-                        <View style={styles.inputContainer}>
-                            {renderQuestion(questions[currentQuestion])}
-                        </View>
-                    </ScrollView>
-                        <View style={styles.floatingButtons}>
-                            {currentQuestion < questions.length -1 ? (
-                                <PrimaryButtonWithIconRight label="Next Question" icon="forward" onPress={handleNextQuestion}/>
-                            ):(
-                                <PrimaryButtonWithIcon label="Finish Quiz" icon="check-circle" onPress={finishQuiz}/>
-                            )}
-                            {currentQuestion !== 0 && (
-                                <PrimaryButtonWithIcon label="Previous Question" icon="backward" onPress={handlePrevQuestion}/>
-                            )}
-                        </View>
-                </View>
-            </TouchableWithoutFeedback>
-        ) : (
+        <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
             <View style={styles.container}>
-                <PrimaryButtonWithIcon label="Start Quiz" icon="play-circle" onPress={handleQuizStart}/>
-                <Text style={styles.questionHeader}>Number of questions: {questions.length}</Text>
+                <ScrollView contentContainerStyle={{paddingBottom: 140}}>
+                    <View style={styles.questionContainer}>
+                        <Text style={styles.questionHeader}>{questions[currentQuestion].text}?</Text>
+                        <QuizImage
+                            imageUri={questions[currentQuestion].imageUri!}
+                            saveType={passedQuiz.saveType}
+                        />
+                    </View>
+                    <View style={styles.inputContainer}>
+                        {renderQuestion(questions[currentQuestion])}
+                    </View>
+                </ScrollView>
+                    <View style={styles.floatingButtons}>
+                        {currentQuestion < questions.length -1 ? (
+                            <PrimaryButtonWithIconRight label="Next Question" icon="forward" onPress={handleNextQuestion}/>
+                        ):(
+                            <PrimaryButtonWithIcon label="Finish Quiz" icon="check-circle" onPress={finishQuiz}/>
+                        )}
+                        {currentQuestion !== 0 && (
+                            <PrimaryButtonWithIcon label="Previous Question" icon="backward" onPress={handlePrevQuestion}/>
+                        )}
+                    </View>
             </View>
-        )}
+        </TouchableWithoutFeedback>
 
         <ImageModal
             visible={imagePreviewVisible}
@@ -375,15 +321,6 @@ export default function QuizPlayer({route}: any) {
             confirmText='Yes, exit quiz'
             onClose={() => setExitModalVisible(false)}
             onConfirm={navigation.goBack}
-        />
-        <BaseModal
-            visible={startModalVisible}
-            titleText='Start Quiz'
-            infoText='Are you ready to start this quiz?'
-            cancelText='Not yet'
-            confirmText='Yes, start playing'
-            onClose={() => setStartModalVisible(false)}
-            onConfirm={startQuiz}
         />
     </>);
 }
