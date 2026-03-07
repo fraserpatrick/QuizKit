@@ -49,6 +49,11 @@ export default function QuizInfoEditor({route}: any) {
             alert('Please enter a quiz title.');
             return;
         }
+        if (passedQuiz) {
+            if (passedQuiz.title === title.trim() && passedQuiz.description === description.trim() && passedQuiz.visibility === visibility && passedQuiz.saveType === saveType) {
+                return;
+            }
+        }
         playNotification();
         setSaveModalVisible(true);
     }
