@@ -7,7 +7,6 @@ import { PrimaryButtonWithIcon } from "@/components/Buttons";
 import { createQuestion, deleteQuestion, updateQuestion, uploadImage } from "@/api/questions";
 import { createLocalQuestion, updateLocalQuestion, deleteLocalQuestion } from "@/localDatabase/questions";
 import { useSounds } from "@/hooks/useSounds";
-import Slider from '@react-native-community/slider';
 import Checkbox from "expo-checkbox";
 import { Question } from "@/components/Interfaces";
 import * as ImagePicker from 'expo-image-picker';
@@ -19,6 +18,8 @@ export default function QuestionEditor({route}: any) {
     const navigation = useNavigation();
     const {playNotification} = useSounds();
     const [deleteModalVisible, setDeleteModalVisible] = useState(false);
+    const [saveLoading, setSaveLoading] = useState<boolean>(false);
+    const [deleteLoading, setDeleteLoading] = useState<boolean>(false);
 
     useLayoutEffect(() => {
         navigation.setOptions({
@@ -35,7 +36,6 @@ export default function QuestionEditor({route}: any) {
         'True or False',
         'Multiple Choice',
         'Multiple Select',
-        'Slider',
     ];
 
     const defaultTypeOption = passedQuestion
@@ -124,10 +124,6 @@ export default function QuestionEditor({route}: any) {
     }
 
 
-    const [sliderStart, setSliderStart] = useState(0);
-    const [sliderEnd, setSliderEnd] = useState(100);
-
-
     const baseURL = process.env.EXPO_PUBLIC_API_BASE_URL ?? '';
     const [imageUri, setImageUri] = useState(() => {
         if (!passedQuestion) {
@@ -156,8 +152,17 @@ export default function QuestionEditor({route}: any) {
 
 
     const saveQuestion = async () => {
+        if (saveLoading || deleteLoading) {
+            return;
+        }
+
         if (text.trim() === '') {
             alert('Please enter a question.');
+            return;
+        }
+
+        if (type === '') {
+            alert('Please select a question type');
             return;
         }
 
@@ -171,12 +176,12 @@ export default function QuestionEditor({route}: any) {
             correctAnswers = options.filter(option => option.correct).map(option=>option.text)
 
             if(mcOptions.length<2){
-                alert("Add options")
+                alert("Please add at least 2 options")
                 return
             }
 
             if (correctAnswers.length === 0) {
-                alert("Pick a correct answer")
+                alert("Please select a correct answer")
                 return
             }
         }
@@ -190,6 +195,12 @@ export default function QuestionEditor({route}: any) {
             finalAnswer = answer
         }
 
+        if (finalAnswer === '') {
+            alert('Please enter a correct answer');
+            return;
+        }
+
+        setSaveLoading(true);
 
         if (passedQuiz.saveType === "cloud" && imageUri.startsWith("file://")) {
             finalImageUri = await uploadImage(imageUri);
@@ -198,7 +209,6 @@ export default function QuestionEditor({route}: any) {
         if (finalImageUri.includes('uploads/')) {
             finalImageUri = finalImageUri.split('uploads/')[1];
         }
-
 
         try {
             if (!passedQuestion) {
@@ -222,16 +232,23 @@ export default function QuestionEditor({route}: any) {
         } catch (error) {
             console.error('Error saving question: ', error);
             alert('Failed to save question.');
+        } finally {
+            setSaveLoading(false);
         }
     };
 
     const deleteQuestionAlert = () => { 
+        if (saveLoading || deleteLoading) {
+            return;
+        }
         playNotification();
         setDeleteModalVisible(true);
     };
 
     const handleDeleteQuestion = () => {
+        setDeleteLoading(true);
         console.log('Deleting question with id: ' + passedQuestion.id);
+
         try {
             if (passedQuiz.saveType === 'local'){
                 deleteLocalQuestion(passedQuestion.id);
@@ -244,6 +261,8 @@ export default function QuestionEditor({route}: any) {
         catch (error) {
             console.error('Error deleting question: ', error);
             alert('Failed to delete question.');
+        } finally {
+            setDeleteLoading(false);
         }
     };
 
@@ -297,30 +316,6 @@ export default function QuestionEditor({route}: any) {
                     />
                 )
 
-            case 'Slider':
-                return (<>
-                    <Text style={styles.inputHeader}>Answer: {answer}</Text>
-                    <TextInput
-                        style={styles.input}
-                        value={sliderStart.toString()}
-                        onChangeText={(text) => setSliderStart(parseInt(text) || 0)}
-                        keyboardType="numeric"
-                    />
-                    <TextInput
-                        style={styles.input}
-                        value={sliderEnd.toString()}
-                        onChangeText={(text) => setSliderEnd(parseInt(text) || 0)}
-                        keyboardType="numeric"
-                    />
-                    <Slider
-                        step={1}
-                        maximumValue={sliderEnd}
-                        minimumValue={sliderStart}
-                        onValueChange={(value) => setAnswer(value.toString())}
-                        tapToSeek={true}
-                    />
-                </>)
-
             case 'Multiple Select':
                 return renderOptions();
 
@@ -346,11 +341,7 @@ export default function QuestionEditor({route}: any) {
 
                     <Text style={styles.inputHeader}>Image (Optional)</Text>
                     {imageUri === "" ? (
-                        <PrimaryButtonWithIcon
-                            label="Add Image"
-                            icon="camera"
-                            onPress={pickImage}
-                        />
+                        <PrimaryButtonWithIcon label='Add Image' icon='camera' onPress={pickImage}/>
                     ) : (<>
                         <Pressable onPress={() => setPreviewVisible(true)}>
                             <View style={styles.imageContainer}>
@@ -362,12 +353,8 @@ export default function QuestionEditor({route}: any) {
                             </View>
                         </Pressable>
                         <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
-                            <Button title="Change" onPress={pickImage} />
-                            <Button
-                                title="Remove"
-                                color="#cc0000"
-                                onPress={() => setImageUri("")}
-                            />
+                            <Button title="Change image" onPress={pickImage} />
+                            <Button title="Remove image" color="#cc0000" onPress={() => setImageUri("")}/>
                         </View>
                     </>)}
 
@@ -412,10 +399,13 @@ export default function QuestionEditor({route}: any) {
                 />
 
                 <View style={styles.floatingBar}>
-                    <PrimaryButtonWithIcon label={passedQuestion ? 'Update Question' : 'Create Question'} icon="save" onPress={saveQuestion}/>
-                    {passedQuestion && (
-                        <PrimaryButtonWithIcon label="Delete Question" icon="delete" onPress={deleteQuestionAlert}/>
-                    )}
+                    {passedQuestion ? <>
+                        <PrimaryButtonWithIcon label={saveLoading ? 'Updating Question...' : 'Update Question'} icon="save" onPress={saveQuestion}/>
+                        <PrimaryButtonWithIcon label={deleteLoading ? 'Deleting Question...'  : 'Delete Question'} icon="delete" onPress={deleteQuestionAlert}/>
+                    </>
+                    : 
+                        <PrimaryButtonWithIcon label={saveLoading ? 'Creating Question...' : 'Create Question'} icon="plus" onPress={saveQuestion}/>
+                    }
                 </View>
             </View>
         </TouchableWithoutFeedback>
