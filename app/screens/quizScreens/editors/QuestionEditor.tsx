@@ -430,6 +430,7 @@ const styles = StyleSheet.create({
     },
     inputHeader:{
         fontSize: 20,
+        fontWeight: 'bold',
         marginBottom: 5,
         marginTop: 10,
     },

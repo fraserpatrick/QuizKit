@@ -1,6 +1,6 @@
 import { useNavigation } from '@react-navigation/native';
 import { useEffect, useLayoutEffect, useState } from "react";
-import { View, Text, Button, Keyboard, TextInput, TouchableWithoutFeedback, StyleSheet } from "react-native";
+import { View, Text, Button, Keyboard, TextInput, TouchableWithoutFeedback, StyleSheet, ScrollView } from "react-native";
 import { SegmentedButtons } from "react-native-paper";
 import {useAuth} from '@/context/AuthContext'
 import { PrimaryButtonWithIcon } from '@/components/Buttons';
@@ -107,7 +107,7 @@ export default function QuizInfoEditor({route}: any) {
     return (
         <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
             <View style={styles.container}>
-                <View style={styles.inputContainer}>
+                <ScrollView  contentContainerStyle={{ paddingBottom: 140, paddingHorizontal: 20 }}>
                     <Text style={styles.inputHeader}>Title:</Text>
                     <TextInput
                         style={styles.input}
@@ -143,10 +143,11 @@ export default function QuizInfoEditor({route}: any) {
                             { value: 'cloud', label: 'Cloud', showSelectedCheck:true },        
                         ]}
                     />
-                </View>
+                </ScrollView>
                 <View style={styles.buttonsContainer}>
                     <PrimaryButtonWithIcon label={passedQuiz ? 'Save quiz changes' : 'Create new quiz'} icon={passedQuiz ? 'save' : 'plus'} onPress={handleQuizSave}/>
                 </View>
+
                 <BaseModal
                     visible={saveModalVisible}
                     titleText={passedQuiz ? 'Update quiz?' : 'Create quiz?'}
@@ -167,18 +168,37 @@ export default function QuizInfoEditor({route}: any) {
 const styles = StyleSheet.create({
     container:{
         flex: 1,
-        marginLeft: 20,
-        marginRight: 20,
-        marginTop: 10,
+        marginTop: 10
     },
     inputContainer:{
-        flex: 0.8,
+        backgroundColor: '#ffffff',
+        padding: 18,
+        borderRadius: 18,
+        shadowColor: '#000',
+        shadowOpacity: 0.06,
+        shadowRadius: 8,
+        elevation: 3,
     },
     buttonsContainer:{
-        flex: 0.1,
+        position: 'absolute',
+        bottom: 0,
+        left: 0,
+        right: 0,
+        backgroundColor: '#fff',
+        paddingVertical: 15,
+        paddingHorizontal: 20,
+        borderTopLeftRadius: 20,
+        borderTopRightRadius: 20,
+        shadowColor: '#000',
+        shadowOpacity: 0.1,
+        shadowRadius: 15,
+        elevation: 15,
     },
     inputHeader:{
         fontSize: 20,
+        fontWeight: 'bold',
+        marginBottom: 5,
+        marginTop: 10,
     },
     input:{
         width: '100%',
@@ -194,9 +214,9 @@ const styles = StyleSheet.create({
         padding: 10,
         marginBottom: 10,
         borderWidth: 1,
-        borderColor: '#000000ff',
+        borderColor: '#000000',
         borderRadius: 10,
-        backgroundColor: '#ffffffff',
+        backgroundColor: '#ffffff',
         height: 150,
     },
 });
