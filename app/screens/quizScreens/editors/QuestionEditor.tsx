@@ -245,15 +245,15 @@ export default function QuestionEditor({route}: any) {
         setDeleteModalVisible(true);
     };
 
-    const handleDeleteQuestion = () => {
+    const handleDeleteQuestion = async () => {
         setDeleteLoading(true);
         console.log('Deleting question with id: ' + passedQuestion.id);
 
         try {
             if (passedQuiz.saveType === 'local'){
-                deleteLocalQuestion(passedQuestion.id);
+                await deleteLocalQuestion(passedQuestion.id);
             } else if (passedQuiz.saveType === 'cloud'){
-                deleteQuestion(passedQuestion.id);
+                await deleteQuestion(passedQuestion.id);
             }
             alert('Question deleted successfully.');
             navigation.goBack();
