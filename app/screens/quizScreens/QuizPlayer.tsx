@@ -158,9 +158,10 @@ export default function QuizPlayer({route}: any) {
         let selected: string[] = [];
 
         try {
-            selected = value ? JSON.parse(value) : []
+            const parsed = JSON.parse(value || "[]");
+            selected = Array.isArray(parsed) ? parsed : [];
         } catch {
-            selected = []
+            selected = [];
         }
         const toggle = (option: string) => {
             let updated = [...selected]
