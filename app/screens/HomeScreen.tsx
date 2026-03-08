@@ -173,15 +173,19 @@ export default function HomeScreen() {
                             />
                         )
                     )}
-                    ListEmptyComponent={
-                        <Text style={styles.emptyText}>
-                            {search.length > 0
-                                ? `No quizzes found for "${search}"`
-                                : selector === "myQuizzes"
-                                    ? "You haven't created any quizzes yet."
-                                    : "There are no shared quizzes."}
-                        </Text>
-                    }
+                    ListEmptyComponent={() => (
+                        <View style={styles.emptyContainer}>
+                            <Text style={styles.emptyTitle}>
+                                {search.length > 0 ? `No quizzes found for "${search}"` : "No quizzes found"}
+                            </Text>
+
+                            {search.length === 0 && selector === "myQuizzes" && (
+                                <Text style={styles.emptySubtitle}>
+                                    Tap "Create new quiz" to get started.
+                                </Text>
+                            )}
+                        </View>
+                    )}
                 />
             </View>
             <View style={styles.leaderboardContainer}>
@@ -272,10 +276,19 @@ const styles = StyleSheet.create({
         fontWeight: '600',
         color: '#333',
     },
-    emptyText: {
-        textAlign: 'center',
-        marginTop: 20,
-        fontSize: 16,
-        color: '#888'
+    emptyContainer:{
+        marginTop: 80,
+        alignItems:'center'
+    },
+    emptyTitle:{
+        fontSize:18,
+        fontWeight:'600',
+        marginBottom:8
+    },
+    emptySubtitle:{
+        fontSize:14,
+        color:'#666',
+        textAlign:'center',
+        paddingHorizontal:40
     }
 });
