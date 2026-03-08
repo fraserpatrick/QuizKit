@@ -1,4 +1,4 @@
-import { View, Text, StyleSheet, TextInput, TouchableWithoutFeedback, Keyboard, Button, ScrollView, Image, Pressable } from "react-native";
+import { View, Text, StyleSheet, TextInput, TouchableWithoutFeedback, Keyboard, Button, ScrollView, Image, Pressable, KeyboardAvoidingView, Platform } from "react-native";
 import React, { useLayoutEffect, useState } from "react";
 import { useNavigation } from "@react-navigation/native";
 import { SelectList } from 'react-native-dropdown-select-list';
@@ -330,84 +330,86 @@ export default function QuestionEditor({route}: any) {
 
     return (
         <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-            <View style={styles.container}>
-                <ScrollView  contentContainerStyle={{ paddingBottom: 140, paddingHorizontal: 20 }}>
-                    <Text style={styles.inputHeader}>Question Text:</Text>
-                    <TextInput
-                        style={styles.input}
-                        value={text}
-                        onChangeText={setText}
-                    />
+            <KeyboardAvoidingView style={{ flex: 1 }} behavior={Platform.OS === "ios" ? "padding" : "height"}>
+                <View style={styles.container}>
+                    <ScrollView  contentContainerStyle={{ paddingBottom: 140, paddingHorizontal: 20 }}>
+                        <Text style={styles.inputHeader}>Question Text:</Text>
+                        <TextInput
+                            style={styles.input}
+                            value={text}
+                            onChangeText={setText}
+                        />
 
-                    <Text style={styles.inputHeader}>Image (Optional)</Text>
-                    {imageUri === "" ? (
-                        <PrimaryButtonWithIcon label='Add Image' icon='camera' onPress={pickImage}/>
-                    ) : (<>
-                        <Pressable onPress={() => setPreviewVisible(true)}>
-                            <View style={styles.imageContainer}>
-                                <Image
-                                    source={{ uri: imageUri }}
-                                    style={styles.previewImage}
-                                    resizeMode="cover"
-                                />
+                        <Text style={styles.inputHeader}>Image (Optional)</Text>
+                        {imageUri === "" ? (
+                            <PrimaryButtonWithIcon label='Add Image' icon='camera' onPress={pickImage}/>
+                        ) : (<>
+                            <Pressable onPress={() => setPreviewVisible(true)}>
+                                <View style={styles.imageContainer}>
+                                    <Image
+                                        source={{ uri: imageUri }}
+                                        style={styles.previewImage}
+                                        resizeMode="cover"
+                                    />
+                                </View>
+                            </Pressable>
+                            <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
+                                <Button title="Change image" onPress={pickImage} />
+                                <Button title="Remove image" color="#cc0000" onPress={() => setImageUri("")}/>
                             </View>
-                        </Pressable>
-                        <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
-                            <Button title="Change image" onPress={pickImage} />
-                            <Button title="Remove image" color="#cc0000" onPress={() => setImageUri("")}/>
-                        </View>
-                    </>)}
+                        </>)}
 
-                    <Text style={styles.inputHeader}>Type:</Text>
-                    <SelectList
-                        setSelected={setType}
-                        data={types}
-                        placeholder="Select a question type"
-                        search={false}
-                        defaultOption={defaultTypeOption}
+                        <Text style={styles.inputHeader}>Type:</Text>
+                        <SelectList
+                            setSelected={setType}
+                            data={types}
+                            placeholder="Select a question type"
+                            search={false}
+                            defaultOption={defaultTypeOption}
+                        />
+
+                        {type && (<>
+                            <Text style={styles.inputHeader}>Answer:</Text>
+                            {renderInput(type)}
+                        </>)}
+
+                        <Text style={styles.inputHeader}>Feedback:</Text>
+                        <TextInput
+                            style={styles.bigInput}
+                            value={feedback}
+                            onChangeText={setFeedback}
+                            multiline
+                            textAlignVertical="top"
+                        />
+                    </ScrollView>
+
+
+                    <ImageModal
+                        visible={previewVisible}
+                        onClose={() => setPreviewVisible(false)}
+                        imageUri={imageUri}
+                    />
+                    <DestructiveModal
+                        visible={deleteModalVisible}
+                        titleText='Delete Question'
+                        infoText='Are you sure you want to delete this question?'
+                        cancelText='No, keep it'
+                        confirmText='Yes, delete it'
+                        onClose={() => setDeleteModalVisible(false)}
+                        onConfirm={handleDeleteQuestion}
                     />
 
-                    {type && (<>
-                        <Text style={styles.inputHeader}>Answer:</Text>
-                        {renderInput(type)}
-                    </>)}
-
-                    <Text style={styles.inputHeader}>Feedback:</Text>
-                    <TextInput
-                        style={styles.bigInput}
-                        value={feedback}
-                        onChangeText={setFeedback}
-                        multiline
-                        textAlignVertical="top"
-                    />
-                </ScrollView>
-
-
-                <ImageModal
-                    visible={previewVisible}
-                    onClose={() => setPreviewVisible(false)}
-                    imageUri={imageUri}
-                />
-                <DestructiveModal
-                    visible={deleteModalVisible}
-                    titleText='Delete Question'
-                    infoText='Are you sure you want to delete this question?'
-                    cancelText='No, keep it'
-                    confirmText='Yes, delete it'
-                    onClose={() => setDeleteModalVisible(false)}
-                    onConfirm={handleDeleteQuestion}
-                />
-
-                <View style={styles.floatingBar}>
-                    {passedQuestion ? <>
-                        <PrimaryButtonWithIcon label={saveLoading ? 'Updating Question...' : 'Update Question'} icon="save" onPress={saveQuestion}/>
-                        <PrimaryButtonWithIcon label={deleteLoading ? 'Deleting Question...'  : 'Delete Question'} icon="delete" onPress={deleteQuestionAlert}/>
-                    </>
-                    : 
-                        <PrimaryButtonWithIcon label={saveLoading ? 'Creating Question...' : 'Create Question'} icon="plus" onPress={saveQuestion}/>
-                    }
+                    <View style={styles.floatingBar}>
+                        {passedQuestion ? <>
+                            <PrimaryButtonWithIcon label={saveLoading ? 'Updating Question...' : 'Update Question'} icon="save" onPress={saveQuestion}/>
+                            <PrimaryButtonWithIcon label={deleteLoading ? 'Deleting Question...'  : 'Delete Question'} icon="delete" onPress={deleteQuestionAlert}/>
+                        </>
+                        : 
+                            <PrimaryButtonWithIcon label={saveLoading ? 'Creating Question...' : 'Create Question'} icon="plus" onPress={saveQuestion}/>
+                        }
+                    </View>
                 </View>
-            </View>
+            </KeyboardAvoidingView>
         </TouchableWithoutFeedback>
     );
 }
