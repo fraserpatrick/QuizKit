@@ -150,6 +150,7 @@ export default function LoginScreen() {
                         inputValue={resetEmail}
                         inputChange={setResetEmail}
                         placeholder='Email'
+                        contentType='emailAddress'
                     />
                 </View>
             </TouchableWithoutFeedback>

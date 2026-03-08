@@ -181,6 +181,7 @@ export default function ProfileEditor() {
                     inputValue={deletePassword}
                     inputChange={setDeletePassword}
                     placeholder='Password'
+                    contentType='password'
                 />
             </View>
         </TouchableWithoutFeedback>

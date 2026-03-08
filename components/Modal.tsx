@@ -1,4 +1,4 @@
-import { Modal, TouchableWithoutFeedback, Keyboard, View, Pressable, StyleSheet, Text, StyleProp, ViewStyle, Image, TextInput } from "react-native";
+import { Modal, TouchableWithoutFeedback, Keyboard, View, Pressable, StyleSheet, Text, StyleProp, ViewStyle, Image, TextInput, TextInputProps } from "react-native";
 
 interface BaseModalProps {
     visible: boolean;
@@ -28,6 +28,7 @@ interface TextModalProps {
     inputValue: string;
     inputChange: (text: string) => void;
     placeholder: string;
+    contentType?: TextInputProps["textContentType"]
 }
 
 
@@ -110,7 +111,7 @@ export const ImageModal: React.FC<ImageModalProps> = ({visible, onClose, imageUr
 }
 
 
-export const TextModal: React.FC<TextModalProps> = ({visible, titleText, infoText, cancelText, confirmText, onClose, onConfirm, inputValue, inputChange, placeholder}) => {
+export const TextModal: React.FC<TextModalProps> = ({visible, titleText, infoText, cancelText, confirmText, onClose, onConfirm, inputValue, inputChange, placeholder, contentType}) => {
     return (
         <Modal
             animationType="fade"
@@ -131,13 +132,14 @@ export const TextModal: React.FC<TextModalProps> = ({visible, titleText, infoTex
                             style={styles.input}
                             value={inputValue}
                             onChangeText={inputChange}
-                            //secureTextEntry
                             placeholder={placeholder}
                             placeholderTextColor='#818181'
                             autoCapitalize="none"
                             autoCorrect={false}
-                            //textContentType="password"
                             returnKeyType="done"
+                            textContentType={contentType}
+                            keyboardType={contentType === 'emailAddress' ? 'email-address' : 'default'}
+                            secureTextEntry={contentType === 'password'}
                         />
 
                         <View style={styles.buttonRow}>
