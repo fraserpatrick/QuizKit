@@ -32,14 +32,9 @@ export default function LoginScreen() {
             return;
         }
 
-        console.log('Attempting login with:', email);
-
         try {
             setLoading(true);
-
-            const user = await signIn(cleanEmail, password);
-            console.log('User signed in!', user.email);
-        } 
+            const user = await signIn(cleanEmail, password);        } 
         catch (error: any) {
             console.log(error)
 
@@ -63,8 +58,6 @@ export default function LoginScreen() {
             return;
         }
 
-        console.log('Password reset requested for:', cleanResetEmail);
-
         try {
             await resetPasswordWithEmail(cleanResetEmail);
 
@@ -72,7 +65,7 @@ export default function LoginScreen() {
             setForgotModalVisible(false)
             setResetEmail('');
         } catch (error: any) {
-            console.log('Password reset failed:', error);
+            console.log(error);
 
             if (error.code === 'auth/invalid-email') {
                 alert('Incorrect email.');

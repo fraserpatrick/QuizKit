@@ -1,8 +1,8 @@
 import React, { useLayoutEffect, useState } from 'react';
-import { View, Text, Button, TextInput, StyleSheet, Keyboard, TouchableWithoutFeedback, Alert } from 'react-native';
+import { View, Text, TextInput, StyleSheet, Keyboard, TouchableWithoutFeedback, Alert } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { useAuth } from '@/context/AuthContext';
-import { PrimaryButtonWithIcon } from '@/components/Buttons';
+import { HeaderButton, PrimaryButtonWithIcon } from '@/components/Buttons';
 import { updateUsername, getUserByUsername, deleteUser } from '@/api/users';
 import { deleteQuizWithOwner, updateQuizToNewUsername } from '@/api/quizzes';
 import { useSounds } from '@/hooks/useSounds';
@@ -27,7 +27,7 @@ export default function ProfileEditor() {
         navigation.setOptions({
             title: 'Edit Profile',
             headerLeft: () => (
-                <Button title="< Profile" onPress={navigation.goBack} />
+                <HeaderButton label="Back" icon='caret-left' onPress={navigation.goBack} />
             ),
         });
     }, []);

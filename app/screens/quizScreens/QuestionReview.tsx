@@ -1,8 +1,9 @@
 import { useLayoutEffect, useState } from "react";
-import { View, Text, Button, StyleSheet, ActivityIndicator, Image, TouchableOpacity } from "react-native";
+import { View, Text, StyleSheet, ActivityIndicator, Image, TouchableOpacity } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import { ImageModal } from "@/components/Modal";
 import { SecondaryColour } from "@/components/SelectedStyles";
+import { HeaderButton } from "@/components/Buttons";
 
 export default function QuizPlayerSummary({ route }: any) {
     const {question, passedQuiz} = route.params;
@@ -14,7 +15,7 @@ export default function QuizPlayerSummary({ route }: any) {
         navigation.setOptions({
             title: 'Question Summary',
             headerLeft: () => (
-                <Button title="< Back" onPress={navigation.goBack} />
+                <HeaderButton label="Back" icon='caret-left' onPress={navigation.goBack} />
             ),
         });
     }, [navigation]);

@@ -1,8 +1,8 @@
 import { useFocusEffect, useNavigation } from '@react-navigation/native';
-import { View, StyleSheet, Button, Text } from 'react-native';
+import { View, StyleSheet, Text } from 'react-native';
 import { Question } from '@/components/Interfaces';
 import { useState, useCallback, useLayoutEffect } from 'react';
-import { PrimaryButtonWithIcon } from '@/components/Buttons';
+import { HeaderButton, PrimaryButtonWithIcon } from '@/components/Buttons';
 import { getQuizQuestions, updateQuestionOrder } from '@/api/questions';
 import { getLocalQuizQuestions, updateLocalQuestionOrder } from '@/localDatabase/questions';
 import { QuestionItem } from '@/components/Items';
@@ -17,15 +17,12 @@ export default function QuizEditor({route}: any) {
 
     useLayoutEffect(() => {
         navigation.setOptions({
-            title: `Editing: ${passedQuiz.title}`,
+            title: 'Editing quiz',
             headerLeft: () => (
-                <Button title="< Back" onPress={() => navigation.goBack()} />
+                <HeaderButton label="Back" icon='caret-left' onPress={() => navigation.goBack()} />
             ),
             headerRight: () => (
-                <Button
-                    title={reorderMode ? "Exit" : "Reorder"}
-                    onPress={toggleReorderMode}
-                />
+                <HeaderButton label={reorderMode ? "Exit" : "Reorder"} onPress={toggleReorderMode}/>
             ),
         });
     }, [navigation, passedQuiz.title, reorderMode]);

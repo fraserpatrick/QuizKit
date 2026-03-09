@@ -1,7 +1,7 @@
 import { useFocusEffect, useNavigation } from '@react-navigation/native';
-import { Button, ScrollView, StyleSheet, Text, View } from 'react-native';
+import { ScrollView, StyleSheet, Text, View } from 'react-native';
 import { useCallback, useLayoutEffect, useState } from 'react';
-import { PrimaryButtonWithIcon } from '@/components/Buttons';
+import { HeaderButton, PrimaryButtonWithIcon } from '@/components/Buttons';
 import { useAuth } from '@/context/AuthContext';
 import { deleteQuiz } from '@/api/quizzes';
 import { deleteLocalQuiz } from '@/localDatabase/quizzes';
@@ -26,15 +26,10 @@ export default function QuizInfoScreen({route}: any) {
         navigation.setOptions({
             title: 'Quiz information',
             headerLeft: () => (
-                <Button title="< Back" onPress={() => navigation.goBack()} />
+                <HeaderButton label="Back" icon='caret-left' onPress={() => navigation.goBack()} />
             ),
             headerRight: ownedByUser? () => (
-                <Button
-                    title="Settings"
-                    onPress={() =>
-                        navigation.navigate('QuizInfoEditor', { passedQuiz })
-                    }
-                />
+                <HeaderButton label="Edit" icon='edit' onPress={() => navigation.navigate('QuizInfoEditor', { passedQuiz })}/>
             ): undefined
         });
     }, [navigation, ownedByUser, passedQuiz]);
@@ -66,7 +61,6 @@ export default function QuizInfoScreen({route}: any) {
 
     const handleDeleteQuiz = async () => {
         setDeleteModalVisible(false);
-        console.log('Deleting quiz with id: ' + passedQuiz.id);
         try{
             if (passedQuiz.saveType === 'local'){
                 await deleteLocalQuiz(passedQuiz.id);

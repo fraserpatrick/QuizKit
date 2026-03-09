@@ -35,7 +35,6 @@ export const initializeDatabase = async () => {
             );
         `);
 
-        console.log('Database initialized successfully');
     } catch (error) {
         console.error('Database initialization error:', error);
     }
@@ -44,10 +43,7 @@ export const initializeDatabase = async () => {
 export const resetDatabase = async () => {
     try {
         await db.execAsync(`DROP TABLE IF EXISTS question;`);
-
         await db.execAsync(`DROP TABLE IF EXISTS quiz;`);
-
-        console.log('Database reset complete');
 
         await initializeDatabase();
 

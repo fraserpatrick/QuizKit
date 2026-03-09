@@ -1,10 +1,10 @@
 import { useFocusEffect, useNavigation } from "@react-navigation/native";
 import React, { useCallback, useEffect, useLayoutEffect, useState } from 'react';
-import { FlatList, View, StyleSheet, Button, TextInput, Text, ActivityIndicator } from 'react-native';
+import { FlatList, View, StyleSheet, TextInput, Text, ActivityIndicator } from 'react-native';
 import { Quiz, User } from '@/components/Interfaces';
 import { SegmentedButtons } from 'react-native-paper';
 import { useAuth } from "@/context/AuthContext";
-import { PrimaryButtonWithIcon } from "@/components/Buttons"; 
+import { HeaderButton, PrimaryButtonWithIcon } from "@/components/Buttons"; 
 import { getOwnedQuizzes, getSharedQuizzes } from "@/api/quizzes";
 import { LeaderboardItem, OwnedQuizItem, QuizItem } from "@/components/Items";
 import { useSounds } from "@/hooks/useSounds";
@@ -26,10 +26,10 @@ export default function HomeScreen() {
         navigation.setOptions({
             title: 'QuizKit',
             headerLeft: () => (
-                <Button title="Logout" onPress={handleLogout} />
+                <HeaderButton label='Logout' icon="poweroff" onPress={handleLogout} />
             ),
             headerRight: () => (
-                <Button title="Profile" onPress={() => navigation.navigate('ProfileScreen' as never)} />
+                <HeaderButton label="Profile" icon='user' onPress={() => navigation.navigate('ProfileScreen' as never)} />
             ),
             headerTitleStyle: {
                 fontWeight: 'bold',

@@ -1,14 +1,14 @@
 import { useNavigation } from '@react-navigation/native';
 import { useEffect, useLayoutEffect, useState } from "react";
-import { View, Text, Button, Keyboard, TextInput, TouchableWithoutFeedback, StyleSheet, ScrollView } from "react-native";
+import { View, Text, Keyboard, TextInput, TouchableWithoutFeedback, StyleSheet, ScrollView } from "react-native";
 import { SegmentedButtons } from "react-native-paper";
 import {useAuth} from '@/context/AuthContext'
-import { PrimaryButtonWithIcon } from '@/components/Buttons';
+import { HeaderButton, PrimaryButtonWithIcon } from '@/components/Buttons';
 import { updateQuiz, createQuiz } from '@/api/quizzes';
 import { useSounds } from '@/hooks/useSounds';
 import { createLocalQuiz, updateLocalQuiz } from '@/localDatabase/quizzes';
 import { quizMigration } from '@/utils/quizMigration';
-import { PrimaryColour, SecondaryColour } from '@/components/SelectedStyles';
+import { SecondaryColour } from '@/components/SelectedStyles';
 import { BaseModal } from '@/components/Modal';
 
 export default function QuizInfoEditor({route}: any) {
@@ -23,12 +23,8 @@ export default function QuizInfoEditor({route}: any) {
         navigation.setOptions({
             title: 'Quiz info editor',
             headerLeft: () => (
-                <Button title="< Back" onPress={() => navigation.goBack()} />
+                <HeaderButton label="Back" icon='caret-left' onPress={() => navigation.goBack()} />
             ),
-            headerStyle: {
-                backgroundColor: PrimaryColour,
-            },
-            headerTintColor: '#fff',
         });
     }, [navigation]);
 
@@ -67,7 +63,6 @@ export default function QuizInfoEditor({route}: any) {
             else if (saveType === 'cloud') {
                 newQuiz = await createQuiz(title.trim(), username!, visibility, description.trim());
             }
-            alert('Creating quiz with title: ' + title.trim());
 
             navigation.reset({index: 1, routes: [
                 {name: 'Home' as never} as never,
@@ -94,9 +89,6 @@ export default function QuizInfoEditor({route}: any) {
             else {
                 updatedQuiz = await quizMigration(passedQuiz.id, username!, title.trim(), visibility, description.trim(), saveType);
             }
-            
-            console.log("Quiz updated");
-            alert('Quiz saved successfully.');
 
             navigation.reset({index: 1, routes: [
                 {name: 'Home' as never},

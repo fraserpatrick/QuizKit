@@ -3,7 +3,7 @@ import React, { useLayoutEffect, useState } from "react";
 import { useNavigation } from "@react-navigation/native";
 import { SelectList } from 'react-native-dropdown-select-list';
 import { SegmentedButtons } from "react-native-paper";
-import { PrimaryButtonWithIcon } from "@/components/Buttons";
+import { HeaderButton, PrimaryButtonWithIcon } from "@/components/Buttons";
 import { createQuestion, deleteQuestion, updateQuestion, uploadImage } from "@/api/questions";
 import { createLocalQuestion, updateLocalQuestion, deleteLocalQuestion } from "@/localDatabase/questions";
 import { useSounds } from "@/hooks/useSounds";
@@ -25,7 +25,7 @@ export default function QuestionEditor({route}: any) {
         navigation.setOptions({
             title: 'Question Editor',
             headerLeft: () => (
-                <Button title="< Back" onPress={navigation.goBack} />
+                <HeaderButton label="Back" icon='caret-left' onPress={navigation.goBack} />
             )
         });
     }, []);
@@ -219,14 +219,12 @@ export default function QuestionEditor({route}: any) {
                 else if (passedQuiz.saveType === 'cloud'){
                     await createQuestion(passedQuiz.id, text.trim(), type, finalAnswer, mcOptions, feedback?.trim(), finalImageUri);
                 }
-                alert('Question saved successfully.');
             } else {
                 if (passedQuiz.saveType === 'local'){
                     await updateLocalQuestion(passedQuestion.id, text.trim(), type, finalAnswer, mcOptions, feedback?.trim(), imageUri);
                 } else if (passedQuiz.saveType === 'cloud'){
                     await updateQuestion(passedQuestion.id, text.trim(), type, finalAnswer, mcOptions, feedback?.trim(), finalImageUri);
                 }
-                alert('Question updated successfully.');
             }
 
             navigation.goBack();
@@ -248,7 +246,6 @@ export default function QuestionEditor({route}: any) {
 
     const handleDeleteQuestion = async () => {
         setDeleteLoading(true);
-        console.log('Deleting question with id: ' + passedQuestion.id);
 
         try {
             if (passedQuiz.saveType === 'local'){
@@ -256,7 +253,6 @@ export default function QuestionEditor({route}: any) {
             } else if (passedQuiz.saveType === 'cloud'){
                 await deleteQuestion(passedQuestion.id);
             }
-            alert('Question deleted successfully.');
             navigation.goBack();
         }
         catch (error) {

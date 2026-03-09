@@ -64,7 +64,6 @@ export default function SignUpScreen() {
             }
 
             await signUp(newEmail, newPassword);
-            console.log('User account created & signed in!');
 
             await createUser(newEmail, newUsername);
             await changeUsername(newUsername);

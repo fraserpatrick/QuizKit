@@ -1,4 +1,4 @@
-import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import { createStackNavigator } from '@react-navigation/stack';
 import HomeScreen from '@/app/screens/HomeScreen';
 import QuizEditor from '@/app/screens/quizScreens/editors/QuizEditor';
 import ProfileScreen from '@/app/screens/profileScreens/ProfileScreen';
@@ -11,7 +11,7 @@ import QuizPlayerSummary from '@/app/screens/quizScreens/QuizPlayerSummary';
 import QuestionReview from '@/app/screens/quizScreens/QuestionReview';
 import { PrimaryColour } from '@/components/SelectedStyles';
 
-const Stack = createNativeStackNavigator();
+const Stack = createStackNavigator();
 
 export default function AppNav() {
     return (
@@ -19,9 +19,15 @@ export default function AppNav() {
             screenOptions={{
                 headerStyle: {
                     backgroundColor: PrimaryColour,
+                    height: 70,
                 },
                 headerTintColor: '#FFFFFF',
-        }}>
+                headerTitleStyle: {
+                    fontWeight: 'bold',
+                },
+                headerStatusBarHeight: 2
+            }}
+        >
             <Stack.Screen name="Home" component={HomeScreen} />
             <Stack.Screen name="QuizInfoScreen" component={QuizInfoScreen} />
             <Stack.Screen name="QuizEditor" component={QuizEditor} />

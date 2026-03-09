@@ -100,8 +100,7 @@ export const AuthProvider = ({children} : AuthProviderProps) => {
         return await auth.currentUser.getIdToken();
     }
 
-    const changeUsername = async (newUsername: string): Promise<void> => {  
-        console.log('Changing username from:', username, 'to:', newUsername);     
+    const changeUsername = async (newUsername: string): Promise<void> => {    
         setUsername(newUsername);
     }
 

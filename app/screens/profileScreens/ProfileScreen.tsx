@@ -1,4 +1,4 @@
-import { Text, View, StyleSheet, FlatList, Button, Dimensions } from 'react-native';
+import { Text, View, StyleSheet, FlatList, Dimensions } from 'react-native';
 import { useAuth } from '@/context/AuthContext';
 import { Quiz, User } from '@/components/Interfaces';
 import { useState, useEffect, useLayoutEffect } from 'react';
@@ -8,6 +8,7 @@ import { getUserByUsername } from '@/api/users';
 import { SmallQuizItem } from '@/components/Items';
 import * as Progress from 'react-native-progress';
 import { SecondaryColour } from '@/components/SelectedStyles';
+import { HeaderButton } from '@/components/Buttons';
 
 export default function ProfileScreen({route}: any) {
     const { username } = useAuth();
@@ -19,13 +20,13 @@ export default function ProfileScreen({route}: any) {
         const options: any = {
             title: passedUsername === username ? 'My Profile' : `${passedUsername}'s Profile`,
             headerLeft: () => (
-                <Button title="< Back" onPress={navigation.goBack} />
+                <HeaderButton label="Back" icon='caret-left' onPress={navigation.goBack} />
             ),
         };
 
         if (username === passedUsername) {
             options.headerRight = () => (
-                <Button title="Edit Profile" onPress={() => navigation.navigate('ProfileEditor')} />
+                <HeaderButton label="Edit" icon='edit' onPress={() => navigation.navigate('ProfileEditor')} />
             );
         }
 

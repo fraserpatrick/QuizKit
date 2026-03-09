@@ -1,9 +1,9 @@
 import { useNavigation } from "@react-navigation/native";
 import { useEffect, useLayoutEffect, useState } from "react";
-import { View, Text, Button, Keyboard, TouchableWithoutFeedback, StyleSheet, TouchableOpacity, TextInput, Image, ScrollView, ActivityIndicator } from "react-native";
+import { View, Text, Keyboard, TouchableWithoutFeedback, StyleSheet, TouchableOpacity, TextInput, Image, ScrollView, ActivityIndicator } from "react-native";
 import { Question } from '@/components/Interfaces';
 import { useAuth } from "@/context/AuthContext";
-import { PrimaryButtonWithIcon, PrimaryButtonWithIconRight } from "@/components/Buttons";
+import { HeaderButton, PrimaryButtonWithIcon, PrimaryButtonWithIconRight } from "@/components/Buttons";
 import { updateStats } from "@/api/users";
 import { useSounds } from "@/hooks/useSounds";
 import { SecondaryColour } from "@/components/SelectedStyles";
@@ -22,7 +22,7 @@ export default function QuizPlayer({route}: any) {
         navigation.setOptions({
             title: `Question ${currentQuestion + 1} of ${questions.length}`,
             headerLeft: () => (
-                <Button title="< Exit" onPress={handleExit} />
+                <HeaderButton label="Exit" icon='caret-left' onPress={handleExit} />
             )
         });
     }, [navigation, currentQuestion]);

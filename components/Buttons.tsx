@@ -2,7 +2,7 @@ import React from "react";
 import { TouchableOpacity, View, Text, StyleSheet } from "react-native";
 import { useSounds } from "@/hooks/useSounds";
 import { AntDesign } from "@expo/vector-icons";
-import { PrimaryColour } from "@/components/SelectedStyles";
+import { PrimaryColour, SecondaryColour } from "@/components/SelectedStyles";
 
 type AntIconName = React.ComponentProps<typeof AntDesign>["name"];
 
@@ -17,6 +17,16 @@ const iconItem = (iconName: AntIconName) => {
         <AntDesign
             name={iconName}
             size={24}
+            color="#ffffff"
+        />
+    );
+}
+
+const headerItem = (iconName: AntIconName) => {
+    return (
+        <AntDesign
+            name={iconName}
+            size={20}
             color="#ffffff"
         />
     );
@@ -57,6 +67,18 @@ export const PrimaryButtonWithIconRight: React.FC<ButtonProps> = ({label, onPres
     );
 };
 
+export const HeaderButton: React.FC<ButtonProps> = ({label, onPress, icon}) => {
+    const { playClick } = useSounds();
+    return (
+        <TouchableOpacity onPress={() => { playClick(); onPress(); }}>
+            <View style={[styles.button, styles.headerButton]}>
+                {icon && headerItem(icon)}
+                <Text style={styles.headerButtonText}>{label}</Text>
+            </View>
+        </TouchableOpacity>
+    );
+}
+
 
 const styles = StyleSheet.create({
     button:{
@@ -80,4 +102,16 @@ const styles = StyleSheet.create({
         color: 'white',
         fontSize: 20,
     },
+    headerButton: {
+        backgroundColor: SecondaryColour,
+        paddingHorizontal: 6,
+        paddingVertical: 2,
+        marginHorizontal: 5
+    },
+    headerButtonText: {
+        textAlign: 'center',
+        padding: 10,
+        color: 'white',
+        fontSize: 16,
+    }
 });

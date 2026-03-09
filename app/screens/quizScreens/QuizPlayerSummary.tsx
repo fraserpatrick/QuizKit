@@ -1,9 +1,9 @@
-import { View, Text, Button, StyleSheet, FlatList } from "react-native";
+import { View, Text, StyleSheet, FlatList } from "react-native";
 import { useEffect, useLayoutEffect } from "react";
 import { useNavigation } from "@react-navigation/native";
 import { AnimatedCircularProgress } from 'react-native-circular-progress';
 import { Question } from '@/components/Interfaces';
-import { PrimaryButtonWithIconRight } from "@/components/Buttons";
+import { HeaderButton, PrimaryButtonWithIconRight } from "@/components/Buttons";
 import { VariableQuestionItem } from "@/components/Items";
 import { useSounds } from "@/hooks/useSounds";
 
@@ -15,9 +15,9 @@ export default function QuizPlayerSummary({ route }: any) {
     
     useLayoutEffect(() => {
         navigation.setOptions({
-            title: 'Results Summary',
+            title: 'Quiz Results',
             headerLeft: () => (
-                <Button title="< Exit" onPress={() => navigation.reset({index: 0, routes: [{name: 'Home' as never}],} as never)} />
+                <HeaderButton label="Exit" icon='caret-left' onPress={() => navigation.reset({index: 0, routes: [{name: 'Home' as never}],} as never)} />
             ),
         });
     }, [navigation]);
