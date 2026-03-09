@@ -68,7 +68,6 @@ export default function QuizInfoScreen({route}: any) {
                 await deleteQuiz(passedQuiz.id);
             }
 
-            alert('Deleted quiz : ' + passedQuiz.title);
         }
         catch(error){
             console.error('Error deleting quiz: ', error);
