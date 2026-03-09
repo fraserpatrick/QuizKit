@@ -171,6 +171,7 @@ export default function QuizPlayer({route}: any) {
                 updated.push(option)
             }
 
+            updated.sort();
             onChange(JSON.stringify(updated))
         }
         return (

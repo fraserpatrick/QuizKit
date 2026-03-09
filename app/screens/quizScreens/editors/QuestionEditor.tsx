@@ -190,6 +190,7 @@ export default function QuestionEditor({route}: any) {
         if (type === "Multiple Choice") {
             finalAnswer = correctAnswers[0]
         } else if (type === "Multiple Select") {
+            correctAnswers.sort();
             finalAnswer = JSON.stringify(correctAnswers)
         } else {
             finalAnswer = answer
