@@ -1,6 +1,7 @@
 # To run
+If on Windows use comand prompt
 ## Step 1 - Install Node
-Install the LTS version of Node.js from https://nodejs.org/en.
+Install the LTS version of Node.js from https://nodejs.org/en. Ensure npm is selected.
 
 Verifiy the installation:
 
@@ -9,27 +10,19 @@ Verifiy the installation:
 `npm -v`
 
 
-## Step 2 - Install Expo
-Install Expo CLI
-
-`npm install -g expo`
-
-Verify the installation
-
-`expo --version`
-
-
-## Step 3 - Install dependencies
-Navigate to project folder and run
+## Step 2 - Install dependencies
+Navigate to project folder in the terminal and run
 
 `npm install`
 
 
-## Step 4 - Start server
+## Step 3 - Start server
+In the project folder in the terminal, run
+
 `npx expo start`
 
 
-## Step 5 - Run app
+## Step 4 - Run app
 Ensure both phone and PC are on the same network
 
-Scan the QR code shown
+Scan the QR code shown, and download the app
