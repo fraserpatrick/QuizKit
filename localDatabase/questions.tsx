@@ -4,7 +4,7 @@ import { Question } from '@/components/Interfaces';
 export const createLocalQuestion = async (quizID: number, text: string, type: string, correctAnswer: string, mcOptions: string[], feedback: string, imageUri: string): Promise<boolean> => {
     const selectSQL =  `SELECT MAX(questionOrder) as maxOrder FROM question WHERE quizID = ?`;
     const result = db.getAllSync(selectSQL, [quizID]);
-
+    //gets the current question number in the quiz, then adds 1 to allow for question ordering
     const maxOrder = result?.[0]?.maxOrder ?? 0;
     const nextQuestionOrder = maxOrder + 1;
     

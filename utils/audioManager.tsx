@@ -13,3 +13,4 @@ export const fanfarePlayer = createAudioPlayer(
 );
 
 clickPlayer.volume = 0.1;
+//creates players for each sound effect

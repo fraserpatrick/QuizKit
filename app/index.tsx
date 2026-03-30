@@ -5,7 +5,7 @@ import { useEffect } from 'react';
 
 export default function App() {
     useEffect(() => {
-        initializeDatabase();
+        initializeDatabase();   //ensures database exists
     }, []);
 
     return (

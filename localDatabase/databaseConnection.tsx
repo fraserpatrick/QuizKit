@@ -1,7 +1,7 @@
 import * as SQLite from 'expo-sqlite';
 
 
-export const db = SQLite.openDatabaseSync("QuizkitDatabase.db");
+export const db = SQLite.openDatabaseSync("QuizkitDatabase.db");    //connects to the local database file
 
 export const initializeDatabase = async () => {
     try {
@@ -16,7 +16,7 @@ export const initializeDatabase = async () => {
                 description TEXT,
                 saveType TEXT NOT NULL
             );
-        `);
+        `); //creates the quiz table
 
         await db.execAsync(`
             CREATE TABLE IF NOT EXISTS question (
@@ -33,7 +33,7 @@ export const initializeDatabase = async () => {
                     REFERENCES quiz(id)
                     ON DELETE CASCADE
             );
-        `);
+        `); //creates the question table
 
     } catch (error) {
         console.error('Database initialization error:', error);
